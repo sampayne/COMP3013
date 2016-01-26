@@ -1,12 +1,13 @@
 <?php
 
+    require('../app/View.php');
 
-    include('../app/Request.php');
-    include('../app/RequestHandler.php');
+    require('../app/Request.php');
+    require('../app/RequestHandler.php');
 
-    echo 'hits index.php URL is '.$_SERVER['REQUEST_URI'];
+    //echo 'hits index.php URL is '.$_SERVER['REQUEST_URI'];
 
-    print_r($_SERVER);
+    //print_r($_SERVER);
 
     $request = new App\Request('/sam/public', $_SERVER, $_GET, $_POST, $_FILES, $_SESSION ?? [], $_ENV, $_COOKIE, $_REQUEST);
 
