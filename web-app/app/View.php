@@ -12,7 +12,6 @@
             $this->filename = $filename;
             $this->data = $data;
 
-
         }
 
         public function render():string {
@@ -26,8 +25,6 @@
             include('../views/'.$this->filename.'.php');
 
             return ob_get_clean();
-
-
 
         }
 

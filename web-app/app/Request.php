@@ -33,9 +33,6 @@
 
                                         ) {
 
-    echo 'Creates request';
-
-
                 $this->method = $server['REQUEST_METHOD'];
 
                 $start_url = trim($start_url, '/');
