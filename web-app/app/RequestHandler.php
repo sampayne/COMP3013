@@ -3,6 +3,7 @@
     namespace App;
 
     use App\Request as Request;
+    use App\View;
 
     class RequestHandler {
 
@@ -27,6 +28,12 @@
             }else if($request->matches('GET','/auction/??')){
 
                 $id = $request->url_array[1];
+
+                $injected_context = 'Injected String';
+
+                $view = new View('auction', ['injected_context'=>$injected_context]);
+
+                return $view->render();
 
             }else if($request->matches('POST','/auction/??/bid')){
 
