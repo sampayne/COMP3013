@@ -2,13 +2,12 @@
 
     namespace App\Controller;
 
-    use App\Utility\{Request, SessionHandler, View};
+    use App\Utility\{Request, Session, View};
 
     class SignupController extends Controller {
 
-        public function processSignup(Request $request, SessionHandler $session) : string {
+        public function processSignup(Request $request, Session $session) : string {
 
                 //TO DO
         }
-
     }

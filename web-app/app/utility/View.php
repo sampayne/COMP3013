@@ -7,11 +7,10 @@
         private $filename = '';
         private $data = [];
 
-        public function __construct(string $filename, array $data){
+        public function __construct(string $filename, array $data = []){
 
             $this->filename = $filename;
             $this->data = $data;
-
         }
 
         public function render() : string {
@@ -25,7 +24,5 @@
             include('../views/'.$this->filename.'.php');
 
             return ob_get_clean();
-
         }
-
     }

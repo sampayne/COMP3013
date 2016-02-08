@@ -3,10 +3,9 @@
     namespace App\Utility;
 
     use App\Utility\Request;
-    use App\Utility\SessionHandler;
+    use App\Utility\Session as Session;
 
     use App\Controller\{ TestController, LoginController, DashboardController, HomeController };
-
 
     class RequestHandler {
 
@@ -18,10 +17,7 @@
 
         public function handleRequest(Request $request) : string {
 
-            $session = new SessionHandler($request);
-
-
-
+            $session = new Session($request);
 
 
             if($request->matches('GET', '/test')){

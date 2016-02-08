@@ -10,6 +10,5 @@
 
             header('Location: '.$url);
             return '';
-
         }
     }

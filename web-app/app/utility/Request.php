@@ -64,12 +64,10 @@
                     if($component !== '??' && $this->url_array[$index] !== $component){
 
                         return false;
-
                     }
                 }
 
                 return true;
-
             }
 
             return false;
@@ -79,5 +77,4 @@
 
             return $method === $this->method;
         }
-
     }
