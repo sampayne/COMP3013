@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-    namespace App;
+    namespace App\Utility;
 
     class Request {
 
@@ -16,10 +16,6 @@
         public $method = '';
         public $url = '';
         public $url_array = [];
-
-
-
-        // $request = new Request($_SERVER, $_GET, $_POST, $_FILES, $_SESSION, $_ENV, $_COOKIE, $_REQUEST);
 
         public function __construct(    string $start_url,
                                         array $server,
@@ -56,8 +52,7 @@
 
         }
 
-
-        public function matches(string $method, string $url){
+        public function matches(string $method, string $url) : bool {
 
             $url = trim($url, '/');
             $url = explode('/', $url);
@@ -80,7 +75,7 @@
             return false;
         }
 
-        public function isMethod(string $method){
+        public function isMethod(string $method) : bool {
 
             return $method === $this->method;
         }

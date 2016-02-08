@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-    namespace App;
+    namespace App\Utility;
 
     class View {
 
@@ -14,7 +14,7 @@
 
         }
 
-        public function render():string {
+        public function render() : string {
 
             ob_start();
 

@@ -1,12 +1,12 @@
 <?php
 
-    require('../app/View.php');
-    require('../app/Request.php');
-    require('../app/RequestHandler.php');
+    require('../app/controllers/include.php');
+    require('../app/data_models/include.php');
+    require('../app/utility/include.php');
 
-    $request = new App\Request('/', $_SERVER, $_GET, $_POST, $_FILES, $_SESSION ?? [], $_ENV, $_COOKIE, $_REQUEST);
+    $request = new App\Utility\Request('/', $_SERVER, $_GET, $_POST, $_FILES, $_SESSION ?? [], $_ENV, $_COOKIE, $_REQUEST);
 
-    $handler = new App\RequestHandler();
+    $handler = new App\Utility\RequestHandler();
 
     $output = $handler->handleRequest($request);
 
