@@ -25,4 +25,12 @@
 
             return ob_get_clean();
         }
+
+        public static function renderView(string $filename, array $data = []) : string {
+
+            $view = new View($filename, $data);
+
+            return $view->render();
+
+        }
     }

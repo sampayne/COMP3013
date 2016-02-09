@@ -31,7 +31,6 @@
             if ($statement = self::runQuery($SQLString, $parameters)){
 
                 return $statement->fetchAll();
-
             }
 
             return [];
@@ -59,7 +58,7 @@
 
             $connection = self::connect();
 
-            return $connection->lastInsertId();
+            return (int) $connection->lastInsertId();
         }
 
         private static function runQuery(string $SQLString, array $parameters = []) : PDOStatement {
@@ -72,7 +71,7 @@
 
                 foreach($parameters as $index => $value){
 
-                    $statement->bindValue($index + 1, trim($value));
+                    $statement->bindValue($index + 1,  is_string($value) ? trim($value) : $value);
                 }
 
                 $statement->execute();
@@ -86,7 +85,6 @@
 
             }
         }
-
 
     	public static function countQuery(string $SQLString, $parameters = []) : int {
 
@@ -102,10 +100,10 @@
     		return (bool) $results[0][0] ?? false;
     	}
 
-        public static function checkExists(string $table, string $value, string $field) : bool {
+        public static function checkExists(string $value, string $field, string $table) : bool {
 
             $SQLString = "SELECT EXISTS (SELECT 1 FROM ".$table." WHERE ".$field." = ? LIMIT 1)";
 
-            return self::existsQuery($SQLString, [$field]);
+            return self::existsQuery($SQLString, [$value]);
         }
     }

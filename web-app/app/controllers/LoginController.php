@@ -34,17 +34,9 @@
 
             if(isset($results[0]['id']) && $results[0]['id'] > 0){
 
-                $id = $results[0]['id'];
+                $id = (int) $results[0]['id'];
 
-                $auth_key = hash('sha512', (string) rand());
-
-                while(Database::checkExists('Session', $auth_key, 'token')){
-                    $auth_key = hash('sha512', (string) rand());
-                }
-
-                Database::insert('INSERT INTO Session (user_id,token) VALUES(?,?)',[$id, $auth_key]);
-
-                $session->createSession($auth_key);
+                $session->generateSession($id);
 
                 return $this->redirectTo('/dashboard');
             }
