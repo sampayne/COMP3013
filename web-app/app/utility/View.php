@@ -1,20 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
-    namespace App;
+    namespace App\Utility;
 
     class View {
 
         private $filename = '';
         private $data = [];
 
-        public function __construct(string $filename, array $data){
+        public function __construct(string $filename, array $data = []){
 
             $this->filename = $filename;
             $this->data = $data;
-
         }
 
-        public function render():string {
+        public function render() : string {
 
             ob_start();
 
@@ -25,7 +24,5 @@
             include('../views/'.$this->filename.'.php');
 
             return ob_get_clean();
-
         }
-
     }
