@@ -5,7 +5,7 @@
     use App\Utility\Request;
     use App\Utility\Session as Session;
 
-    use App\Controller\{ TestController, LoginController, DashboardController, HomeController };
+    use App\Controller\{ TestController, LoginController, DashboardController, HomeController, SignupController };
 
     class RequestHandler {
 
@@ -18,7 +18,6 @@
         public function handleRequest(Request $request) : string {
 
             $session = new Session($request);
-
 
             if($request->matches('GET', '/test')){
 
@@ -66,6 +65,12 @@
 
                     return $controller->processSignup($request, $session);
 
+            }else if($request->matches('GET','/logout')){
+
+
+                    $controller = new LoginController();
+
+                    return $controller->logout($request,$session);
 
 
 

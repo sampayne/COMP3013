@@ -33,21 +33,21 @@
 
             $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->post['auth_token']]);
 
-            return $this->loadActiveUserFromSession($user_query);
+            return $this->loadActiveUser($user_query);
         }
 
         private function loadActiveUserFromGet() : User {
 
             $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->get['auth_token']]);
 
-            return $this->loadActiveUserFromSession($user_query);
+            return $this->loadActiveUser($user_query);
         }
 
         private function loadActiveUserFromSession() : User {
 
             $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->session_array['auth_token']]);
 
-            return $this->loadActiveUserFromSession($user_query);
+            return $this->loadActiveUser($user_query);
         }
 
         private function loadActiveUser(array $query_result) : User {
@@ -75,7 +75,7 @@
             return !is_null($this->user);
         }
 
-        public function endSession(){
+        public function endSession() {
 
             $_SESSION['auth_token'] = '';
 
@@ -83,8 +83,16 @@
             session_destroy();
         }
 
-        public function createSession(string $auth_token) {
+        public function generateSession(int $user_id) {
 
-            $_SESSION['auth_token'] = $auth_token;
+            $auth_key = hash('sha512', (string) rand());
+
+            while(Database::checkExists($auth_key, 'token', 'Session')){
+                $auth_key = hash('sha512', (string) rand());
+            }
+
+            Database::insert('INSERT INTO Session (user_id,token) VALUES(?,?)',[$user_id, $auth_key]);
+
+            $_SESSION['auth_token'] = $auth_key;
         }
     }
