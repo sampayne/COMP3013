@@ -284,8 +284,6 @@ function addWatches(array $userRoleIds, array $auctionIds) {
 
 }
 
-
-
 //adding Bids logic
 
 function getCurrentAuctions(mysqli $conn) {
@@ -318,7 +316,16 @@ function getAuctionsAndMaxBid(mysqli $conn) {
 	return $auctionMaxBids;
 }
 
+function getHighestBidForAuction(mysqli $conn, $auction_id) {
 
+	$result = $conn->query("SELECT max(value) AS max_value FROM Bid WHERE auction_id = $auction_id");
+
+    if ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+    	return $row["max_value"]; 
+	}
+
+	return NULL;
+}
 
 function addSingleBid($conn, $userRoleId, $auctionId, $bidValue) {
 
@@ -335,36 +342,28 @@ function addBids(mysqli $conn, array $userIds, array $auctionIds) {
 	$auctions = getCurrentAuctions($conn);
 	$auctionsNo = count($auctions);
 	//add 5 "rounds" of bids
-	$bidsToAdd = 0;
+	$bidsToAdd = $auctionsNo;
 	for($i = 0; $i < 5; $i++) {
-
 		
-		$auctionMaxBids = NULL; //array of bids
-		
-		if($i === 0) {//add a bid for all of them
-			$auctionMaxBids = $auctions;
-			$bidsToAdd = $auctionsNo;
-
-		}
-		else {
-			$auctionMaxBids = getAuctionsAndMaxBid($conn); 
+		if($i !== 0) {//add a bid for all of them
 			$bidsToAdd = $bidsToAdd / 2;
-		}
 
+		}
+		
 		for($j = 0; $j < $bidsToAdd; $j++) {
 
 			$userRoleId = $faker->randomElement($userIds);
 			if($i === 0) {//add a bid for all of them
 				
-				$auctionId = $auctionMaxBids[$j]["id"];
-				$bidValue =  $auctionMaxBids[$j]["starting_price"] + rand(1, 1000);
+				$auctionId = $auctions[$j]["id"];
+				$bidValue =  $auctions[$j]["starting_price"] + rand(1, 1000);
 				addSingleBid($conn, $userRoleId, $auctionId, $bidValue);
 
 			}
 			else {
-				$addBidIndex = rand(0, $auctionsNo);
-				$auctionId = $auctionMaxBids[$addBidIndex]["auction_id"];
-				$bidValue =  $auctionMaxBids[$addBidIndex]["max_bid"] + rand(1, 1000);
+				$addBidIndex = rand(0, $auctionsNo - 1);
+				$auctionId = $auctions[$addBidIndex]["id"];
+				$bidValue =  getHighestBidForAuction($conn, $auctionId) + rand(1, 1000);
 				addSingleBid($conn, $userRoleId, $auctionId, $bidValue);
 			}
 		}
@@ -378,8 +377,6 @@ $userRoleIds = getUserRoleIds($conn);
 $auctionIds = getAuctionIds($conn);
 
 addBids($conn, $userRoleIds, $auctionIds);
-//getAuctionsAndMaxBid($conn);
-//getCurrentAuctions($conn);
 
 echo "New records created successfully <br />";
 $conn->close();
