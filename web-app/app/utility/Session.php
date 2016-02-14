@@ -75,11 +75,11 @@
 
                 if($userrole_query[0]['role_id'] == Role::seller()) {
                     $user->seller_role_id = $userrole_query[0]['id'];
-                    if(!empty($userrole_query[1]) && $userrole_query[1]['role_id'] == Role::buyer()) //Buyer
+                    if(!empty($userrole_query[1]) && $userrole_query[1]['role_id'] == Role::buyer())
                         $user->buyer_role_id = $userrole_query[1]['id'];
                 }
                 else
-                     if($userrole_query[0]['role_id'] == Role::buyer()) //Buyer
+                     if($userrole_query[0]['role_id'] == Role::buyer())
                         $user->buyer_role_id = $userrole_query[0]['id'];
 
             }
