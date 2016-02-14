@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+    error_reporting(E_ALL);
+
     require('../app/controllers/include.php');
     require('../app/data_models/include.php');
     require('../app/utility/include.php');

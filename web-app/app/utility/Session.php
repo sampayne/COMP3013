@@ -17,21 +17,40 @@
 
             if(isset($this->session_array['auth_token'])){
 
-                $this->user = $this->loadActiveUser($this->session_array['auth_token']);
+                $this->user = $this->loadActiveUserFromSession();
 
-            }else if(isset($request->post['auth_token'])){
+            }else if(isset($this->post['auth_token'])){
 
-                $this->user = $this->loadActiveUser($request->post['auth_token']);
+                $this->user = $this->loadActiveUserFromPost();
 
-            }else if(isset($request->get['auth_token'])){
+            }else if(isset($this->get['auth_token'])){
 
-                $this->user = $this->loadActiveUser($request->get['auth_token']);
+                $this->user = $this->loadActiveUserFromGet();
             }
         }
 
-        private function loadActiveUser(string $token) : User {
+        private function loadActiveUserFromPost() : User {
 
-            $query_result = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$token]);
+            $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->post['auth_token']]);
+
+            return $this->loadActiveUser($user_query);
+        }
+
+        private function loadActiveUserFromGet() : User {
+
+            $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->get['auth_token']]);
+
+            return $this->loadActiveUser($user_query);
+        }
+
+        private function loadActiveUserFromSession() : User {
+
+            $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->session_array['auth_token']]);
+
+            return $this->loadActiveUser($user_query);
+        }
+
+        private function loadActiveUser(array $query_result) : User {
 
             if (count($query_result) > 0) {
 
