@@ -44,9 +44,6 @@
 
 
 
-
-
-
             }else if($request->matches('GET','/login')){
 
                 $controller = new LoginController();
@@ -78,6 +75,18 @@
 
 
 
+
+           }else if($request->matches('GET','/user/??/feedback')){
+
+
+
+
+
+
+
+
+
+
             }else if($request->matches('GET','/auction/??')){
 
 
@@ -85,6 +94,8 @@
 
 
             }else if($request->matches('POST','/auction/??/watch')){
+
+
 
 
 
@@ -110,8 +121,7 @@
 
 
 
-
-            }else if($request->matches('GET', '/search')){
+            }else if($request->matches('GET', '/search?c=30&s=some+search+term')){
 
                 $search_term = $request->get['s'];
                 $category = $request->get['c'];
