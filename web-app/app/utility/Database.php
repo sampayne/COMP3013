@@ -9,7 +9,7 @@
 
         private static $connection = null;
 
-        const HOST          = 'localhost';
+        const HOST          = '37.59.121.18';
         const USER          = 'comp3013';
         const PASSWORD      = 'XxxH6?32couoWufi';
         const Database      = 'comp3013';
