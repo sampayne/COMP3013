@@ -93,14 +93,15 @@ function addCategories() {
 	}
 }
 
-function addAuctions() {
+function addAuctions(mysqli $conn, array $userRoleIds) {
 
 	for ($x = 1; $x <= 100; $x++) {
 		$end_date = $faker->dateTimeBetween('now', '1 years')->format('Y-m-d H:i:s');
 		$description = $faker->paragraph(3, true);
 		$price = $faker->numberBetween(0, 101000);
-		$sql = "INSERT INTO Auction (name, description, starting_price, end_date)
-		VALUES ('$x', '$description', $price, '$end_date')";
+		$userrole_id = $faker->randomElement($userRoleIds);
+		$sql = "INSERT INTO Auction (name, description, starting_price, end_date, userrole_id)
+		VALUES ('$x', '$description', $price, '$end_date', )";
 
 		if ($conn->query($sql) !== TRUE)
     		echo "Error: " . $sql . "<br>" . $conn->error;
@@ -251,6 +252,15 @@ function getUserRoleIds(mysqli $conn) : array {
 	return $userRoleIds;
 }
 
+function getUserRoleSellerIds(mysqli $conn) : array {
+	$result = $conn->query("SELECT id FROM UserRole WHERE role_id = 1");
+	$userRoleIds = Array();
+	while ($row = $result->fetch_array(MYSQLI_NUM)) {
+    	$userRoleIds[] =  $row[0];  
+	}
+	return $userRoleIds;
+}
+
 
 function addViews(array $userRoleIds, array $auctionIds)  {
 
@@ -373,10 +383,14 @@ function addBids(mysqli $conn, array $userIds, array $auctionIds) {
 
 //call functions
 
-$userRoleIds = getUserRoleIds($conn);
-$auctionIds = getAuctionIds($conn);
 
-addBids($conn, $userRoleIds, $auctionIds);
+$userRoleSellerIds = getUserRoleSellerIds($conn);
+addAuctions($conn, $userRoleSellerIds);
+
+//$userRoleIds = getUserRoleIds($conn);
+//$auctionIds = getAuctionIds($conn);
+
+//addBids($conn, $userRoleIds, $auctionIds);
 
 echo "New records created successfully <br />";
 $conn->close();
