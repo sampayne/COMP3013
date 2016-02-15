@@ -3,13 +3,15 @@
     namespace App\Controller;
 
     use App\Utility\{Request, Session, View, Database};
+    use App\Model\User;
 
     class DashboardController extends Controller {
 
         
-    	private function getAuctions(User $user) {
+    	private function getAuctions(User $user) : array {
 
-    		//$results = Database::query('SELECT id FROM User WHERE email = ? AND password = ?', [$user->id]);
+    		$results = Database::query('SELECT * FROM Auction WHERE userrole_id = ?', [$user->seller_role_id]);
+    		return $results;
 
     	}
 
@@ -20,8 +22,8 @@
 
                 return $this->redirectTo('/');
             }
-
-            $view = new View('dashboard', ['user' => $session->activeUser()]);
+            $auctions = $this->getAuctions($session->activeUser());
+            $view = new View('dashboard', ['user' => $session->activeUser(), 'auctions' => $auctions]);
 
             return $view->render();
         }
