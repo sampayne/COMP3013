@@ -2,7 +2,7 @@
 
     namespace App\Utility;
 
-    use App\Utility\Request;
+    use App\Utility\{Request, View};
     use App\Utility\Session as Session;
 
     use App\Controller\{ TestController, LoginController, DashboardController, HomeController, SignupController };
@@ -78,33 +78,31 @@
 
 
 
-            }else if($request->matches('GET','/auction/??')){
-
-
-            }else if($request->matches('POST','/auction/??/bid')){
-
-
-            }else if($request->matches('POST','/auction/??/watch')){
-
-
-
-
-
-
-
-
-
             }else if($request->matches('GET', '/auction/create')){
 
+                
+                return "You are at /auction/create"; //just a dumb placeholder for sanity check
 
             }else if($request->matches('GET', '/auction/??/edit')){
 
+                return "You are at /auction/id/edit";  //just a dumb placeholder for sanity check
 
             }else if($request->matches('POST', '/auction')){
 
 
 
 
+
+
+
+            }else if($request->matches('GET','/auction/??')){
+
+
+
+            }else if($request->matches('POST','/auction/??/bid')){
+
+
+            }else if($request->matches('POST','/auction/??/watch')){
 
 
 
