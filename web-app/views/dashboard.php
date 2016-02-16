@@ -30,6 +30,17 @@
           	 <button type="submit">Create Auction</button>
         	</form>
 
+        	<table>
+   		 		<?php foreach($feedback as $singleFeedback){ ?>
+    				<tr>
+        				<td><?php echo $singleFeedback['id']; ?></td>
+        				<td><?php echo $singleFeedback['content']; ?></td>
+        				<td><?php echo $singleFeedback['auction_id']; ?></td>
+        				<td><?php echo $singleFeedback['created_at']; ?></td>
+    				</tr>
+    			<?php } ?>
+			</table>
+
         </div>
 
     </body>
