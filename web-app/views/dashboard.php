@@ -17,9 +17,18 @@
         				<td><?php echo $auction['description']; ?></td>
         				<td><?php echo $auction['starting_price']; ?></td>
         				<td><?php echo $auction['end_date']; ?></td>
+        				<td><form method="get" action="/auction/<?php echo $auction['id']; ?>/edit">  
+          	 				<button type="submit">Edit Auction</button>
+        					</form>
+        				</td>
     				</tr>
     			<?php } ?>
 			</table>
+
+
+			<form method="get" action="/auction/create">  
+          	 <button type="submit">Create Auction</button>
+        	</form>
 
         </div>
 
