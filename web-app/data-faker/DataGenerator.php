@@ -114,24 +114,29 @@ function getAuctionIds(mysqli $conn) : array {
 	$result = $conn->query("SELECT id FROM Auction");
 	$auctionIds = Array();
 	while ($row = $result->fetch_array(MYSQLI_NUM)) {
-    	$auctionIds[] =  $row[0];  
+    	$auctionIds[] =  $row[0];
+    }  
 
     /*foreach($auctionIds as $id) {
 		echo "$id ";
 	}*/
 
 	return $auctionIds;
-	}
 
 }
 
-function addSellerFeedback() {
+function addSellerFeedback(mysqli $conn, array $auctionIds) {
 
-	for ($x = 0; $x < 200; $x++) {
+	for ($x = 0; $x < 100; $x++) {
+		global $faker;
 		$content = $faker->paragraph(3, true);
+		$item_as_described = $faker->numberBetween(1, 5);
+		$communication = $faker->numberBetween(1, 5);
+		$dispatch_time = $faker->numberBetween(1, 5);
+		$posting = $faker->numberBetween(1, 5);
 		$auction_id = $faker->randomElement($auctionIds);
-		$sql = "INSERT INTO SellerFeedback (content, auction_id)
-		VALUES ('$content', $auction_id)";
+		$sql = "INSERT INTO SellerFeedback (content, item_as_described, communication, dispatch_time, posting, auction_id)
+		VALUES ('$content', $item_as_described, $communication, $dispatch_time, $posting, $auction_id)";
 
 		if ($conn->query($sql) !== TRUE)
     		echo "Error: " . $sql . "<br>" . $conn->error;
@@ -384,13 +389,15 @@ function addBids(mysqli $conn, array $userIds, array $auctionIds) {
 //call functions
 
 
-$userRoleSellerIds = getUserRoleSellerIds($conn);
-addAuctions($conn, $userRoleSellerIds);
+//$userRoleSellerIds = getUserRoleSellerIds($conn);
+//addAuctions($conn, $userRoleSellerIds);
 
 //$userRoleIds = getUserRoleIds($conn);
-//$auctionIds = getAuctionIds($conn);
-
+$auctionIds = getAuctionIds($conn);
+//echo $auctionIds[0] . $auctionIds[9];
 //addBids($conn, $userRoleIds, $auctionIds);
+
+addSellerFeedback($conn, $auctionIds);
 
 echo "New records created successfully <br />";
 $conn->close();
