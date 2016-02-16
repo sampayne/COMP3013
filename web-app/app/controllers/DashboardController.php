@@ -8,11 +8,18 @@
     class DashboardController extends Controller {
 
         
-    	private function getAuctions(User $user) : array {
+    	private function getSellerAuctions(User $user) : array {
 
     		$results = Database::query('SELECT * FROM Auction WHERE userrole_id = ?', [$user->seller_role_id]);
     		return $results;
 
+    	}
+
+    	private function getSellerFeedback(User $user) : array {
+
+    		$results = Database::query('SELECT * FROM SellerFeedback WHERE auction_id IN 
+    			(SELECT id FROM Auction WHERE userrole_id = ?)', [$user->seller_role_id]);
+    		return $results;
     	}
 
 
@@ -22,8 +29,10 @@
 
                 return $this->redirectTo('/');
             }
-            $auctions = $this->getAuctions($session->activeUser());
-            $view = new View('dashboard', ['user' => $session->activeUser(), 'auctions' => $auctions]);
+            $auctions = $this->getSellerAuctions($session->activeUser());
+            $feedback = $this->getSellerFeedback($session->activeUser());
+            $view = new View('dashboard', ['user' => $session->activeUser(), 'auctions' => $auctions,
+            	'feedback' => $feedback]);
 
             return $view->render();
         }
