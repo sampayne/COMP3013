@@ -1,1 +1,1 @@
-This is some HTML <?= $injected_context ?>
+<p>This is some HTML</p>

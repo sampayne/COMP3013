@@ -14,6 +14,7 @@
         }
 
         public function render() : string {
+            $filename = $this->filename;
 
             ob_start();
 
@@ -21,7 +22,7 @@
 
             extract($data);
 
-            include('../views/'.$this->filename.'.php');
+            include('../views/template.php');
 
             return ob_get_clean();
         }
