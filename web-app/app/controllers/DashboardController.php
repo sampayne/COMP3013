@@ -7,21 +7,9 @@
 
     class DashboardController extends Controller {
 
-    	
-        private function getLiveSellerAuctions(User $user) : array {
 
-            $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date > now()', [$user->seller_role_id]);
-            return $results;            
-        }
-
-        private function getCompletedSellerAuctions(User $user) : array {
-
-    		$results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date <= now()', [$user->seller_role_id]);
-    		return $results;
-
-    	}
-
-        private function getHighestBid(array $auctions) {
+        private function getHighestBid(array $auctions) : array {
+            
             foreach($auctions as $index=>$auction) {
                 $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$auction['id']]);
                 $auctions[$index]['max_bid'] = $result[0]['max_bid'];
@@ -32,6 +20,7 @@
 
 
         private function getBidCount(array $auctions) : array {
+            
             foreach($auctions as $index=>$auction) {
                 $result = Database::query('SELECT count(*) as bid_count FROM Bid WHERE auction_id = ?', [$auction['id']]);
                 $auctions[$index]['bid_count'] = $result[0]['bid_count'];
@@ -41,20 +30,59 @@
         }
 
         private function getViewCount(array $auctions) : array {
+            
             foreach($auctions as $index=>$auction) {
-                $result = Database::query('SELECT count(*) as views_count FROM View WHERE auction_id = ?', [$auction['id']]);
-                $auctions[$index]['views_count'] = $result[0]['views_count'];
+                $result = Database::query('SELECT count(*) as view_count FROM View WHERE auction_id = ?', [$auction['id']]);
+                $auctions[$index]['view_count'] = $result[0]['view_count'];
             }
             return $auctions;
 
         }
 
         private function getWatchCount(array $auctions) : array {
+            
             foreach($auctions as $index=>$auction) {
-                $result = Database::query('SELECT count(*) as views_count FROM Watch WHERE auction_id = 36 ', [$auction['id']]);
-                $auctions[$index]['watches_count'] = $result[0]['watches_count'];
+                $result = Database::query('SELECT count(*) as watch_count FROM Watch WHERE auction_id = ?', [$auction['id']]);
+                $auctions[$index]['watch_count'] = $result[0]['watch_count'];
             }
             return $auctions;
+
+        }
+
+    	
+        private function getLiveSellerAuctions(User $user) : array {
+
+            $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date > now()', [$user->seller_role_id]);
+            return $results;  
+
+        }
+
+         private function getLiveSellerAuctionsWithAggregateInfo(User $user) : array {
+            
+            $liveAuctions = $this->getLiveSellerAuctions($user);
+            $liveAuctions = $this->getHighestBid($liveAuctions);
+            $liveAuctions = $this->getBidCount($liveAuctions);
+            $liveAuctions = $this->getViewCount($liveAuctions);
+            $liveAuctions = $this->getWatchCount($liveAuctions);
+            return $liveAuctions;
+
+        }
+
+        private function getCompletedSellerAuctions(User $user) : array {
+
+    		$results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date <= now()', [$user->seller_role_id]);
+    		return $results;
+
+    	}
+
+        private function getCompletedSellerAuctionsWithAggregateInfo(User $user) : array {
+
+            $completedAuctions = $this->getCompletedSellerAuctions($user);
+            $completedAuctions = $this->getHighestBid($completedAuctions);
+            $completedAuctions = $this->getBidCount($completedAuctions);
+            $completedAuctions = $this->getViewCount($completedAuctions);
+            $completedAuctions = $this->getWatchCount($completedAuctions);
+            return $completedAuctions;
 
         }
 
@@ -85,9 +113,9 @@
 
                 return $this->redirectTo('/');
             }
-            $liveAuctions = $this->getLiveSellerAuctions($session->activeUser());
-            $liveAuctions = $this->getBidCount($liveAuctions);
-            $completedAuctions = $this->getCompletedSellerAuctions($session->activeUser());
+
+            $liveAuctions = $this->getLiveSellerAuctionsWithAggregateInfo($session->activeUser());
+            $completedAuctions = $this->getCompletedSellerAuctionsWithAggregateInfo($session->activeUser());
             $feedback = $this->getSellerFeedback($session->activeUser());
             $aggregateFeedback = $this->getAggregateSellerFeedback($session->activeUser());
             $view = new View('dashboard', ['user' => $session->activeUser(), 'liveAuctions' => $liveAuctions,
