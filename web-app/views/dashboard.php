@@ -1,9 +1,21 @@
-        <div>
-            <p>This is the dashboard for user: <?= $user->email ?> id: <?= $user->id ?></p>
-            <p>User is a buyer: <?= $user->buyer_role_id ?> </p>
-            <p>User is a seller: <?= $user->seller_role_id ?> </p>
+<div>
+        
+    <p>This is the dashboard for user: <?= $user->email ?> id: <?= $user->id ?></p>
+    <p>User is a buyer: <?= $user->buyer_role_id ?> </p>
+    <p>User is a seller: <?= $user->seller_role_id ?> </p>
 
-            <h1> Live Auctions </h1>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#seller-dashboard">Seller</a></li>
+        <li><a data-toggle="tab" href="#buyer-dashboard">Buyer</a></li>
+    </ul>
+
+    <div class="tab-content">
+   
+        <div id="seller-dashboard" class="tab-pane fade in active">
+
+            <h1> Seller </h1>
+
+            <h3> Live Auctions </h3>
 
             <table cellpadding="1">
    		 		<?php foreach($liveAuctions as $auction){ ?>
@@ -26,7 +38,7 @@
 			</table>
 
 
-            <h1> Completed Auctions </h1>
+            <h3> Completed Auctions </h3>
 
             <table>
                 <?php foreach($completedAuctions as $auction){ ?>
@@ -53,7 +65,8 @@
           	 <button type="submit">Create Auction</button>
         	</form>
 
-            <h1>Feedback </h1>
+            <h3>Feedback </h3>
+
         	<table>
    		 		<?php foreach($feedback as $singleFeedback){ ?>
     				<tr>
@@ -65,7 +78,8 @@
     			<?php } ?>
 			</table>
 
-            <h1>Aggregate Feedback</h1>
+            <h3>Aggregate Feedback</h3>
+
             <p>Item as described: <?php echo $aggregateFeedback['mean_item_as_described']; ?></p>
             <p>Communication: <?php echo $aggregateFeedback['mean_communication']; ?></p>
             <p>Dispatch Time <?php echo $aggregateFeedback['mean_dispatch_time']; ?></p>
@@ -73,3 +87,11 @@
             <p>Number of ratings: <?php echo $aggregateFeedback['no_feedback']; ?></p>
 
         </div>
+
+        <div id="buyer-dashboard" class="tab-pane fade">
+            <p>Buyer Dashboard</p> 
+        </div>
+
+        
+    </div>
+</div>
