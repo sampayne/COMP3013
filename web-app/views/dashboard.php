@@ -1,8 +1,4 @@
-<html>
 
-    <body>
-
-        <div>
             <p>This is the dashboard for user: <?= $user->email ?> id: <?= $user->id ?></p>
             <p>User is a buyer: <?= $user->buyer_role_id ?> </p>
             <p>User is a seller: <?= $user->seller_role_id ?> </p>
@@ -48,9 +44,3 @@
             <p>Dispatch Time<?php echo $aggregateFeedback['mean_dispatch_time']; ?></p>
             <p>Posting: <?php echo $aggregateFeedback['mean_posting']; ?></p>
             <p>Number of ratings: <?php echo $aggregateFeedback['no_feedback']; ?></p>
-
-        </div>
-
-    </body>
-
-</html>

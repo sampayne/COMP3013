@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
+    ini_set('display_errors', 'On');
+    ini_set('display_startup_errors', 'On');
     error_reporting(E_ALL);
 
     require('../app/controllers/include.php');
