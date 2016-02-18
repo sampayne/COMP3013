@@ -30,6 +30,7 @@
           	 <button type="submit">Create Auction</button>
         	</form>
 
+            <h1>Feedback </h1>
         	<table>
    		 		<?php foreach($feedback as $singleFeedback){ ?>
     				<tr>
@@ -40,6 +41,13 @@
     				</tr>
     			<?php } ?>
 			</table>
+
+            <h1>Aggregate Feedback</h1>
+            <p>Item as described: <?php echo $aggregateFeedback['mean_item_as_described']; ?></p>
+            <p>Communication: <?php echo $aggregateFeedback['mean_communication']; ?></p>
+            <p>Dispatch Time<?php echo $aggregateFeedback['mean_dispatch_time']; ?></p>
+            <p>Posting: <?php echo $aggregateFeedback['mean_posting']; ?></p>
+            <p>Number of ratings: <?php echo $aggregateFeedback['no_feedback']; ?></p>
 
         </div>
 
