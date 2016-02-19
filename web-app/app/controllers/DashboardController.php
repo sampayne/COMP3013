@@ -8,48 +8,34 @@
     class DashboardController extends Controller {
 
 
-        private function getHighestBid(array $auctions) : array {
-            
-            foreach($auctions as $index=>$auction) {
-                $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$auction['id']]);
-                $auctions[$index]['max_bid'] = $result[0]['max_bid'];
-            }
-            return $auctions;       
+        private function getHighestBid(array $auction) {
+        
+            $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$auction['id']]);
+            return $result[0]['max_bid']; 
 
         }
 
-
-        private function getBidCount(array $auctions) : array {
+        private function getBidCount(array $auction) {
             
-            foreach($auctions as $index=>$auction) {
-                $result = Database::query('SELECT count(*) as bid_count FROM Bid WHERE auction_id = ?', [$auction['id']]);
-                $auctions[$index]['bid_count'] = $result[0]['bid_count'];
-            }
-            return $auctions;
+            $result = Database::query('SELECT count(*) as bid_count FROM Bid WHERE auction_id = ?', [$auction['id']]);
+            return $result[0]['bid_count'];
 
         }
 
-        private function getViewCount(array $auctions) : array {
+        private function getViewCount(array $auction) {
             
-            foreach($auctions as $index=>$auction) {
-                $result = Database::query('SELECT count(*) as view_count FROM View WHERE auction_id = ?', [$auction['id']]);
-                $auctions[$index]['view_count'] = $result[0]['view_count'];
-            }
-            return $auctions;
+            $result = Database::query('SELECT count(*) as view_count FROM View WHERE auction_id = ?', [$auction['id']]);  
+            return $result[0]['view_count'];
 
         }
 
-        private function getWatchCount(array $auctions) : array {
+        private function getWatchCount(array $auction) {
             
-            foreach($auctions as $index=>$auction) {
-                $result = Database::query('SELECT count(*) as watch_count FROM Watch WHERE auction_id = ?', [$auction['id']]);
-                $auctions[$index]['watch_count'] = $result[0]['watch_count'];
-            }
-            return $auctions;
+            $result = Database::query('SELECT count(*) as watch_count FROM Watch WHERE auction_id = ?', [$auction['id']]);   
+            return $result[0]['watch_count'];
 
         }
 
-    	
         private function getLiveSellerAuctions(User $user) : array {
 
             $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date > now()', [$user->seller_role_id]);
@@ -59,12 +45,16 @@
 
          private function getLiveSellerAuctionsWithAggregateInfo(User $user) : array {
             
-            $liveAuctions = $this->getLiveSellerAuctions($user);
-            $liveAuctions = $this->getHighestBid($liveAuctions);
-            $liveAuctions = $this->getBidCount($liveAuctions);
-            $liveAuctions = $this->getViewCount($liveAuctions);
-            $liveAuctions = $this->getWatchCount($liveAuctions);
-            return $liveAuctions;
+            $auctions = $this->getLiveSellerAuctions($user);
+            foreach($auctions as $index=>$auction) {
+                $auctions[$index]['max_bid'] = $this->getHighestBid($auction);
+                $auctions[$index]['bid_count'] = $this->getBidCount($auction); 
+                $auctions[$index]['view_count'] = $this->getViewCount($auction);
+                $auctions[$index]['watch_count'] =  $this->getWatchCount($auction);
+
+            }
+
+            return $auctions;
 
         }
 
@@ -77,12 +67,16 @@
 
         private function getCompletedSellerAuctionsWithAggregateInfo(User $user) : array {
 
-            $completedAuctions = $this->getCompletedSellerAuctions($user);
-            $completedAuctions = $this->getHighestBid($completedAuctions);
-            $completedAuctions = $this->getBidCount($completedAuctions);
-            $completedAuctions = $this->getViewCount($completedAuctions);
-            $completedAuctions = $this->getWatchCount($completedAuctions);
-            return $completedAuctions;
+            $auctions = $this->getCompletedSellerAuctions($user);
+            foreach($auctions as $index=>$auction) {
+                $auctions[$index]['max_bid'] = $this->getHighestBid($auction);
+                $auctions[$index]['bid_count'] = $this->getBidCount($auction); 
+                $auctions[$index]['view_count'] = $this->getViewCount($auction);
+                $auctions[$index]['watch_count'] =  $this->getWatchCount($auction);
+
+            }
+
+            return $auctions;
 
         }
 
@@ -110,14 +104,35 @@
         private function getLiveWatchedBuyerAuctions(User $user) : array {
 
             $results = Database::query('SELECT * FROM Auction WHERE id IN 
-                (SELECT auction_id FROM Watch WHERE userrole_id = 73) AND end_date > now()', [$user->buyer_role_id]);
+                (SELECT auction_id FROM Watch WHERE userrole_id = ?) AND end_date > now()', [$user->buyer_role_id]);
             return $results;
 
         }
 
+        private function getLiveWatchedBuyerAuctionsWithAggregateInfo(array $auctions) : array {
+
+            $auctions = $this->getLiveWatchedBuyerAuctions($user);
+            foreach($auctions as $index=>$auction) {
+                $auctions[$index]['max_bid'] = $this->getHighestBid($auction);
+                $auctions[$index]['bid_count'] = $this->getBidCount($auction); 
+               
+
+            }
+            
+        }
+
         private function getCompletedWatchedBuyerAuctions(User $user) : array {
-             $results = Database::query('SELECT * FROM Auction WHERE id IN 
-                (SELECT auction_id FROM Watch WHERE userrole_id = 73) AND end_date <= now()', [$user->buyer_role_id]);
+
+            $results = Database::query('SELECT * FROM Auction WHERE id IN 
+                (SELECT auction_id FROM Watch WHERE userrole_id = ?) AND end_date <= now()', [$user->buyer_role_id]);
+            return $results;
+
+        }
+
+        private function getLiveBidBuyerAuctions(User $user) : array {
+
+            $results = Database::query(' SELECT auction_id, max(value) as max_bid FROM Bid 
+                WHERE userrole_id = ? GROUP BY auction_id', [$user->buyer_role_id]);
             return $results;
 
         }
