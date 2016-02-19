@@ -107,20 +107,41 @@
 
         }
 
+        private function getLiveWatchedBuyerAuctions(User $user) : array {
+
+            $results = Database::query('SELECT * FROM Auction WHERE id IN 
+                (SELECT auction_id FROM Watch WHERE userrole_id = 73) AND end_date > now()', [$user->buyer_role_id]);
+            return $results;
+
+        }
+
+        private function getCompletedWatchedBuyerAuctions(User $user) : array {
+             $results = Database::query('SELECT * FROM Auction WHERE id IN 
+                (SELECT auction_id FROM Watch WHERE userrole_id = 73) AND end_date <= now()', [$user->buyer_role_id]);
+            return $results;
+
+        }
+
         public function getDashboard(Request $request, Session $session) : string {
 
             if(!$session->userIsLoggedIn()){
 
                 return $this->redirectTo('/');
             }
-
-            $liveAuctions = $this->getLiveSellerAuctionsWithAggregateInfo($session->activeUser());
-            $completedAuctions = $this->getCompletedSellerAuctionsWithAggregateInfo($session->activeUser());
+            //Seller
+            $liveSellerAuctions = $this->getLiveSellerAuctionsWithAggregateInfo($session->activeUser());
+            $completedSellerAuctions = $this->getCompletedSellerAuctionsWithAggregateInfo($session->activeUser());
             $feedback = $this->getSellerFeedback($session->activeUser());
             $aggregateFeedback = $this->getAggregateSellerFeedback($session->activeUser());
-            $view = new View('dashboard', ['user' => $session->activeUser(), 'liveAuctions' => $liveAuctions,
-            	'completedAuctions' => $completedAuctions,'feedback' => $feedback, 
-                'aggregateFeedback' => $aggregateFeedback]);
+
+            //Buyer
+            $liveBuyerAuctions = $this->getLiveWatchedBuyerAuctions($session->activeUser());
+            $completedBuyerAuctions = $this->getCompletedWatchedBuyerAuctions($session->activeUser());
+
+            $view = new View('dashboard', ['user' => $session->activeUser(), 'liveSellerAuctions' => $liveSellerAuctions,
+            	'completedSellerAuctions' => $completedSellerAuctions,'feedback' => $feedback, 
+                'aggregateFeedback' => $aggregateFeedback, 'liveBuyerAuctions' => $liveBuyerAuctions,
+                'completedBuyerAuctions' => $completedBuyerAuctions]);
 
             return $view->render();
         }
