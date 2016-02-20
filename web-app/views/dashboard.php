@@ -15,7 +15,7 @@
 
             <h3> Live Auctions </h3>
 
-            <table cellpadding="1">
+            <table>
    		 		<tr>
                     <th>Id</th>
                     <th>Name</th>
@@ -39,7 +39,7 @@
                         <td><?php echo $auction['max_bid']; ?></td>
                         <td><?php echo $auction['bid_count']; ?></td>
                         <td><?php echo $auction['view_count']; ?></td>
-                        <td><?php echo $auction['watch_count']; ?></td>
+                        <td><?php echo $auction['watch_count']; ?></td> 
         				<td><form method="get" action="/auction/<?php echo $auction['id']; ?>/edit">  
           	 				<button type="submit">Edit Auction</button>
         					</form>
@@ -121,7 +121,7 @@
            
             <h3> Live Bid Auctions </h3>
 
-            <table cellpadding="1">
+            <table>
                 
                 <tr>
                     <th>Id</th>
@@ -178,7 +178,7 @@
 
             <h3> Live Watched Auctions </h3>
 
-            <table cellpadding="1">
+            <table>
                     <tr>
                         <th>Id</th>
                         <th>Name</th>
@@ -207,6 +207,14 @@
                     </tr>
                 <?php } ?>
             </table>
+
+            <h3> Stats</h3>
+        
+            <p>Auctions won/lost: </p>
+            <p>Number of bids placed: </p>
+            <p>Auctions followed: </p>
+        
+
         </div>
 
         
