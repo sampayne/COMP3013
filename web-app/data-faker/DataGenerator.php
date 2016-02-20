@@ -145,12 +145,14 @@ function addSellerFeedback(mysqli $conn, array $auctionIds) {
 
 }
 
-function addBuyerFeedback() {
+function addBuyerFeedback(mysqli $conn, array $auctionIds) {
+	global $faker;
 	for ($x = 0; $x < 100; $x++) {
 		$content = $faker->paragraph(3, true);
 		$auction_id = $faker->randomElement($auctionIds);
-		$sql = "INSERT INTO BuyerFeedback (content, auction_id, created_at)
-		VALUES ('$content', $auction_id, now())";
+		$rating = $faker->numberBetween(1, 5);
+		$sql = "INSERT INTO BuyerFeedback (content, rating, auction_id)
+		VALUES ('$content', $rating, $auction_id)";
 
 		if ($conn->query($sql) !== TRUE)
     		echo "Error: " . $sql . "<br>" . $conn->error;
@@ -248,11 +250,43 @@ foreach($itemIds as $id) {
 
 }
 
+function getItemsForAuction(mysqli $conn, $auctionId) {
+
+	$result = $conn->query("SELECT id, name FROM Item WHERE auction_id = $auctionId");
+	$items = Array();
+	while ($row = $result->fetch_array(MYSQLI_NUM)) {
+    	$items[] =  $row;  
+	}
+	return $items;
+
+}
+
+function updateAuctionNames(mysqli $conn) {
+	global $faker;
+	$adjectives = Array('Best', 'Fantastic', 'Cheap', 'Wonderful', 'Splendid', 'Almost New', 'Unpacked');
+	$auctionIds = getAuctionIds($conn);
+	foreach($auctionIds as $auction) {
+		$items = getItemsForAuction($conn, $auction);
+		$name = $faker->randomElement($adjectives);
+		foreach($items as $index=>$item) {
+			if($index == 3)
+				break;
+			$name = $name . ' ' . $item[1];
+		}
+
+		$sql = "UPDATE Auction SET name = '$name' WHERE id = $auction";
+		if ($conn->query($sql) !== TRUE)
+    		echo "Error: " . $sql . "<br>" . $conn->error;
+
+	}
+}
+
 function getUserRoleIds(mysqli $conn) : array {
 	$result = $conn->query("SELECT id FROM UserRole");
 	$userRoleIds = Array();
 	while ($row = $result->fetch_array(MYSQLI_NUM)) {
-    	$userRoleIds[] =  $row[0];  
+    	$userRoleIds[] =  $row[0]; 
+
 	}
 	return $userRoleIds;
 }
@@ -397,8 +431,10 @@ $auctionIds = getAuctionIds($conn);
 //echo $auctionIds[0] . $auctionIds[9];
 //addBids($conn, $userRoleIds, $auctionIds);
 
-addSellerFeedback($conn, $auctionIds);
+//addSellerFeedback($conn, $auctionIds);
+//updateAuctionNames($conn);
 
+addBuyerFeedback($conn, $auctionIds);
 echo "New records created successfully <br />";
 $conn->close();
 ?> 
