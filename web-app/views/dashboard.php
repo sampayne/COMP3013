@@ -13,12 +13,23 @@
    
         <div id="seller-dashboard" class="tab-pane fade in active">
 
-            <h1> Seller </h1>
-
             <h3> Live Auctions </h3>
 
             <table cellpadding="1">
-   		 		<?php foreach($liveSellerAuctions as $auction){ ?>
+   		 		<tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Starting Price</th>
+                    <th>End Date</th>
+                    <th>Maximum Bid</th>
+                    <th>Bid Count</th>                    
+                    <th>View Count</th>
+                    <th>Watch Count</th>
+                    <th>Edit Auction</th>
+                </tr>
+
+                <?php foreach($liveSellerAuctions as $auction){ ?>
     				<tr>
         				<td><?php echo $auction['id']; ?></td>
         				<td><?php echo $auction['name']; ?></td>
@@ -41,6 +52,18 @@
             <h3> Completed Auctions </h3>
 
             <table>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Starting Price</th>
+                    <th>End Date</th>
+                    <th>Maximum Bid</th>
+                    <th>Bid Count</th>                    
+                    <th>View Count</th>
+                    <th>Watch Count</th>
+                    <th>Edit Auction</th>
+                </tr>
                 <?php foreach($completedSellerAuctions as $auction){ ?>
                     <tr>
                         <td><?php echo $auction['id']; ?></td>
@@ -68,7 +91,13 @@
             <h3>Feedback </h3>
 
         	<table>
-   		 		<?php foreach($feedback as $singleFeedback){ ?>
+   		 		<tr>
+                    <th>Id</th>
+                    <th>Content</th>
+                    <th>Auction Id</th>
+                    <th>Created At</th>
+                </tr>
+                <?php foreach($feedback as $singleFeedback){ ?>
     				<tr>
         				<td><?php echo $singleFeedback['id']; ?></td>
         				<td><?php echo $singleFeedback['content']; ?></td>
@@ -89,21 +118,31 @@
         </div>
 
         <div id="buyer-dashboard" class="tab-pane fade">
-            <h3> Live Auctions </h3>
+           
+            <h3> Live Bid Auctions </h3>
 
             <table cellpadding="1">
-                <?php foreach($liveBuyerAuctions as $auction){ ?>
+                
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>User Bid</th>
+                    <th>Maximum Bid</th>
+                    <th>End Date</th>
+                    <th>Bid</th>
+                </tr>
+
+                <?php foreach($liveBidBuyerAuctions as $auction){ ?>
                     <tr>
                         <td><?php echo $auction['id']; ?></td>
                         <td><?php echo $auction['name']; ?></td>
                         <td><?php echo $auction['description']; ?></td>
-                        <td><?php echo $auction['starting_price']; ?></td>
+                        <td><?php echo $auction['user_bid']; ?></td>
+                        <td><?php echo $auction['max_bid']; ?></td>
                         <td><?php echo $auction['end_date']; ?></td>
-                       <!--  <td><?php echo $auction['max_bid']; ?></td>
-                        <td><?php echo $auction['bid_count']; ?></td>
-                        <td><?php echo $auction['view_count']; ?></td>
-                        <td><?php echo $auction['watch_count']; ?></td> -->
-                        <td><form method="get" action="/auction/<?php echo $auction['id']; ?>/edit">  
+                        <td><form method="post" action="/auction/<?php echo $auction['id']; ?>/bid">  
+                            <input type="number" name="bid_value" min="<?php echo $auction['max_bid'] + 1; ?>">
                             <button type="submit">Bid</button>
                             </form>
                         </td>
@@ -112,20 +151,59 @@
             </table>
 
 
-            <h3> Completed Auctions </h3>
+            <h3> Completed Bid Auctions </h3>
 
             <table>
-                <?php foreach($completedBuyerAuctions as $auction){ ?>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>User Bid</th>
+                        <th>Maximum Bid</th>
+                        <th>End Date</th>
+                    </tr>
+
+                <?php foreach($completedBidBuyerAuctions as $auction){ ?>
+                    <tr>
+                        <td><?php echo $auction['id']; ?></td>
+                        <td><?php echo $auction['name']; ?></td>
+                        <td><?php echo $auction['description']; ?></td>
+                        <td><?php echo $auction['user_bid']; ?></td>
+                        <td><?php echo $auction['max_bid']; ?></td>
+                        <td><?php echo $auction['end_date']; ?></td>
+                    </tr>
+                <?php } ?>
+            </table>
+
+
+            <h3> Live Watched Auctions </h3>
+
+            <table cellpadding="1">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Starting Price</th>
+                        <th>Maximum Bid</th>
+                        <th>Number of Bids</th>
+                        <th>End Date</th>
+                        <th>Bid</th>
+                    </tr>
+
+                <?php foreach($liveWatchedBuyerAuctions as $auction){ ?>
                     <tr>
                         <td><?php echo $auction['id']; ?></td>
                         <td><?php echo $auction['name']; ?></td>
                         <td><?php echo $auction['description']; ?></td>
                         <td><?php echo $auction['starting_price']; ?></td>
-                        <td><?php echo $auction['end_date']; ?></td>
-                      <!--   <td><?php echo $auction['max_bid']; ?></td>
+                        <td><?php echo $auction['max_bid']; ?></td>
                         <td><?php echo $auction['bid_count']; ?></td>
-                        <td><?php echo $auction['view_count']; ?></td>
-                        <td><?php echo $auction['watch_count']; ?></td> -->
+                        <td><?php echo $auction['end_date']; ?></td>
+                        <td><form method="post" action="/auction/<?php echo $auction['id']; ?>/bid">  
+                            <input type="number" name="bid_value" min="<?php echo $auction['max_bid'] + 1; ?>">
+                            <button type="submit">Bid</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php } ?>
             </table>

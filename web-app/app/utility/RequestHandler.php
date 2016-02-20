@@ -101,6 +101,7 @@
 
             }else if($request->matches('POST','/auction/??/bid')){
 
+                return "You are at /auction/id/bid"; //just a dumb placeholder for sanity check
 
             }else if($request->matches('POST','/auction/??/watch')){
 
