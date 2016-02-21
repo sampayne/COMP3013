@@ -25,7 +25,7 @@
 			
 					<form class="navbar-form" role="search">
 						<div class="form-group">
-							<input type="text" size="100" class="form-control" placeholder="Search...">
+							<input type="text" name="search-bar" size="100" class="form-control" placeholder="Search...">
 						</div>
 						<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" style="color:black" aria-hidden="true"></span></button>
 					</form>
