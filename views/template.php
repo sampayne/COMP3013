@@ -23,7 +23,7 @@
 				<li class="pull-left"><a class="navbar-brand" href="#">BuyNow</a></li>
 				<li>
 			
-					<form class="navbar-form" role="search">
+					<form class="navbar-form" role="search" method="get" action="/search">
 						<div class="form-group">
 							<input type="text" name="search-bar" size="100" class="form-control" placeholder="Search...">
 						</div>

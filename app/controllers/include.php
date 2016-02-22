@@ -6,3 +6,4 @@
     require ('DashboardController.php');
     require ('HomeController.php');
     require ('SignupController.php');
+    require ('SearchController.php');
