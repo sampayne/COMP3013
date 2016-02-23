@@ -1,0 +1,22 @@
+a, a:hover, a:focus {
+  text-decoration: none /!important;
+}
+
+.category{
+
+	padding: 20px;
+	font-size: 15pt;
+	text-align: center;
+	color:#666;
+	margin-top: 20px;
+	margin-bottom: 5px;
+	border: 1px solid #ccc;
+	background-color: white;
+	border-radius: 2px;
+}
+
+.category:hover{
+
+	background-color: #337ab7;
+    color: white;
+}

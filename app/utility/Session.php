@@ -5,6 +5,7 @@
     use App\Utility\Request;
     use App\Utility\Database;
     use App\Model\User;
+    use App\Model\Role;
 
     class Session {
 
@@ -59,10 +60,29 @@
                 $user = new User((int) $query_result['id']);
                 $user->email = $query_result['email'];
 
+                $this->loadUserRole($user);
+
                 return $user;
             }
-
+ 
             return null;
+        }
+
+        private function loadUserRole(User $user) {
+
+            $userrole_query = Database::query("SELECT id, role_id FROM UserRole WHERE user_id = ? ORDER BY role_id", [$user->id]);
+            if(!empty($userrole_query) && !empty($userrole_query[0])) {
+
+                if($userrole_query[0]['role_id'] == Role::seller()) {
+                    $user->seller_role_id = $userrole_query[0]['id'];
+                    if(!empty($userrole_query[1]) && $userrole_query[1]['role_id'] == Role::buyer())
+                        $user->buyer_role_id = $userrole_query[1]['id'];
+                }
+                else
+                     if($userrole_query[0]['role_id'] == Role::buyer())
+                        $user->buyer_role_id = $userrole_query[0]['id'];
+
+            }
         }
 
         public function activeUser() : User {
