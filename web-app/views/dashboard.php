@@ -106,7 +106,7 @@
 
             <table>
                 
-                <tr>
+             <!--    <tr>
                     <th>Id</th>
                     <th>Name</th>
                     <th>Description</th>
@@ -115,8 +115,24 @@
                     <th>End Date</th>
                     <th>Bid</th>
                 </tr>
-
+ -->
                 <?php foreach($liveBidBuyerAuctions as $auction){ ?>
+                    <tr>
+                        <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
+                        <td  class="col-md-10">
+                           <!--  <?php echo $auction['id']; ?> <br /> -->
+                            <h4><strong><?php echo $auction['name']; ?></strong></h4>
+                            <p><em><?php echo $auction['description']; ?> </em></p>
+                            <p>User Bid: <?php echo $auction['user_bid']; ?> <br />
+                            Max bid: <?php echo $auction['max_bid']; ?> <br />
+                            End date:<?php echo $auction['end_date']; ?><br /></p> 
+                            <form method="post" action="/auction/<?php echo $auction['id']; ?>/bid">  
+                            <input type="number" name="bid_value" min="<?php echo $auction['max_bid'] + 1; ?>">
+                            <button type="submit">Bid</button>
+                            </form>
+                        </td>
+                    </tr>
+<!-- 
                     <tr>
                         <td><?php echo $auction['id']; ?></td>
                         <td><?php echo $auction['name']; ?></td>
@@ -129,7 +145,7 @@
                             <button type="submit">Bid</button>
                             </form>
                         </td>
-                    </tr>
+                    </tr> -->
                 <?php } ?>
             </table>
 
