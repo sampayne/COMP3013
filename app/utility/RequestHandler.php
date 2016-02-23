@@ -5,7 +5,7 @@
     use App\Utility\{Request, View};
     use App\Utility\Session as Session;
 
-    use App\Controller\{ TestController, LoginController, DashboardController, HomeController, SignupController, SearchController };
+    use App\Controller\{ AuctionController, TestController, LoginController, DashboardController, HomeController, SignupController, SearchController };
 
     class RequestHandler {
 
@@ -97,7 +97,9 @@
 
             }else if($request->matches('GET','/auction/??')){
 
+                $controller = new AuctionController();
 
+                return $controller->getAuction($request, $session);
 
             }else if($request->matches('POST','/auction/??/bid')){
 
