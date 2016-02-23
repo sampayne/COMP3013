@@ -1,9 +1,22 @@
+#dashboard {
+	/*background-color: white;*/
+	background-color: white;
+	padding:2%;
+
+}
+
 table {
     border-collapse: separate;
-    width: 100%;
+    border-radius:20px;	
+    margin-left: auto;
+    margin-right: auto;
+   	background-color: #d6e0f5;
 
 } 
 
-table, th, td {
-	border: 1px solid black;
+th, td {
+    border-bottom: 4px solid white;
 }
+
+/*tr:hover {background-color: #84a1e1}*/
+
