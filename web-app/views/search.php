@@ -5,10 +5,10 @@
 
 		<?php foreach ($auctionData as $value) {?>
 			<div class="col-md-4">
-				<a href=<?php echo "/auction/".$value['id'] ?>>
+				<a href=<?php echo "/auction/".$value[1] ?>>
 					<div class="col-md-10 col-md-offset-1 category">
 						
-						<div class="title"><?php echo $value['name'] ?></div>
+						<div class="title"><?php echo $value[0] ?></div>
 
 					</div>
 				</a>
