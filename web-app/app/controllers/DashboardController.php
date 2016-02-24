@@ -3,7 +3,7 @@
     namespace App\Controller;
 
     use App\Utility\{Request, Session, View, Database};
-    use App\Model\User;
+    use App\Model\{User, Auction};
 
     class DashboardController extends Controller {
 
@@ -177,14 +177,15 @@
 
                 return $this->redirectTo('/');
             }
+            
             //Seller
-            $liveSellerAuctions = $this->getLiveSellerAuctionsWithAggregateInfo($session->activeUser());
-            $completedSellerAuctions = $this->getCompletedSellerAuctionsWithAggregateInfo($session->activeUser());
+            $liveSellerAuctions = Auction::getLiveAuctionsForUser($session->activeUser()->seller_role_id);
+            $completedSellerAuctions = Auction::getCompletedAuctionsForUser($session->activeUser()->seller_role_id);
             $feedback = $this->getSellerFeedback($session->activeUser());
             $aggregateFeedback = $this->getAggregateSellerFeedback($session->activeUser());
 
             //Buyer
-            $liveBidBuyerAuctions = $this->getLiveBidBuyerAuctionsWithAggregateInfo($session->activeUser());
+            $liveBidBuyerAuctions = Auction::getLiveBidAuctionsForUser($session->activeUser()->buyer_role_id);
             $completedBidBuyerAuctions = $this->getCompletedBidBuyerAuctionsWithAggregateInfo($session->activeUser());
             $liveWatchedBuyerAuctions = $this->getLiveWatchedBuyerAuctionsWithAggregateInfo($session->activeUser());
 
