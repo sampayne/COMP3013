@@ -33,21 +33,67 @@
 
         }
 
-        public static getAuctionWithId(int $id) : Auction {
+        public static function getAuctionWithId(int $id) {
 
             $results = Database::query('SELECT * FROM Auction WHERE id = ?', [$id]);
             return new Auction($results[0]);
         }
 
-        public static getAuctionsForUser(int $userrole_id) : array {
+        public static function getAuctionsForUser(int $userrole_id) : array {
 
             $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ?', [$userrole_id]);
-            $users = Array();
-            foreach($results as $row) {
-                $users[] = new User($row);
-            }
-            return $users;   
+            return $this->processAuctionsResultSetSql($results);   
 
+        }
+
+        public static function getLiveAuctionsForUser(int $userrole_id) : array {
+
+            $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date > now()', [$userrole_id]);
+            return $this->processAuctionsResultSetSql($results);  
+
+        }
+
+        public static function getCompletedAuctionsForUser(int $userrole_id) : array {
+
+            $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date <= now()', [$userrole_id]);
+            return $this->processAuctionsResultSetSql($results);  
+
+        }
+
+        public static function getLiveWatchedAuctionsForUser(int $userrole_id) : array {
+
+            $results = Database::query('SELECT * FROM Auction WHERE id IN 
+                (SELECT auction_id FROM Watch WHERE userrole_id = ?) AND end_date > now()', [$userrole_id)]);
+            return $this->processAuctionsResultSetSql($results); 
+
+        }
+
+        public static function getLiveBidAuctionsForUser(int $userrole_id) : array {
+            //what to do with highest bid value for a user? - function?
+            $results = Database::query('SELECT a.id, a.name, a.description, a.end_date, max(b.value) as user_bid
+                FROM Bid b JOIN Auction a ON b.auction_id = a.id
+                WHERE b.userrole_id = ? AND a.end_date > now()
+                GROUP BY b.auction_id', [$userrole_id]);
+            return $this->processAuctionsResultSetSql($results);
+
+        }
+
+        public static function getCompletedBidAuctionsForUser(int $userrole_id) : array {
+            //what to do with highest bid value for a user? - function?
+            $results = Database::query('SELECT a.id, a.name, a.description, a.end_date, max(b.value) as user_bid
+                FROM Bid b JOIN Auction a ON b.auction_id = a.id
+                WHERE b.userrole_id = ? AND a.end_date <= now()
+                GROUP BY b.auction_id', [$userrole_id]);
+            return $this->processAuctionsResultSetSql($results);
+
+        }
+
+        private function processAuctionsResultSetSql(array $sql_results) {
+            $auctions = Array();
+            foreach($sql_results as $row) {
+                $auctions[] = new Auction($row);
+            }
+            return $auctions; 
         }
 
         public function getHighestBid() {
