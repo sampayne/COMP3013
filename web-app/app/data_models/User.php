@@ -28,5 +28,34 @@
 
         }
 
+        public function getAuctions() : array {
+
+            return Auction::getAuctionsForUser($this->seller_role_id);
+        }
+
+        public function getLiveAuctions() : array {
+
+            return Auction::getLiveAuctionsForUser($this->seller_role_id);
+        }
+
+        public function getCompletedAuctions() : array {
+
+            return Auction::getCompletedAuctionsForUser($this->seller_role_id);
+        }
+
+        public function getLiveWatchedAuctions() : array {
+
+            return Auction::getLiveWatchedAuctionsForUser($this->buyer_role_id);
+        }
+
+        public function getLiveBidAuctions() : array {
+
+            return Auction::getLiveBidAuctionsForUser($this->buyer_role_id);
+        }
+
+        public function getCompletedBidAuctions() : array {
+
+            return Auction::getCompletedBidAuctionsForUser($this->buyer_role_id);
+        }
 
     }
