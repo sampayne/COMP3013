@@ -128,23 +128,18 @@
             <h3> Completed Bid Auctions </h3>
 
             <table>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>User Bid</th>
-                        <th>Maximum Bid</th>
-                        <th>End Date</th>
-                    </tr>
 
                 <?php foreach($completedBidBuyerAuctions as $auction){ ?>
                     <tr>
-                        <td><?php echo $auction['id']; ?></td>
-                        <td><?php echo $auction['name']; ?></td>
-                        <td><?php echo $auction['description']; ?></td>
-                        <td><?php echo $auction['user_bid']; ?></td>
-                        <td><?php echo $auction['max_bid']; ?></td>
-                        <td><?php echo $auction['end_date']; ?></td>
+                        <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
+                        <td  class="col-md-10">
+                           <?php echo $auction->id; ?> <br />
+                            <h4><strong><?php echo $auction->name; ?></strong></h4>
+                            <p><em><?php echo $auction->description; ?> </em></p>
+                            <p>User Bid: <?php echo $auction->getHighestBidForUser($user) ?> <br />
+                            Max bid: <?php echo $auction->getHighestBid(); ?> <br />
+                            End date: <?php echo $auction->end_date; ?><br /></p> 
+                        </td>
                     </tr>
                 <?php } ?>
             </table>
@@ -153,31 +148,24 @@
             <h3> Live Watched Auctions </h3>
 
             <table>
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Starting Price</th>
-                        <th>Maximum Bid</th>
-                        <th>Number of Bids</th>
-                        <th>End Date</th>
-                        <th>Bid</th>
-                    </tr>
-
                 <?php foreach($liveWatchedBuyerAuctions as $auction){ ?>
+                    
                     <tr>
-                        <td><?php echo $auction['id']; ?></td>
-                        <td><?php echo $auction['name']; ?></td>
-                        <td><?php echo $auction['description']; ?></td>
-                        <td><?php echo $auction['starting_price']; ?></td>
-                        <td><?php echo $auction['max_bid']; ?></td>
-                        <td><?php echo $auction['bid_count']; ?></td>
-                        <td><?php echo $auction['end_date']; ?></td>
-                        <td><form method="post" action="/auction/<?php echo $auction['id']; ?>/bid">  
-                            <input type="number" name="bid_value" min="<?php echo $auction['max_bid'] + 1; ?>">
+                        <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
+                        <td  class="col-md-10">
+                           <?php echo $auction->id; ?> <br />
+                            <h4><strong><?php echo $auction->name; ?></strong></h4>
+                            <p><em><?php echo $auction->description; ?> </em></p>
+                            Starting price: <?php echo $auction->starting_price; ?><br /></p> 
+                            Max bid: <?php echo $auction->getHighestBid(); ?> <br />
+                            Bid Count: <?php echo $auction->getBidCount(); ?> <br />
+                            End date: <?php echo $auction->end_date; ?><br /></p> 
+                            <form method="post" action="/auction/<?php echo $auction->id; ?>/bid">  
+                            <input type="number" name="bid_value" min="<?php echo $auction->getHighestBid() + 1; ?>">
                             <button type="submit">Bid</button>
                             </form>
                         </td>
+
                     </tr>
                 <?php } ?>
             </table>
