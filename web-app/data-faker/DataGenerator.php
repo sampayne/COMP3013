@@ -268,13 +268,28 @@ function updateAuctionNames(mysqli $conn) {
 	foreach($auctionIds as $auction) {
 		$items = getItemsForAuction($conn, $auction);
 		$name = $faker->randomElement($adjectives);
-		foreach($items as $index=>$item) {
-			if($index == 3)
+		$i = 0;
+		foreach($items as $item) {
+			if($i == 3)
 				break;
 			$name = $name . ' ' . $item[1];
+			$i++;
 		}
 
 		$sql = "UPDATE Auction SET name = '$name' WHERE id = $auction";
+		if ($conn->query($sql) !== TRUE)
+    		echo "Error: " . $sql . "<br>" . $conn->error;
+
+	}
+}
+
+function updateAuctionsUserRoleIds(mysqli $conn) {
+	global $faker;
+	$auctionIds = getAuctionIds($conn);
+	$sellerIds = getUserRoleSellerIds($conn);
+	foreach($auctionIds as $auction) {
+		$userrole_id = $faker->randomElement($sellerIds);
+		$sql = "UPDATE Auction SET userrole_id = $userrole_id WHERE id = $auction";
 		if ($conn->query($sql) !== TRUE)
     		echo "Error: " . $sql . "<br>" . $conn->error;
 
@@ -427,14 +442,15 @@ function addBids(mysqli $conn, array $userIds, array $auctionIds) {
 //addAuctions($conn, $userRoleSellerIds);
 
 //$userRoleIds = getUserRoleIds($conn);
-$auctionIds = getAuctionIds($conn);
+//$auctionIds = getAuctionIds($conn);
 //echo $auctionIds[0] . $auctionIds[9];
 //addBids($conn, $userRoleIds, $auctionIds);
 
 //addSellerFeedback($conn, $auctionIds);
 //updateAuctionNames($conn);
+updateAuctionsUserRoleIds($conn);
 
-addBuyerFeedback($conn, $auctionIds);
+//addBuyerFeedback($conn, $auctionIds);
 echo "New records created successfully <br />";
 $conn->close();
 ?> 
