@@ -58,4 +58,30 @@
             return Auction::getCompletedBidAuctionsForUser($this->buyer_role_id);
         }
 
+        public function getSellerFeedback() : array {
+
+            return SellerFeedback::getFeedbackForUser($this->seller_role_id);
+        }
+
+        public function getSellerMeanRating() : array {
+            return SellerFeedback::getMeanRatingForUser($this->seller_role_id);
+        }
+
+        public function getBuyerFeedback() : array {
+
+            return BuyerFeedback::getFeedbackForUser($this->buyer_role_id);
+        }
+
+        public function getBuyerMeanRating() : array {
+            return BuyerFeedback::getMeanRatingForUser($this->buyer_role_id);
+        }
+
+        public function getSellerStats() {
+
+        }
+
+        public function getBuyerStats() {
+
+        }
+
     }
