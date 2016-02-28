@@ -3,22 +3,44 @@
     <h2>Welcome, <?= $user->email ?>!</h2>
     <br />
 
-    <!-- <p>id: <?= $user->id ?></p>
+    <p>id: <?= $user->id ?></p>
     <p>User is a buyer: <?= $user->buyer_role_id ?> </p>
-    <p>User is a seller: <?= $user->seller_role_id ?> </p> -->
-    
-    <form method="get" action="/auction/create">  
-        <button type="submit">Create Auction</button>
-    </form>
+    <p>User is a seller: <?= $user->seller_role_id ?> </p>
 
-    <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#seller-dashboard">Seller</a></li>
-        <li><a data-toggle="tab" href="#buyer-dashboard">Buyer</a></li>
-    </ul>
+  <!--   <?php if ($condition): ?>
+        <p>Content</p>
+    
+
+    <?php elseif ($other_condition): ?>
+        <p>Other Content</p>
+
+
+    <?php else: ?>
+        <p>Default Content</p>
+
+    <?php endif; ?> -->
+
+    <?php if($user->isSeller() && $user->isBuyer()): ?>
+         <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#seller-dashboard">Seller</a></li>
+            <li><a data-toggle="tab" href="#buyer-dashboard">Buyer</a></li>
+        </ul>
+
+    <?php endif; ?>
+
+   
 
     <div id="dashboard-content" class="tab-content">
-   
+
+
+        <?php if($user->isSeller()): ?>
+
         <div id="seller-dashboard" class="tab-pane fade in active col-md-12">
+
+        <br />
+        <form method="get" action="/auction/create">  
+            <button type="submit">Create Auction</button>
+        </form>
 
             <h3>Live Auctions</h3>
 
@@ -99,73 +121,134 @@
 
                 </div>
             </div>
-          
-
-
         
-
         </div>
 
-        <div id="buyer-dashboard" class="tab-pane fade col-md-12">
+        <?php endif; ?>
+
+        <?php if($user->isBuyer()): ?>
+
+            <?php if($user->isSeller()): ?>
+
+                <div id="buyer-dashboard" class="tab-pane fade col-md-12">
+
+            <?php else: ?>
+
+                <div id="buyer-dashboard" class="col-md-12">
+
+            <?php endif; ?>
            
             <h3> Live Bid Auctions </h3>
+
+            <?php if(count($liveBidBuyerAuctions) == 0): ?>
+
+                <h4 class="pane">No Auctions.</h4>
+
+            <?php else: ?>
 
             <table class="pane">
 
                 <?php foreach($liveBidBuyerAuctions as $auction) { ?>
                     <tr>
                         <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
-                        <td  class="col-md-10">
+                        
+                        <td  class="col-md-9">
                            <?php echo $auction->id; ?> <br />
                             <h4><strong><?php echo $auction->name; ?></strong></h4>
                             <p><em><?php echo $auction->description; ?> </em></p>
-                            <p>User Bid: <?php echo $auction->getHighestBidForUser($user) ?> <br />
-                            Max bid: <?php echo $auction->getHighestBid(); ?> <br />
-                            End date: <?php echo $auction->end_date; ?><br /></p> 
-                            <form method="post" action="/auction/<?php echo $auction->id; ?>/bid">  
-                            <input type="number" name="bid_value" min="<?php echo $auction->getHighestBid() + 1; ?>">
-                            <button type="submit">Bid</button>
-                            </form>
+                            <p>End date: <?php echo $auction->end_date; ?><br /></p> 
+                            
                         </td>
+
+                        <td class="col-md-1">
+                            <?php if($auction->getHighestBid() == $auction->getHighestBidForUser($user)): ?>
+                                <h3 class="text-success"><strong>OK</strong></h3>
+                                <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                <p>Bid more:
+                                    <form method="post" action="/auction/<?php echo $auction->id; ?>/bid">  
+                                        <input type="number" name="bid_value" min="<?php echo $auction->getHighestBid() + 1; ?>">
+                                        <button type="submit">Bid</button>
+                                    </form>
+                                </p>
+                            <?php else: ?>
+                                <h3 class="text-danger"><strong>Outbid</strong></h3>
+                                <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                <p>Place another bid:
+                                    <form method="post" action="/auction/<?php echo $auction->id; ?>/bid">  
+                                        <input type="number" name="bid_value" min="<?php echo $auction->getHighestBid() + 1; ?>">
+                                        <button type="submit">Bid</button>
+                                    </form>
+                                </p>
+                            <?php endif; ?>
+                        </td>
+
                     </tr>
                 <?php } ?>
             </table>
 
+            <?php endif; ?>
+
             <h3> Completed Bid Auctions </h3>
+
+
+            <?php if(count($completedBidBuyerAuctions) == 0): ?>
+
+                <h4 class="pane">No Auctions.</h4>
+
+            <?php else: ?>
 
             <table class="pane">
 
                 <?php foreach($completedBidBuyerAuctions as $auction){ ?>
                     <tr>
                         <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
-                        <td  class="col-md-10">
+                        <td  class="col-md-9">
                            <?php echo $auction->id; ?> <br />
                             <h4><strong><?php echo $auction->name; ?></strong></h4>
                             <p><em><?php echo $auction->description; ?> </em></p>
-                            <p>User Bid: <?php echo $auction->getHighestBidForUser($user) ?> <br />
-                            Max bid: <?php echo $auction->getHighestBid(); ?> <br />
-                            End date: <?php echo $auction->end_date; ?><br /></p> 
+                            Ended on: <?php echo $auction->end_date; ?><br /></p> 
+                        </td>
+
+                        <td class="col-md-1">
+                            <?php if($auction->getHighestBid() == $auction->getHighestBidForUser($user)): ?>
+                                <h3 class="text-success"><strong>Won</strong></h3>
+                                <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                            <?php else: ?>
+                                <h3 class="text-danger"><strong>Lost</strong></h3>
+                                <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php } ?>
             </table>
 
+            <?php endif; ?>
 
             <h3> Live Watched Auctions </h3>
+
+            <?php if(count($liveWatchedBuyerAuctions) == 0): ?>
+
+                <h4 class="pane">No Auctions.</h4>
+
+            <?php else: ?>
 
             <table class="pane">
                 <?php foreach($liveWatchedBuyerAuctions as $auction){ ?>
                     
                     <tr>
                         <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
-                        <td  class="col-md-10">
+                        <td  class="col-md-9">
                            <?php echo $auction->id; ?> <br />
                             <h4><strong><?php echo $auction->name; ?></strong></h4>
                             <p><em><?php echo $auction->description; ?> </em></p>
-                            Starting price: <?php echo $auction->starting_price; ?><br /></p> 
-                            Max bid: <?php echo $auction->getHighestBid(); ?> <br />
-                            Bid Count: <?php echo $auction->getBidCount(); ?> <br />
-                            End date: <?php echo $auction->end_date; ?><br /></p> 
+                            <p>End date: <?php echo $auction->end_date; ?><br /></p> 
+                           
+                        </td>
+
+                        <td class="col-md-1">
+                            <p>Starting price: <?php echo $auction->starting_price; ?></p> 
+                            <p>Max bid: <?php echo $auction->getHighestBid(); ?></p>
+                            <p>Bid Count: <?php echo $auction->getBidCount(); ?></p>
                             <form method="post" action="/auction/<?php echo $auction->id; ?>/bid">  
                             <input type="number" name="bid_value" min="<?php echo $auction->getHighestBid() + 1; ?>">
                             <button type="submit">Bid</button>
@@ -176,9 +259,18 @@
                 <?php } ?>
             </table>
 
+            <?php endif; ?>
+
             <div class="col-md-8">
 
             <h3>Feedback</h3>
+
+
+            <?php if(count($buyerFeedback) == 0): ?>
+
+                <h4 class="pane">No Feedback.</h4>
+
+            <?php else: ?>
 
             <table class="pane">
                 <?php foreach($buyerFeedback as $singleFeedback){ ?>
@@ -190,16 +282,27 @@
                 <?php } ?>
             </table>
 
+            <?php endif; ?>
+
             </div>
             <div class="col-md-4">
 
             <h3>Rating</h3>
-               <div class="pane">
+
+                <?php if(count($buyerFeedback) == 0): ?>
+
+                    <h4 class="pane">No Rating.</h4>
+
+                <?php else: ?>
+
+                <div class="pane">
 
                 <p>Rating: <?php echo $buyerRating['mean_rating']; ?></p>
                 <p>Number of ratings: <?php echo $buyerRating['no_feedback']; ?></p>
 
                 </div>
+
+                <?php endif; ?>
 
             <h3>Stats</h3>
                 <div class="pane">
@@ -209,9 +312,9 @@
                 </div>
             </div>
 
-            
-
         </div>
+
+        <?php endif; ?>
 
         
     </div>

@@ -7,8 +7,8 @@
         public $username;
         public $id;
 
-        public $buyer_role_id  = -1;
-        public $seller_role_id = -1;
+        public $buyer_role_id  = "-1";
+        public $seller_role_id = "-1";
 
         public function __construct(int $id){
 
@@ -18,13 +18,13 @@
 
         public function isSeller() : bool {
 
-            return $seller_role_id > 0;
+            return $this->seller_role_id > 0;
 
         }
 
         public function isBuyer() : bool {
 
-            return $buyer_role_id > 0;
+            return $this->buyer_role_id > 0;
 
         }
 
