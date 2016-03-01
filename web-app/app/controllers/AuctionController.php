@@ -8,7 +8,7 @@
     class AuctionController extends Controller {
 
         public function getAuction(Request $request, Session $session) : string {
-        	$auction_id = end($request->url_array); 
+        	$auction_id = end($request->url_array);
         	$auction_data = $this->getAuctionData($auction_id);
 
         	if(!empty($auction_data)){
@@ -22,9 +22,17 @@
         }
 
         private function getAuctionData($id) {
-        
+
             $result = Database::query('SELECT * FROM Auction WHERE id = ?', [$id]);
-            return $result; 
+            return $result;
+
+        }
+
+
+
+        public function getCreateAuctionPage(Request $request, Session $session) : string {
+
+            return  (new View('create_auction'))->render();
 
         }
 

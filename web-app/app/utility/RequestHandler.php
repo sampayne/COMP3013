@@ -80,8 +80,9 @@
 
             }else if($request->matches('GET', '/auction/create')){
 
-                
-                return "You are at /auction/create"; //just a dumb placeholder for sanity check
+                $controller = new AuctionController();
+
+                return $controller->getCreateAuctionPage($request, $session);
 
             }else if($request->matches('GET', '/auction/??/edit')){
 

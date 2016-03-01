@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -18,32 +19,32 @@
   <body>
 	<nav class="navbar navbar-inverse" role="navigation">
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		
+
 			<ul class="nav navbar-nav">
 				<li class="pull-left"><a class="navbar-brand" href="#">BuyNow</a></li>
 				<li>
-			
+
 					<form class="navbar-form" role="search" method="get" action="/search">
 						<div class="form-group">
 							<input type="text" name="search-bar" size="100" class="form-control" placeholder="Search...">
 						</div>
 						<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" style="color:black" aria-hidden="true"></span></button>
 					</form>
-		
+
 				</li>
-				<li class="pull-right"><a href="#" style="color:white">Log In</a></li>
+				<li class="pull-right"><a href="/login" style="color:white">Log In</a></li>
 			</ul>
-			
+
 		</div>
 	</nav>
-	
-	
+
+
 	<div class="container">
-		
+
 		<?php include($filename.'.php');?>
-		
+
 	</div>
-	
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="/css/bootstrap/js/bootstrap.min.js"></script>
   </body>
