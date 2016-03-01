@@ -20,53 +20,49 @@
             }
         }
 
-        private function getExactAuctionDataSearch($searchTerms) {
-            $columns_array = ['a.name', 'a.description', 'i.name', 'i.description'];
-            $query = "SELECT DISTINCT a.name, a.id FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id WHERE ";
+        private function getExactAuctionDataSearch($searchTerm) {
+        	$searchTerm = explode(" ", $searchTerm);
+        	$searchTerm = implode("%", $searchTerm);
+        	$searchTerm = '%'.$searchTerm.'%';
+        	$query = "SELECT DISTINCT a.name, a.id FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id WHERE a.name LIKE ? OR a.description LIKE ? OR i.name LIKE ? OR i.description LIKE ?";
 
-            $firstOr = true;
-            foreach ($columns_array as $column) {
-                $query = !$firstOr ? $query." OR " : $query;
-                $firstOr = false;
-
-                $firstAnd = true;
-                foreach ($searchTerms as $searchTerm) {
-                    $query = $firstAnd? $query.$column." LIKE '%".$searchTerm."%'" : $query." AND ".$column." LIKE '%".$searchTerm."%'";
-                    $firstAnd = false;
-                }
-            }
-
-            $result = Database::query($query);
+            $result = Database::query($query, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
             return $result;
 
         }
 
         private function getRelativeAuctionDataSearch($searchTerm){
         	$searchTerm = array_slice($searchTerm, 0, 4);
-        	$searchTerm = $this->power_set($searchTerm);
-        	usort($searchTerm, array($this, 'sortString'));
+        	$collect = array();
+        	$this->depth_picker($searchTerm, "", $collect);
+        	usort($collect, array($this, 'sortString'));
 
         	$i = 0;
         	do{
 
-        		$auction_data= $this->getExactAuctionDataSearch($searchTerm[$i]);
+        		$auction_data= $this->getExactAuctionDataSearch($collect[$i]);
         		$i++;
-        	}while($i < count($searchTerm) - 1 && empty($auction_data));
-            
+        	}while($i < count($collect) && empty($auction_data));
         	return $auction_data;
         }
 
-        function power_set($array) {
-    		$results = array(array( ));
+        function depth_picker($arr, $temp_string, &$collect) {
+    		if ($temp_string != "") 
+        		$collect []= $temp_string;
 
-            foreach ($array as $element)
-                foreach ($results as $combination)
-                    array_push($results, array_merge(array($element), $combination));
-
-            return $results;   
+    		for ($i=0; $i<sizeof($arr);$i++) {
+        		$arrcopy = $arr;
+        		$elem = array_splice($arrcopy, $i, 1); // removes and returns the i'th element
+        		if (sizeof($arrcopy) > 0) {
+            		$this->depth_picker($arrcopy, $temp_string ." " . $elem[0], $collect);
+        		}
+        		else {
+            		$collect []= $temp_string. " " . $elem[0];
+        		}   
+    		}   
 		}
 
 	    static function sortString($a,$b){
-    		return count($b)-count($a);
+    		return strlen($b)-strlen($a);
 		}
     }

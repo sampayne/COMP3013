@@ -7,81 +7,21 @@
         public $username;
         public $id;
 
-        public $buyer_role_id  = "-1";
-        public $seller_role_id = "-1";
+        public $buyer_role_id  = -1;
+        public $seller_role_id = -1;
 
         public function __construct(int $id){
 
             $this->id = $id;
-
         }
 
         public function isSeller() : bool {
 
-            return $this->seller_role_id > 0;
-
+            return $seller_role_id > 0;
         }
 
         public function isBuyer() : bool {
 
-            return $this->buyer_role_id > 0;
-
+            return $buyer_role_id > 0;
         }
-
-        public function getAuctions() : array {
-
-            return Auction::getAuctionsForUser($this->seller_role_id);
-        }
-
-        public function getLiveAuctions() : array {
-
-            return Auction::getLiveAuctionsForUser($this->seller_role_id);
-        }
-
-        public function getCompletedAuctions() : array {
-
-            return Auction::getCompletedAuctionsForUser($this->seller_role_id);
-        }
-
-        public function getLiveWatchedAuctions() : array {
-
-            return Auction::getLiveWatchedAuctionsForUser($this->buyer_role_id);
-        }
-
-        public function getLiveBidAuctions() : array {
-
-            return Auction::getLiveBidAuctionsForUser($this->buyer_role_id);
-        }
-
-        public function getCompletedBidAuctions() : array {
-
-            return Auction::getCompletedBidAuctionsForUser($this->buyer_role_id);
-        }
-
-        public function getSellerFeedback() : array {
-
-            return SellerFeedback::getFeedbackForUser($this->seller_role_id);
-        }
-
-        public function getSellerMeanRating() : array {
-            return SellerFeedback::getMeanRatingForUser($this->seller_role_id);
-        }
-
-        public function getBuyerFeedback() : array {
-
-            return BuyerFeedback::getFeedbackForUser($this->buyer_role_id);
-        }
-
-        public function getBuyerMeanRating() : array {
-            return BuyerFeedback::getMeanRatingForUser($this->buyer_role_id);
-        }
-
-        public function getSellerStats() {
-
-        }
-
-        public function getBuyerStats() {
-
-        }
-
     }
