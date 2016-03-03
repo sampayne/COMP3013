@@ -113,6 +113,12 @@
 
                 <h3>Feedback</h3>
 
+                <?php if(count($buyerFeedback) == 0): ?>
+
+                    <h4 class="pane">No Feedback.</h4>
+
+                <?php else: ?>
+
                 <table class="pane">
                     <?php foreach($sellerFeedback as $singleFeedback){ ?>
                         <tr>
@@ -123,6 +129,8 @@
                         </tr>
                     <?php } ?>
                 </table>
+
+                <?php endif; ?>
 
                 </div>
                 <div class="col-md-4">
@@ -191,7 +199,7 @@
 
                                 <?php else: ?>
                                     <h3 class="text-danger"><strong>Outbid</strong></h3>
-                                    <p>Your Bid: <?php echo $auction->getHighestBidForUser($user); ?>
+                                    <p>Your Bid: <?php echo $auction->getHighestBidForUser($user); ?> <br />
                                     Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
 
                                         <form role="form" method="post" action="/auction/<?php echo $auction->id; ?>/bid">
@@ -268,8 +276,8 @@
                             </td>
 
                             <td class="col-md-2">
-                                <p>Started at: <?php echo $auction->starting_price; ?>
-                                Highest Bid: <?php echo $auction->getHighestBid(); ?>
+                                <p>Started at: <?php echo $auction->starting_price; ?> <br />
+                                Highest Bid: <?php echo $auction->getHighestBid(); ?> <br />
                                 Bid Count: <?php echo $auction->getBidCount(); ?></p>
                                 <form role="form" method="post" action="/auction/<?php echo $auction->id; ?>/bid">
                                 <div class="form-group">
@@ -299,7 +307,7 @@
                 <table class="pane">
                     <?php foreach($buyerFeedback as $singleFeedback){ ?>
                         <tr>
-                           <!--  <td><?php echo $singleFeedback->id; ?> -->
+                            <td><!--  <?php echo $singleFeedback->id; ?> -->
                             <em><?php echo $singleFeedback->content; ?></em>
                             <p class="text-right">Created at: <?php echo $singleFeedback->created_at; ?></p></td>
                         </tr>
@@ -330,9 +338,9 @@
 
                 <h3>Stats</h3>
                     <div class="pane">
-                        <p><strong>Auctions won/lost:</strong> </p>
-                        <p><strong>Number of bids placed:</strong> </p>
-                        <p><strong>Auctions followed:</strong> </p>
+                        <p><strong>Auctions won:</strong> <?php echo $user->getPercentageAuctionsWon(); ?>% </p>
+                        <p><strong>Bids placed:</strong> <?php echo $user->getBuyerBidCount(); ?> </p>
+                        <p><strong>Auctions watched:</strong> <?php echo $user->getBuyerWatchCount(); ?> </p>
                     </div>
                 </div>
 

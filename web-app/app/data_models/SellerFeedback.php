@@ -39,13 +39,13 @@
 
         }
 
-        public static function getFeedbackWithId(string $id) {
+        public static function getFeedbackWithId(int $id) {
 
             $results = Database::query('SELECT * FROM SellerFeedback WHERE id = ?', [$id]);
             return new SellerFeedback($results);
         }
 
-        public static function getFeedbackWithAuctionId(string $auction_id) {
+        public static function getFeedbackWithAuctionId(int $auction_id) {
             $results = Database::query('SELECT * FROM SellerFeedback WHERE auction_id = ?', [$auction_id]);
             return new SellerFeedback($results);
         }
@@ -60,14 +60,14 @@
 
         }
 
-        public static function getFeedbackForUser(string $userrole_id) : array {
+        public static function getFeedbackForUser(int $userrole_id) : array {
 
             $results = Database::query('SELECT * FROM SellerFeedback WHERE auction_id IN
                 (SELECT id FROM Auction WHERE userrole_id = ?)', [$userrole_id]);
             return self::processFeedbackResultSetSql($results);
         }
 
-        public static function getMeanRatingForUser(string $userrole_id) : array {
+        public static function getMeanRatingForUser(int $userrole_id) : array {
 
             //unproccesed result
             $results = Database::query('SELECT avg(item_as_described) as mean_item_as_described,

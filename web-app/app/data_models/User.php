@@ -41,13 +41,13 @@
             if(!empty($userrole_query) && !empty($userrole_query[0])) {
 
                 if($userrole_query[0]['role_id'] == Role::seller()) {
-                    $this->seller_role_id = $userrole_query[0]['id'];
+                    $this->seller_role_id = (int) $userrole_query[0]['id'];
                     if(!empty($userrole_query[1]) && $userrole_query[1]['role_id'] == Role::buyer())
-                        $this->buyer_role_id = $userrole_query[1]['id'];
+                        $this->buyer_role_id = (int) $userrole_query[1]['id'];
                 }
                 else
                      if($userrole_query[0]['role_id'] == Role::buyer())
-                        $this->buyer_role_id = $userrole_query[0]['id'];
+                        $this->buyer_role_id = (int) $userrole_query[0]['id'];
 
             }
         }
@@ -72,11 +72,11 @@
         }
 
         public function isSeller() : bool {
-            return $this->sellerID() > 0;
+            return $this->sellerID() != NULL;
         }
 
         public function isBuyer() : bool {
-            return $this->buyerID() > 0;
+            return $this->buyerID() != NULL;
         }
 
         public function getAuctions() : array {
@@ -125,12 +125,23 @@
             return BuyerFeedback::getMeanRatingForUser($this->buyerID());
         }
 
-        public function getSellerStats() {
+        public function getBuyerBidCount() : int {
+
+            $result = Database::query("SELECT COUNT(*) AS count FROM Bid WHERE userrole_id = ?", [$this->buyerID()]);
+            return (int) $result[0]['count'];
 
         }
 
-        public function getBuyerStats() {
+        public function getBuyerWatchCount() : int {
 
+            $result = Database::query("SELECT COUNT(*) AS count FROM Watch WHERE userrole_id = ?", [$this->buyerID()]);
+            return (int) $result[0]['count'];
+
+        }
+
+        public function getPercentageAuctionsWon() : int {
+
+            return Auction::getPercentageAuctionsWonForUser($this->buyerID());
         }
 
     }
