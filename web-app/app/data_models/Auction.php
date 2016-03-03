@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
 
     namespace App\Model;
+
     use App\Utility\Database;
+    use App\Model\Item;
 
     class Auction {
 
@@ -13,6 +15,8 @@
         public $userrole_id;
         public $created_at;
         public $updated_at;
+
+        public $items = [];
 
         public $highest_bid = -1;
         public $bid_count = -1;
@@ -30,120 +34,141 @@
             $this->userrole_id = $sqlResultRow['userrole_id'];
             $this->created_at = $sqlResultRow['created_at'];
             $this->update_at = $sqlResultRow['updated_at'];
-
         }
 
-        public static function getAuctionWithId(string $id) {
+        public static function getAuctionWithId(string $id) : Auction {
 
             $results = Database::query('SELECT * FROM Auction WHERE id = ?', [$id]);
+
             return new Auction($results[0]);
         }
 
         public static function getAuctionsForUser(string $userrole_id) : array {
 
             $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ?', [$userrole_id]);
-            return self::processAuctionsResultSetSql($results);   
 
+            return self::processAuctionsResultSetSql($results);
         }
 
         public static function getLiveAuctionsForUser(string $userrole_id) : array {
 
             $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date > now()', [$userrole_id]);
-            return self::processAuctionsResultSetSql($results);  
 
+            return self::processAuctionsResultSetSql($results);
         }
 
         public static function getCompletedAuctionsForUser(string $userrole_id) : array {
 
             $results = Database::query('SELECT * FROM Auction WHERE userrole_id = ? AND end_date <= now()', [$userrole_id]);
-            return self::processAuctionsResultSetSql($results);  
 
+            return self::processAuctionsResultSetSql($results);
         }
 
         public static function getLiveWatchedAuctionsForUser(string $userrole_id) : array {
 
-            $results = Database::query('SELECT * FROM Auction WHERE id IN 
+            $results = Database::query('SELECT * FROM Auction WHERE id IN
                 (SELECT auction_id FROM Watch WHERE userrole_id = ?) AND end_date > now()', [$userrole_id]);
-            return self::processAuctionsResultSetSql($results); 
 
+            return self::processAuctionsResultSetSql($results);
         }
 
         public static function getLiveBidAuctionsForUser(string $userrole_id) : array {
-        
+
             $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
                 FROM Bid b JOIN Auction a ON b.auction_id = a.id
                 WHERE b.userrole_id = ? AND a.end_date > now()', [$userrole_id]);
-            return self::processAuctionsResultSetSql($results);
 
+            return self::processAuctionsResultSetSql($results);
         }
 
         public static function getCompletedBidAuctionsForUser(string $userrole_id) : array {
-        
+
             $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
                 FROM Bid b JOIN Auction a ON b.auction_id = a.id
                 WHERE b.userrole_id = ? AND a.end_date <= now()', [$userrole_id]);
-            return self::processAuctionsResultSetSql($results);
 
+            return self::processAuctionsResultSetSql($results);
         }
 
-        private static function processAuctionsResultSetSql(array $sql_results) {
+        private static function processAuctionsResultSetSql(array $sql_results) : array {
+
             $auctions = Array();
+
             foreach($sql_results as $row) {
                 $auctions[] = new Auction($row);
             }
-            return $auctions; 
+
+            return $auctions;
         }
 
-        public function getHighestBid() {
-        
+        public function getHighestBid() : int {
+
             if($this->highest_bid == -1) {
+
                 $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$this->id]);
                 $this->highest_bid = $result[0]['max_bid'];
-
             }
 
-            return $this->highest_bid;
+            return (int) $this->highest_bid;
         }
 
-        public function getHighestBidForUser(User $user) {
+        public function getHighestBidForUser(User $user) : int {
+
             $result = Database::query('SELECT max(value) as max_bid_user FROM Bid WHERE userrole_id = ? AND auction_id = ? ', [$user->buyer_role_id, $this->id]);
-            return $result[0]['max_bid_user'];
 
+            return (int) $result[0]['max_bid_user'];
         }
 
 
-        public function getBidCount() {
-            
+        public function getBidCount() : int {
+
             if($this->bid_count == -1) {
+
                 $result = Database::query('SELECT count(*) as bid_count FROM Bid WHERE auction_id = ?', [$this->id]);
                 $this->bid_count = $result[0]['bid_count'];
             }
-            
-            return $this->bid_count;
+
+            return (int) $this->bid_count;
         }
 
-        public function getViewCount() {
-            
+        public function getViewCount() : int {
+
             if($this->view_count == -1) {
-                $result = Database::query('SELECT count(*) as view_count FROM View WHERE auction_id = ?', [$this->id]);  
+
+                $result = Database::query('SELECT count(*) as view_count FROM View WHERE auction_id = ?', [$this->id]);
                 $this->view_count = $result[0]['view_count'];
             }
-            return $this->view_count;
 
+            return (int) $this->view_count;
         }
 
-        public function getWatchCount() {
-            
+        public function getWatchCount() : int {
+
             if($this->watch_count == -1) {
+
                 $result = Database::query('SELECT count(*) as watch_count FROM Watch WHERE auction_id = ?', [$this->id]);
                 $this->watch_count = $result[0]['watch_count'];
             }
 
-            return $this->watch_count;
+            return (int) $this->watch_count;
+        }
+
+        public function getItems() : array {
+
+            if(count($this->items) === 0 ){
+
+                $this->items = Item::getItemsForAuction($this->id);
+
+            }
+
+            return $this->items;
 
         }
 
+        public function getFirstItem() : Item {
 
-       
+            return $this->getItems()[0];
+
+        }
 
     }
