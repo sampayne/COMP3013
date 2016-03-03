@@ -72,11 +72,11 @@
         }
 
         public function isSeller() : bool {
-            return $this->sellerID() > 0;
+            return $this->sellerID() != NULL;
         }
 
         public function isBuyer() : bool {
-            return $this->buyerID() > 0;
+            return $this->buyerID() != NULL;
         }
 
         public function getAuctions() : array {
