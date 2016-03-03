@@ -68,7 +68,7 @@
 
             $auction_input = $request->post;
 
-            $auction_input['userrole_id'] = $session->activeUser()->seller_role_id;
+            $auction_input['userrole_id'] = $session->activeUser()->sellerID();
 
             $auction_creator = new AuctionCreator($request);
             $auction_errors = $auction_creator->validateInput($auction_input);

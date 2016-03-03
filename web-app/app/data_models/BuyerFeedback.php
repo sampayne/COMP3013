@@ -5,6 +5,16 @@
 
     class BuyerFeedback {
 
+
+        /*
+
+            REMINDER TO SAM:
+
+            Buyer Feedback is Feedback FOR BUYERS
+
+
+        */
+
         public $id;
         public $content;
         public $rating;
@@ -23,13 +33,14 @@
 
         }
 
-        public function getFeedbackWithId(string $id) {
+        public static function getFeedbackWithId(string $id) {
 
             $results = Database::query('SELECT * FROM BuyerFeedback WHERE id = ?', [$id]);
             return new SellerFeedback($results);
         }
 
-        public function getFeedbackWithAuctionId(string $auction_id) {
+        public static function getFeedbackWithAuctionId(string $auction_id) {
+
             $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id = ?', [$auction_id]);
             return new SellerFeedback($results);
         }
@@ -46,20 +57,28 @@
 
         public static function getFeedbackForUser(string $userrole_id) : array {
 
-            $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id IN 
+            /*
+
+                This is wrong
+
+            */
+
+
+            $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id IN
                 (SELECT id FROM Auction WHERE userrole_id = ?)', [$userrole_id]);
+
             return self::processFeedbackResultSetSql($results);
+
         }
 
         public static function getMeanRatingForUser(string $userrole_id) : array {
             //unprocessed results
             $results = Database::query('SELECT avg(rating) as mean_rating,
-                                                count(*) as no_feedback 
-                                                FROM BuyerFeedback WHERE auction_id IN 
+                                                count(*) as no_feedback
+                                                FROM BuyerFeedback WHERE auction_id IN
                         (SELECT id FROM Auction WHERE userrole_id = ?)', [$userrole_id]);
             return $results[0];
 
         }
     }
 
-      

@@ -15,15 +15,15 @@
             }
 
             //Seller
-            $liveSellerAuctions = Auction::getLiveAuctionsForUser($session->activeUser()->seller_role_id);
-            $completedSellerAuctions = Auction::getCompletedAuctionsForUser($session->activeUser()->seller_role_id);
+            $liveSellerAuctions = Auction::getLiveAuctionsForUser($session->activeUser()->sellerID());
+            $completedSellerAuctions = Auction::getCompletedAuctionsForUser($session->activeUser()->sellerID());
             $sellerFeedback = $session->activeUser()->getSellerFeedback();
             $sellerRating = $session->activeUser()->getSellerMeanRating();
 
             //Buyer
-            $liveBidBuyerAuctions = Auction::getLiveBidAuctionsForUser($session->activeUser()->buyer_role_id);
-            $completedBidBuyerAuctions = Auction::getCompletedBidAuctionsForUser($session->activeUser()->buyer_role_id);
-            $liveWatchedBuyerAuctions = Auction::getLiveWatchedAuctionsForUser($session->activeUser()->buyer_role_id);
+            $liveBidBuyerAuctions = Auction::getLiveBidAuctionsForUser($session->activeUser()->buyerID());
+            $completedBidBuyerAuctions = Auction::getCompletedBidAuctionsForUser($session->activeUser()->buyerID());
+            $liveWatchedBuyerAuctions = Auction::getLiveWatchedAuctionsForUser($session->activeUser()->buyerID());
             $buyerFeedback = $session->activeUser()->getBuyerFeedback();
             $buyerRating = $session->activeUser()->getBuyerMeanRating();
 

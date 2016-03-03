@@ -2,13 +2,16 @@
 
     namespace App\Model;
 
+    use App\Utility\Database;
+    use App\Model\Role;
+
     class User {
 
         public $username;
         public $id;
 
-        public $buyer_role_id  = "-1";
-        public $seller_role_id = "-1";
+        private $buyer_role_id = NULL;
+        private $seller_role_id = NULL;
 
         public function __construct(int $id){
 
@@ -16,64 +19,110 @@
 
         }
 
-        public function isSeller() : bool {
+        public static function fromID($id) : User {
 
-            return $this->seller_role_id > 0;
+            $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
+
+            if(!count($results)){
+                fatalError('User Not Found');
+            }
+
+            $user = new User((int) $id);
+            $user->email = $results['email'];
+
+            return $user;
 
         }
 
+        private function loadUserRoles(){
+
+            $userrole_query = Database::query("SELECT id, role_id FROM UserRole WHERE user_id = ? ORDER BY role_id", [$this->id]);
+
+            if(!empty($userrole_query) && !empty($userrole_query[0])) {
+
+                if($userrole_query[0]['role_id'] == Role::seller()) {
+                    $this->seller_role_id = $userrole_query[0]['id'];
+                    if(!empty($userrole_query[1]) && $userrole_query[1]['role_id'] == Role::buyer())
+                        $this->buyer_role_id = $userrole_query[1]['id'];
+                }
+                else
+                     if($userrole_query[0]['role_id'] == Role::buyer())
+                        $this->buyer_role_id = $userrole_query[0]['id'];
+
+            }
+        }
+
+        public function sellerID(){
+
+            if(is_null($this->seller_role_id)){
+                $this->loadUserRoles();
+            }
+
+            return $this->seller_role_id;
+        }
+
+        public function buyerID(){
+
+            if(is_null($this->buyer_role_id)){
+                $this->loadUserRoles();
+            }
+
+            return $this->buyer_role_id;
+
+        }
+
+        public function isSeller() : bool {
+            return $this->sellerID() > 0;
+        }
+
         public function isBuyer() : bool {
-
-            return $this->buyer_role_id > 0;
-
+            return $this->buyerID() > 0;
         }
 
         public function getAuctions() : array {
 
-            return Auction::getAuctionsForUser($this->seller_role_id);
+            return Auction::getAuctionsForUser($this->sellerID());
         }
 
         public function getLiveAuctions() : array {
 
-            return Auction::getLiveAuctionsForUser($this->seller_role_id);
+            return Auction::getLiveAuctionsForUser($this->sellerID());
         }
 
         public function getCompletedAuctions() : array {
 
-            return Auction::getCompletedAuctionsForUser($this->seller_role_id);
+            return Auction::getCompletedAuctionsForUser($this->sellerID());
         }
 
         public function getLiveWatchedAuctions() : array {
 
-            return Auction::getLiveWatchedAuctionsForUser($this->buyer_role_id);
+            return Auction::getLiveWatchedAuctionsForUser($this->buyerID());
         }
 
         public function getLiveBidAuctions() : array {
 
-            return Auction::getLiveBidAuctionsForUser($this->buyer_role_id);
+            return Auction::getLiveBidAuctionsForUser($this->buyerID());
         }
 
         public function getCompletedBidAuctions() : array {
-
-            return Auction::getCompletedBidAuctionsForUser($this->buyer_role_id);
+            return Auction::getCompletedBidAuctionsForUser($this->buyerID());
         }
 
         public function getSellerFeedback() : array {
-
-            return SellerFeedback::getFeedbackForUser($this->seller_role_id);
+            return $this->isSeller() ? SellerFeedback::getFeedbackForUser($this->sellerID()) : [];
         }
 
         public function getSellerMeanRating() : array {
-            return SellerFeedback::getMeanRatingForUser($this->seller_role_id);
+            return SellerFeedback::getMeanRatingForUser($this->sellerID());
         }
 
         public function getBuyerFeedback() : array {
 
-            return BuyerFeedback::getFeedbackForUser($this->buyer_role_id);
+            return $this->isBuyer() ? BuyerFeedback::getFeedbackForUser($this->buyerID()) : [];
         }
 
         public function getBuyerMeanRating() : array {
-            return BuyerFeedback::getMeanRatingForUser($this->buyer_role_id);
+            return BuyerFeedback::getMeanRatingForUser($this->buyerID());
         }
 
         public function getSellerStats() {

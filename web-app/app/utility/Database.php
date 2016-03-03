@@ -26,6 +26,22 @@
 
         }
 
+        public static function selectOne(string $SQLString, array $parameters = []) : array {
+
+
+            $results = self::query($SQLString, $parameters);
+
+            if(count($results)){
+
+                return $results[0];
+
+            }
+
+            return [];
+
+
+        }
+
         public static function select(string $SQLString, array $parameters = []) : array {
 
             return self::query($SQLString, $parameters);

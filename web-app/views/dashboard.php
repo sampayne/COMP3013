@@ -5,8 +5,8 @@
         <br />
 
        <!--  <p>id: <?= $user->id ?></p>
-        <p>User is a buyer: <?= $user->buyer_role_id ?> </p>
-        <p>User is a seller: <?= $user->seller_role_id ?> </p> -->
+        <p>User is a buyer: <?= $user->buyerID() ?> </p>
+        <p>User is a seller: <?= $user->sellerID() ?> </p> -->
 
         <?php if(!is_null($message)): ?>
 
