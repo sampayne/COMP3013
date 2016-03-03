@@ -2,18 +2,16 @@
 
     namespace App\Model;
     use App\Utility\Database;
+    use App\Model\Auction;
 
     class SellerFeedback {
 
         /*
-
             REMINDER TO SAM:
 
             Seller Feedback is Feedback FOR SELLERS
 
-
         */
-
 
         public $id;
         public $content;
@@ -25,9 +23,13 @@
         public $created_at;
         public $updated_at;
 
+        private $auction;
+
+        public static $number_of_ratings = 4;
+
         public function __construct(array $sqlResultRow) {
 
-            $this->id = $sqlResultRow['id'];
+            $this->id = (int) $sqlResultRow['id'];
             $this->content = $sqlResultRow['content'];
             $this->item_as_described = $sqlResultRow['item_as_described'];
             $this->communication = $sqlResultRow['communication'];
@@ -38,6 +40,32 @@
             $this->update_at = $sqlResultRow['updated_at'];
 
         }
+
+        public function getRelatedAuction() : Auction {
+
+            if(is_null($this->auction)){
+
+                $this->auction = Auction::getAuctionWithId((int) $this->auction_id);
+
+            }
+
+            return $this->auction;
+
+        }
+
+        public function mean() : float {
+
+            return ($this->item_as_described + $this->communication + $this->dispatch_time + $this->posting)/self::$number_of_ratings;
+
+        }
+
+        public static function existsForAuctionID(int $auction_id) : bool {
+
+            return Database::checkExists($auction_id, 'auction_id', 'SellerFeedback');
+
+        }
+
+
 
         public static function getFeedbackWithId(int $id) {
 

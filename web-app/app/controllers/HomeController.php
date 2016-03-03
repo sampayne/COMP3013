@@ -8,6 +8,6 @@
 
         public function getHomepage(Request $request, Session $session) : string {
 
-            return (new View('home'))->render();
+            return (new View('home', ['user' => $session->activeUser()]))->render();
         }
     }

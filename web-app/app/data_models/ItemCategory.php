@@ -40,7 +40,7 @@
 
         }
 
-        public static function categoriesForItem($item_id) : array {
+        public static function categoriesForItem(int $item_id) : array {
 
             $results = Database::select('SELECT * FROM Category WHERE id IN (SELECT category_id FROM ItemCategory WHERE item_id = ?)', [$item_id]);
 

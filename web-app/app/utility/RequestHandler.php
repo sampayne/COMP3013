@@ -108,12 +108,17 @@
             }else if($request->matches('POST','/auction/??/watch')){
 
 
+            }else if($request->matches('GET','/auction/??/feedback/create')){
+
+                $controller = new FeedbackController();
+
+                return $controller->getFeedbackForm($request, $session, (int) $request->url_array[1]);
 
             }else if($request->matches('GET','/user/??/feedback')){
 
                     $controller = new FeedbackController();
 
-                    return $controller->getFeedbackList($request, $session,$request->url_array[1]);
+                    return $controller->getFeedbackList($request, $session, (int) $request->url_array[1]);
 
 
 
@@ -130,5 +135,10 @@
                 return $controller->getHomepage($request, $session);
 
             }
+
+
+
+            return View::renderView('general_error',['user'=>$session->activeUser(),'message'=>'URL Not Found']);
+
         }
     }
