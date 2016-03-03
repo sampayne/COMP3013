@@ -114,7 +114,7 @@
 
         public function getHighestBidForUser(User $user) : int {
 
-            $result = Database::query('SELECT max(value) as max_bid_user FROM Bid WHERE userrole_id = ? AND auction_id = ? ', [$user->buyer_role_id, $this->id]);
+            $result = Database::query('SELECT max(value) as max_bid_user FROM Bid WHERE userrole_id = ? AND auction_id = ? ', [$user->buyerID(), $this->id]);
 
             return (int) $result[0]['max_bid_user'];
         }

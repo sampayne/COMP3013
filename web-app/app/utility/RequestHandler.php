@@ -5,7 +5,7 @@
     use App\Utility\{Request, View};
     use App\Utility\Session as Session;
 
-    use App\Controller\{ AuctionController, TestController, LoginController, DashboardController, HomeController, SignupController, SearchController };
+    use App\Controller\{ AuctionController, TestController, LoginController, DashboardController, HomeController, SignupController, SearchController, FeedbackController };
 
     class RequestHandler {
 
@@ -75,9 +75,6 @@
 
 
 
-
-
-
             }else if($request->matches('GET', '/auction/create')){
 
                 $controller = new AuctionController();
@@ -112,6 +109,11 @@
 
 
 
+            }else if($request->matches('GET','/user/??/feedback')){
+
+                    $controller = new FeedbackController();
+
+                    return $controller->getFeedbackList($request, $session,$request->url_array[1]);
 
 
 
