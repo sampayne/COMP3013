@@ -90,7 +90,9 @@
 
             }else if($request->matches('POST', '/auction')){
 
+                $controller = new AuctionController();
 
+                return $controller->createNewAuction($request, $session);
 
 
 

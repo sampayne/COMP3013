@@ -3,6 +3,7 @@
     namespace App\Model;
 
     use App\Utility\Database;
+    use App\Model\Item;
 
     class Auction {
 
@@ -14,6 +15,8 @@
         public $userrole_id;
         public $created_at;
         public $updated_at;
+
+        public $items = [];
 
         public $highest_bid = -1;
         public $bid_count = -1;
@@ -150,5 +153,22 @@
             return (int) $this->watch_count;
         }
 
+        public function getItems() : array {
+
+            if(count($this->items) === 0 ){
+
+                $this->items = Item::getItemsForAuction($this->id);
+
+            }
+
+            return $this->items;
+
+        }
+
+        public function getFirstItem() : Item {
+
+            return $this->getItems()[0];
+
+        }
 
     }

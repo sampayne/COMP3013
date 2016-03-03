@@ -26,6 +26,12 @@
 
         }
 
+        public static function select(string $SQLString, array $parameters = []) : array {
+
+            return self::query($SQLString, $parameters);
+
+        }
+
         public static function query(string $SQLString, array $parameters = []) : array {
 
             if ($statement = self::runQuery($SQLString, $parameters)){

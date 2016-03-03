@@ -11,9 +11,9 @@
 
             if(!$session->userIsLoggedIn()){
 
-                return $this->redirectTo('/');
+                return $this->redirectTo('/login');
             }
-            
+
             //Seller
             $liveSellerAuctions = Auction::getLiveAuctionsForUser($session->activeUser()->seller_role_id);
             $completedSellerAuctions = Auction::getCompletedAuctionsForUser($session->activeUser()->seller_role_id);
@@ -27,11 +27,20 @@
             $buyerFeedback = $session->activeUser()->getBuyerFeedback();
             $buyerRating = $session->activeUser()->getBuyerMeanRating();
 
-            $view = new View('dashboard', ['user' => $session->activeUser(), 'liveSellerAuctions' => $liveSellerAuctions,
-            	'completedSellerAuctions' => $completedSellerAuctions,'sellerFeedback' => $sellerFeedback, 
-                'sellerRating' => $sellerRating, 'liveBidBuyerAuctions' => $liveBidBuyerAuctions,
-                'completedBidBuyerAuctions' => $completedBidBuyerAuctions, 'liveWatchedBuyerAuctions' => $liveWatchedBuyerAuctions,
-                'buyerFeedback' => $buyerFeedback, 'buyerRating' => $buyerRating]);
+            $view = new View('dashboard', ['user' => $session->activeUser(),
+                                           'liveSellerAuctions' => $liveSellerAuctions,
+                                           'completedSellerAuctions' => $completedSellerAuctions,
+                                           'sellerFeedback' => $sellerFeedback,
+                                           'sellerRating' => $sellerRating,
+                                           'liveBidBuyerAuctions' => $liveBidBuyerAuctions,
+                                           'completedBidBuyerAuctions' => $completedBidBuyerAuctions,
+                                           'liveWatchedBuyerAuctions' => $liveWatchedBuyerAuctions,
+                                           'buyerFeedback' => $buyerFeedback,
+                                           'buyerRating' => $buyerRating,
+                                           'message' => isset($request->get['message']) ? $request->get['message'] : NULL,
+                                           'error' => isset($request->get['error']) ? $request->get['error'] : NULL
+
+                                           ]);
 
             return $view->render();
         }
