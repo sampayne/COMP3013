@@ -144,4 +144,10 @@
             return Auction::getPercentageAuctionsWonForUser($this->buyerID());
         }
 
+        public function getRecommendations() : array {
+
+            return Auction::getRecommendationsForUser($this->buyerID());
+        
+        }
+
     }

@@ -30,6 +30,7 @@
             	$liveWatchedBuyerAuctions = Auction::getLiveWatchedAuctionsForUser($session->activeUser()->buyerID());
             	$buyerFeedback = $session->activeUser()->getBuyerFeedback();
             	$buyerRating = $session->activeUser()->getBuyerMeanRating();
+            	$recommendations = $session->activeUser()->getRecommendations();
 
           	}
 
@@ -43,6 +44,7 @@
                                            'liveWatchedBuyerAuctions' => $liveWatchedBuyerAuctions ?? NULL,
                                            'buyerFeedback' => $buyerFeedback ?? NULL,
                                            'buyerRating' => $buyerRating ?? NULL,
+                                           'recommendations' => $recommendations ?? NULL,
                                            'message' => isset($request->get['message']) ? $request->get['message'] : NULL,
                                            'error' => isset($request->get['error']) ? $request->get['error'] : NULL
 

@@ -187,4 +187,49 @@
 
         }
 
+        public static function getRecommendationsForUser(int $userrole_id) : array {
+
+            //version 1
+           /* $items = Item::getWonItemsForUser($userrole_id);
+            $auctions = [];
+            foreach($items as $item) {
+
+                $categories = $item->getCategories();
+                foreach($categories as $category) {
+
+                    $itemsForCategory = $category->getItems();
+                    foreach($itemsForCategory as $itemForCategory) {
+
+                        $auctions[$itemForCategory->auction_id] = Auction::getAuctionWithId($itemForCategory->auction_id);
+                    }
+                }
+
+            }
+
+            return array_values($auctions);
+            
+            //version 2
+            $result = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory WHERE ItemCategory.category_id IN (SELECT DISTINCT(ItemCategory.category_id) FROM ItemCategory WHERE ItemCategory.item_id IN 
+            (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
+            WHERE AuctionsWinners.userrole_id_winner = 72)))
+            AND Auction.end_date > now()  
+            ORDER BY Auction.id ASC'); */
+
+            $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id 
+                WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN 
+                    (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN 
+                    (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
+                    WHERE AuctionsWinners.userrole_id_winner = 72) AS WonItems 
+                    ON ItemCategory.item_id = WonItems.id 
+                    GROUP BY ItemCategory.category_id
+                    ORDER BY no_items
+                    LIMIT 2) as TopCategories
+                    ON ItemCategory.category_id = TopCategories.category_id)
+                    AND Auction.end_date > now()  
+                    ORDER BY Auction.id ASC');
+
+            return self::processAuctionsResultSetSql($results);
+
+        }
+
     }

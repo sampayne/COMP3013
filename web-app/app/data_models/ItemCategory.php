@@ -48,4 +48,10 @@
 
         }
 
+        public function getItems() : array {
+
+            return Item::getItemsForCategory($this->id);
+
+        }
+
     }
