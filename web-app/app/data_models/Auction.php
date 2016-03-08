@@ -219,14 +219,14 @@
                 WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN 
                     (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN 
                     (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
-                    WHERE AuctionsWinners.userrole_id_winner = 72) AS WonItems 
+                    WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems 
                     ON ItemCategory.item_id = WonItems.id 
                     GROUP BY ItemCategory.category_id
                     ORDER BY no_items
                     LIMIT 2) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()  
-                    ORDER BY Auction.id ASC');
+                    ORDER BY Auction.id ASC', [$userrole_id]);
 
             return self::processAuctionsResultSetSql($results);
 
