@@ -18,6 +18,23 @@
 
         	if(!empty($auction_data)){
 
+                $auction_data[0]["isUserBuyer"] = false;
+                $auction_data[0]["isWatched"] = false;
+
+                if($session->userIsLoggedIn()){
+                    $current_user = $session->activeUser();
+                    $auction_data[0]["isUserBuyer"] = $current_user->isBuyer();
+                    $test = $current_user->getLiveWatchedAuctions();
+
+                    foreach ($test as $watched_auction){
+
+                        if($watched_auction->id == $auction_id){
+                            $auction_data[0]["isWatched"] = true;
+                            break;
+                        }
+                    }
+                }
+
         		$auction_data[0]["auction_exists"] = true;
             	return (new View('auction', $auction_data[0]))->render();
 
@@ -28,7 +45,7 @@
 
         }
 
-        private function getAuctionData($id) : string {
+        private function getAuctionData($id) {
 
             $result = Database::query('SELECT * FROM Auction WHERE id = ?', [$id]);
             return $result;
