@@ -21,9 +21,10 @@
         	if(!empty($auction_data)){
 
                 $this->setWatchPreferences($auction_data, $auction_id, $session);
-                $this->setMinimumPriceToBid($auction_data, $auction_id);
+                $this->setMinimumPriceToBid($auction_data, $auction_id); 
         		$auction_data[0]["auction_exists"] = true;
                 $auction_data[0]["auction"] = Auction::getAuctionWithId(intval($auction_id));
+                $auction_data[0]["expired"] = (new \DateTime() > new \DateTime($auction_data[0]["auction"]->end_date)) ? false : true;
             	return (new View('auction', $auction_data[0]))->render();
 
             }else{
