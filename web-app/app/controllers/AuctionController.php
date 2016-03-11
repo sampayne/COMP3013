@@ -31,16 +31,9 @@
         }
 
         public function getEditConfirmationPage(Request $request, Session $session) : string{
-            $current_user = $session->activeUser();
-            $current_auction = Auction::getAuctionWithId(intval(($request->url_array)[1]));
-
+            
             $data = array();
-            $data["watch"] = $request->post["watch"];
-
-            if($data["watch"] == "1"){
-                $current_auction->startWatchingAuction($current_user);
-            }
-
+            $this->runNeededConfirmation($data, $session, $request);
             return (new View('edit_auction_confirmation', $data))->render();
         }
 
@@ -168,6 +161,22 @@
             }
 
             return $auction_data[0]["isWatched"];
+        }
+
+        private function runNeededConfirmation(&$data, $session, $request){
+            $current_user = $session->activeUser();
+            $current_auction = Auction::getAuctionWithId(intval(($request->url_array)[1]));
+
+            $data["watch"] = $request->post["watch"];
+
+            if($data["watch"] == "1"){
+                $current_auction->startWatchingAuction($current_user);
+            }
+
+            elseif($data["watch"] == "0"){
+                $current_auction->stopWatchingAuction($current_user);
+            }
+
         }
 
     }
