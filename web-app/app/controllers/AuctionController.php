@@ -4,6 +4,7 @@
 
     use App\Utility\{Request, Session, View, Database};
     use App\Model\User;
+    use App\Model\Auction;
     use App\Model\ItemCategory;
 
     use App\Utility\Creator\AuctionCreator;
@@ -18,23 +19,7 @@
 
         	if(!empty($auction_data)){
 
-                $auction_data[0]["isUserBuyer"] = false;
-                $auction_data[0]["isWatched"] = false;
-
-                if($session->userIsLoggedIn()){
-                    $current_user = $session->activeUser();
-                    $auction_data[0]["isUserBuyer"] = $current_user->isBuyer();
-                    $test = $current_user->getLiveWatchedAuctions();
-
-                    foreach ($test as $watched_auction){
-
-                        if($watched_auction->id == $auction_id){
-                            $auction_data[0]["isWatched"] = true;
-                            break;
-                        }
-                    }
-                }
-
+                $this->isUserWatchingThisAuction($auction_data, $auction_id, $session);
         		$auction_data[0]["auction_exists"] = true;
             	return (new View('auction', $auction_data[0]))->render();
 
@@ -43,6 +28,20 @@
             	return (new View('auction', ["auction_exists" => false]))->render();
             }
 
+        }
+
+        public function getEditConfirmationPage(Request $request, Session $session) : string{
+            $current_user = $session->activeUser();
+            $current_auction = Auction::getAuctionWithId(intval(($request->url_array)[1]));
+
+            $data = array();
+            $data["watch"] = $request->post["watch"];
+
+            if($data["watch"] == "1"){
+                $current_auction->startWatchingAuction($current_user);
+            }
+
+            return (new View('edit_auction_confirmation', $data))->render();
         }
 
         private function getAuctionData($id) {
@@ -148,6 +147,27 @@
             }
 
             return $merged_items;
+        }
+
+        private function isUserWatchingThisAuction(&$auction_data, $auction_id, $session) : bool{
+            $auction_data[0]["isUserBuyer"] = false;
+            $auction_data[0]["isWatched"] = false;
+
+            if($session->userIsLoggedIn()){
+                $current_user = $session->activeUser();
+                $auction_data[0]["isUserBuyer"] = $current_user->isBuyer();
+                $test = $current_user->getLiveWatchedAuctions();
+
+                foreach ($test as $watched_auction){
+
+                    if($watched_auction->id == $auction_id){
+                        $auction_data[0]["isWatched"] = true;
+                        break;
+                    }
+                }
+            }
+
+            return $auction_data[0]["isWatched"];
         }
 
     }

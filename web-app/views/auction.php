@@ -6,14 +6,19 @@
 	<p>Seller Id: <?php echo $userrole_id?></p><br>
 	
 	<?php if($isUserBuyer){ ?>
+		<form method="post" action=<?php echo("/auction/".$id."/confirmation");?>>
 
-		<?php if($isWatched){ ?>
-			<button type="button" class="btn btn-default">Stop Watching</button>
+			<?php if($isWatched){ ?>
+				<input type="hidden" name="watch" value="0">
+				<button type="submit" class="btn btn-default">Stop Watching</button>
 
-		<?php }else{ ?>
-			<button type="button" class="btn btn-default">Watch</button>
+			<?php }else{ ?>
+				<input type="hidden" name="watch" value="1">
+				<button type="submit" class="btn btn-default">Watch</button>
 
-		<?php }?>
+			<?php }?>
+
+		</form>
 	<?php }?>
 
 

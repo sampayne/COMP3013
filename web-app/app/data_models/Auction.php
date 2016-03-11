@@ -187,4 +187,16 @@
 
         }
 
+        public function startWatchingAuction($user){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "INSERT INTO Watch (userrole_id, auction_id) VALUES (?,?);";
+
+            Database::insert($query, [$userrole_id, $auction_id]);
+        }
+
+        // function increment_view
+        // function increment_watch
+
     }

@@ -81,9 +81,11 @@
 
                 return $controller->getCreateAuctionPage($request, $session);
 
-            }else if($request->matches('GET', '/auction/??/edit')){
+            }else if($request->matches('POST', '/auction/??/confirmation')){
 
-                return "You are at /auction/id/edit";  //just a dumb placeholder for sanity check
+                $controller = new AuctionController();
+
+                return $controller->getEditConfirmationPage($request, $session);
 
             }else if($request->matches('POST', '/auction')){
 
