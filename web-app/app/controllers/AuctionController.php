@@ -30,11 +30,11 @@
 
         }
 
-        public function getEditConfirmationPage(Request $request, Session $session) : string{
+        public function getWatchConfirmationPage(Request $request, Session $session) : string{
             
             $data = array();
             $this->runNeededConfirmation($data, $session, $request);
-            return (new View('edit_auction_confirmation', $data))->render();
+            return (new View('watch_auction_confirmation', $data))->render();
         }
 
         private function getAuctionData($id) {

@@ -81,11 +81,9 @@
 
                 return $controller->getCreateAuctionPage($request, $session);
 
-            }else if($request->matches('POST', '/auction/??/confirmation')){
+            }else if($request->matches('GET', '/auction/??/edit')){
 
-                $controller = new AuctionController();
-
-                return $controller->getEditConfirmationPage($request, $session);
+                return "You are at /auction/id/edit"; //just a dumb placeholder for sanity check
 
             }else if($request->matches('POST', '/auction')){
 
@@ -109,7 +107,9 @@
 
             }else if($request->matches('POST','/auction/??/watch')){
 
+                $controller = new AuctionController();
 
+                return $controller->getWatchConfirmationPage($request, $session);
 
             }else if($request->matches('GET','/user/??/feedback')){
 

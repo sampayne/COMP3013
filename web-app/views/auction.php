@@ -6,7 +6,7 @@
 	<p>Seller Id: <?php echo $userrole_id?></p><br>
 	
 	<?php if($isUserBuyer){ ?>
-		<form method="post" action=<?php echo("/auction/".$id."/confirmation");?>>
+		<form method="post" action=<?php echo("/auction/".$id."/watch");?>>
 
 			<?php if($isWatched){ ?>
 				<input type="hidden" name="watch" value="0">
