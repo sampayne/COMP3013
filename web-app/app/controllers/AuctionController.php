@@ -25,6 +25,7 @@
         		$auction_data[0]["auction_exists"] = true;
                 $auction_data[0]["auction"] = Auction::getAuctionWithId(intval($auction_id));
                 $auction_data[0]["expired"] = (new \DateTime() > new \DateTime($auction_data[0]["auction"]->end_date)) ? false : true;
+                $auction_data[0]["items"] = $auction_data[0]["auction"]->getItems();
             	return (new View('auction', $auction_data[0]))->render();
 
             }else{

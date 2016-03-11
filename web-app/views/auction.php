@@ -36,56 +36,28 @@
 
 				    		<div class= "col-md-5 col-md-offset-1">
 				    			<ul class="list-group">
-								  <li class="list-group-item">
-								  	<table>
-									  	<div class="row">
-										  	<tr>
-										  		<td style="vertical-align: middle;" class="col-md-8 myListHeaders">
-										  		<div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> Item 1</div></td>
+								  
+								  	<?php foreach($items as $item){ ?>
 
-										  		<td class="col-md-4">
-											    <button type="button" class="btn btn-default btn-sm btn-primary">
-												  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
-												</button></td>
+									  <li class="list-group-item">
+									  	<table>
+										  	<div class="row">
+											  	<tr>
+											  		<td style="vertical-align: middle;" class="col-md-8 myListHeaders">
+											  		<div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> <?= $item->name ?></div></td>
 
-											</tr>
-										</div>
-									</table>
-								  </li>
+											  		<td class="col-md-4">
+												    <button type="button" class="btn btn-default btn-sm btn-primary">
+													  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
+													</button></td>
 
-								  <li class="list-group-item">
-								  	<table>
-									  	<div class="row">
-										  	<tr>
-										  		<td style="vertical-align: middle;" class="col-md-8 myListHeaders">
-										  		<div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> Item 2</div></td>
+												</tr>
+											</div>
+										</table>
+									  </li>
 
-										  		<td class="col-md-4">
-											    <button type="button" class="btn btn-default btn-sm btn-primary">
-												  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
-												</button></td>
-
-											</tr>
-										</div>
-									</table>
-								  </li>
-
-								  <li class="list-group-item">
-								  	<table>
-									  	<div class="row">
-										  	<tr>
-										  		<td style="vertical-align: middle;" class="col-md-8 myListHeaders">
-										  		<div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> Item 3</div></td>
-
-										  		<td class="col-md-4">
-											    <button type="button" class="btn btn-default btn-sm btn-primary">
-												  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
-												</button></td>
-
-											</tr>
-										</div>
-									</table>
-								  </li>
+									<?php }?>
+								  
 								</ul>
 								
 								<?php if($isUserBuyer && $expired){ ?>
