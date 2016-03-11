@@ -35,9 +35,11 @@
 				    		</div>
 
 				    		<div class= "col-md-5 col-md-offset-1">
-				    			<ul class="list-group">
+				    			<ul class="list-group" id="accordion" role="tablist" aria-multiselectable="true">
 								  
-								  	<?php foreach($items as $item){ ?>
+								  	<?php $itemCounter = 0;
+								  	      foreach($items as $item){ 
+								  	      	$itemCounter = $itemCounter + 1;?>
 
 									  <li class="list-group-item">
 									  	<table>
@@ -47,7 +49,7 @@
 											  		<div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> <?= $item->name ?></div></td>
 
 											  		<td class="col-md-4">
-												    <button type="button" class="btn btn-default btn-sm btn-primary">
+												    <button type="button" class="btn btn-sm btn-primary collapsed" data-toggle="collapse" data-parent="#accordion" href=<?php echo("#collapse".$itemCounter);?> aria-controls=<?php echo("collapse".$itemCounter);?> aria-expanded="false">
 													  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
 													</button></td>
 
@@ -55,6 +57,14 @@
 											</div>
 										</table>
 									  </li>
+
+									  <div id=<?php echo("collapse".$itemCounter);?> class="panel-collapse collapse" role="tabpanel" aria-labelledby=<?php echo("heading".$itemCounter);?>>
+
+									      <div class="panel-body shadedPanel descriptionText" style="border-style: none;">
+									        <?php echo($item->description); ?>
+									      </div>
+
+									  </div>
 
 									<?php }?>
 								  
