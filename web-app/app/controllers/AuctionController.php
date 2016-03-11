@@ -86,6 +86,11 @@
 
             $current_auction = Auction::getAuctionWithId(intval($auction_id));
             $bid = intval($current_auction->getHighestBid());
+            $starting_price = $current_auction->starting_price;
+
+            if($bid  < $starting_price)
+                $bid = $starting_price - 1;  
+
             return $bid;
 
         }
@@ -197,9 +202,6 @@
 
             $auction_data[0]["min_bid"] = ($this->getHighestBid($auction_id) + 1) / 100;
             $auction_data[0]["starting_price"] = $auction_data[0]["starting_price"] / 100;
-
-            if($auction_data[0]["min_bid"] < $auction_data[0]["starting_price"])
-                $auction_data[0]["min_bid"] = $auction_data[0]["starting_price"];
 
         }
 
