@@ -15,11 +15,13 @@
         public function getAuction(Request $request, Session $session) : string {
 
         	$auction_id = end($request->url_array);
-        	$auction_data = $this->getAuctionData($auction_id);
+            $auction_data = $this->getAuctionData($auction_id);
+
 
         	if(!empty($auction_data)){
 
-                $this->isUserWatchingThisAuction($auction_data, $auction_id, $session);
+                $this->setWatchPreferences($auction_data, $auction_id, $session);
+                $this->setMinimumPriceToBid($auction_data, $auction_id);
         		$auction_data[0]["auction_exists"] = true;
             	return (new View('auction', $auction_data[0]))->render();
 
@@ -33,8 +35,28 @@
         public function getWatchConfirmationPage(Request $request, Session $session) : string{
             
             $data = array();
-            $this->runNeededConfirmation($data, $session, $request);
+            $this->setWatchConfirmation($data, $session, $request);
             return (new View('watch_auction_confirmation', $data))->render();
+        }
+
+        public function getBidConfirmationPage(Request $request, Session $session) : string{
+            
+            $data = array();
+            $bid = floatval($request->post["bid-bar"]) * 100;
+            $auction_id = intval(($request->url_array)[1]);
+            
+            if($bid > $this->getHighestBid($auction_id)){
+                $data["isHighest"] = "true";
+                $current_user = $session->activeUser();
+                $current_auction = Auction::getAuctionWithId($auction_id);
+                $current_auction->placeBid($current_user, $bid);
+            }
+
+            else{
+                $data["isHighest"] = "false";
+            }
+
+            return (new View('bid_auction_confirmation', $data))->render();
         }
 
         private function getAuctionData($id) {
@@ -57,6 +79,14 @@
             }
 
             return  (new View('create_auction', ['user'=>$session->activeUser(), 'item_categories' => ItemCategory::all()]))->render();
+
+        }
+
+        public function getHighestBid($auction_id){
+
+            $current_auction = Auction::getAuctionWithId(intval($auction_id));
+            $bid = intval($current_auction->getHighestBid());
+            return $bid;
 
         }
 
@@ -142,7 +172,7 @@
             return $merged_items;
         }
 
-        private function isUserWatchingThisAuction(&$auction_data, $auction_id, $session) : bool{
+        private function setWatchPreferences(&$auction_data, $auction_id, $session) : bool{
             $auction_data[0]["isUserBuyer"] = false;
             $auction_data[0]["isWatched"] = false;
 
@@ -163,7 +193,17 @@
             return $auction_data[0]["isWatched"];
         }
 
-        private function runNeededConfirmation(&$data, $session, $request){
+        private function setMinimumPriceToBid(&$auction_data, $auction_id){   
+
+            $auction_data[0]["min_bid"] = ($this->getHighestBid($auction_id) + 1) / 100;
+            $auction_data[0]["starting_price"] = $auction_data[0]["starting_price"] / 100;
+
+            if($auction_data[0]["min_bid"] < $auction_data[0]["starting_price"])
+                $auction_data[0]["min_bid"] = $auction_data[0]["starting_price"];
+
+        }
+
+        private function setWatchConfirmation(&$data, $session, $request){
             $current_user = $session->activeUser();
             $current_auction = Auction::getAuctionWithId(intval(($request->url_array)[1]));
 

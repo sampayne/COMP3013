@@ -2,8 +2,8 @@
 
 	<p>Name: <?php echo $name?></p><br>
 	<p>Description: <?php echo $description?></p><br>
-	<p>Starting Price: <?php echo $starting_price?></p><br>
-	<p>Seller Id: <?php echo $userrole_id?></p><br>
+	<p>Starting Price: <?php echo $starting_price?>£</p><br>
+	<p>Minimum Price To Bid: <?php echo $min_bid?>£</p>
 	
 	<?php if($isUserBuyer){ ?>
 		<form method="post" action=<?php echo("/auction/".$id."/watch");?>>
@@ -19,6 +19,21 @@
 			<?php }?>
 
 		</form>
+
+		<form method="post" action=<?php echo("/auction/".$id."/bid");?>>
+
+		    <div class="input-group">
+
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="submit">Bid Now:</button>
+		      </span>
+
+		      <input type="text" class="form-control" name="bid-bar" placeholder="All bids need to be placed in £">
+
+		    </div>
+
+		</form>
+
 	<?php }?>
 
 

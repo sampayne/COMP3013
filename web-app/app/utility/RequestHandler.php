@@ -103,7 +103,9 @@
 
             }else if($request->matches('POST','/auction/??/bid')){
 
-                return "You are at /auction/id/bid"; //just a dumb placeholder for sanity check
+                $controller = new AuctionController();
+
+                return $controller->getBidConfirmationPage($request, $session);
 
             }else if($request->matches('POST','/auction/??/watch')){
 
