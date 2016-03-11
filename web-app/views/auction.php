@@ -6,7 +6,8 @@
 					<div class="panel-heading"><h1 class="panel-title"><?= $name ?></h1></div>
 				    <div class="panel-body">
 
-				    	<div class="row"> <img class= "col-md-4 col-md-offset-4" src="<?= $auction->getFirstItem()->image_url ?>"></div>
+				    	<!--<div class="row"> <img class= "col-md-4 col-md-offset-4" src="<?= $auction->getFirstItem()->image_url ?>"></div> -->
+				    	<div class="row"> <img class= "col-md-4 col-md-offset-4" src="/images/default.gif"></div>
 				    	<div class="row">
 
 				    		<div class= "col-md-5 col-md-offset-1 shadedPanel">

@@ -4,6 +4,7 @@
 
     use App\Utility\{Request, Session, View, Database};
     use App\Model\User;
+    use App\Model\Item;
 
     class SearchController extends Controller {
 
@@ -22,7 +23,7 @@
 
         private function getExactAuctionDataSearch($searchTerms) {
             $columns_array = ['a.name', 'a.description', 'i.name', 'i.description'];
-            $query = "SELECT DISTINCT a.name, a.id FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id WHERE ";
+            $query = "SELECT DISTINCT a.name, a.description, a.end_date, a.id, i.id FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id WHERE ";
 
             $firstOr = true;
             foreach ($columns_array as $column) {
@@ -53,6 +54,10 @@
         		$i++;
         	}while($i < count($searchTerm) - 1 && empty($auction_data));
             
+            for($i = 0; $i < count($auction_data); $i++){
+                $auction_data[$i][4] = (Item::getItemWithId($auction_data[$i][4])) -> image_url;
+            }
+
         	return $auction_data;
         }
 
