@@ -53,9 +53,10 @@
                     $query = $query."c.name="."\"".$category."\"";
                 }
 
-                $query = $query.")";
+                $query = $query." GROUP BY i.item_id HAVING COUNT(i.item_id) = ".(count($selected_categories)-1).")";
             }
 
+            var_dump($query);
             $result = Database::query($query);
             return $result;
 
