@@ -54,7 +54,14 @@
         		$i++;
         	}while($i < count($searchTerm) - 1 && empty($auction_data));
             
-            for($i = 0; $i < count($auction_data); $i++){
+            $array_initial_size = count($auction_data);
+            for($i = 0; $i < $array_initial_size; $i++){
+
+                if($i > 0 && $auction_data[$i][3] == $auction_data[$i-1][3]){
+                    unset($auction_data[$i-1]);
+                    continue;
+                }
+
                 $auction_data[$i][4] = (Item::getItemWithId($auction_data[$i][4])) -> image_url;
             }
 
