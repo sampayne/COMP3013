@@ -3,17 +3,17 @@
     namespace App\Controller;
 
     use App\Utility\{Request, Session, View, Database};
-    use App\Model\User;
-    use App\Model\Item;
+    use App\Model\{User, Item, ItemCategory};
 
     class SearchController extends Controller {
 
         public function getSearch(Request $request, Session $session) : string {
-        	$searchTerm = $request->get['search-bar']; 
-        	$auction_data = $this->getRelativeAuctionDataSearch(explode(" ", $searchTerm));
+        	$searchTerm = $request->get['search-bar'];
+        	$auction_data = $this->getRelativeAuctionDataSearch(explode(" ", $searchTerm), $request);
 
         	if(!empty($auction_data)){
-            	return (new View('search', ["auctionsFound" => true, "searchTerm" => $searchTerm, "auctionData" => $auction_data]))->render();
+                $categories = ItemCategory::all();
+            	return (new View('search', ["selectedCategories" => $request->get, "categories" => $categories, "auctionsFound" => true, "searchTerm" => $searchTerm, "auctionData" => $auction_data]))->render();
             }
 
             else{
@@ -21,9 +21,9 @@
             }
         }
 
-        private function getExactAuctionDataSearch($searchTerms) {
+        private function getExactAuctionDataSearch($searchTerms, $request) {
             $columns_array = ['a.name', 'a.description', 'i.name', 'i.description'];
-            $query = "SELECT DISTINCT a.name, a.description, a.end_date, a.id, i.id FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id WHERE ";
+            $query = "SELECT DISTINCT a.name, a.description, a.end_date, a.id FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id WHERE (";
 
             $firstOr = true;
             foreach ($columns_array as $column) {
@@ -37,12 +37,31 @@
                 }
             }
 
+            $query = $query.")";
+            $selected_categories = $request->get;
+            $firstOr = true;
+
+            if(count($selected_categories) > 1){
+                $query = $query." AND i.id IN ( SELECT i.item_id FROM `ItemCategory` i LEFT JOIN `Category` c ON i.category_id = c.id WHERE ";
+
+                foreach($selected_categories as $key => $category){
+                    if($key=="search-bar")
+                        continue;
+
+                    $query = !$firstOr ? $query." OR " : $query;
+                    $firstOr = false;
+                    $query = $query."c.name="."\"".$category."\"";
+                }
+
+                $query = $query.")";
+            }
+
             $result = Database::query($query);
             return $result;
 
         }
 
-        private function getRelativeAuctionDataSearch($searchTerm){
+        private function getRelativeAuctionDataSearch($searchTerm, $request){
         	$searchTerm = array_slice($searchTerm, 0, 4);
         	$searchTerm = $this->power_set($searchTerm);
         	usort($searchTerm, array($this, 'sortString'));
@@ -50,20 +69,11 @@
         	$i = 0;
         	do{
 
-        		$auction_data= $this->getExactAuctionDataSearch($searchTerm[$i]);
+        		$auction_data= $this->getExactAuctionDataSearch($searchTerm[$i], $request);
         		$i++;
         	}while($i < count($searchTerm) - 1 && empty($auction_data));
             
-            $array_initial_size = count($auction_data);
-            for($i = 0; $i < $array_initial_size; $i++){
-
-                if($i > 0 && $auction_data[$i][3] == $auction_data[$i-1][3]){
-                    unset($auction_data[$i-1]);
-                    continue;
-                }
-
-                $auction_data[$i][4] = (Item::getItemWithId($auction_data[$i][4])) -> image_url;
-            }
+            
 
         	return $auction_data;
         }

@@ -13,3 +13,9 @@ div.pane {
 	padding:20px;
 }
 
+.categoryFilter{
+	position: fixed;
+    left: 23px;
+    top: 150px;
+}
+
