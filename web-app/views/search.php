@@ -23,7 +23,11 @@
     </div>
 
 	<div class="row">
-		<h4>Search results for "<?php echo $searchTerm?>":</h4>
+        <?php if($searchTerm != "") {?>
+		  
+            <h4>Search results for "<?php echo $searchTerm?>":</h4>
+
+        <?php }?>
 
         <div class="list-group pane">
 
