@@ -26,6 +26,12 @@
 
         }
 
+        public static function delete(string $SQLString, array $parameters = []) {
+
+            self::runQuery($SQLString, $parameters);
+
+        }
+
         public static function selectOne(string $SQLString, array $parameters = []) : array {
 
 

@@ -83,7 +83,7 @@
 
             }else if($request->matches('GET', '/auction/??/edit')){
 
-                return "You are at /auction/id/edit";  //just a dumb placeholder for sanity check
+                return "You are at /auction/id/edit"; //just a dumb placeholder for sanity check
 
             }else if($request->matches('POST', '/auction')){
 
@@ -103,11 +103,15 @@
 
             }else if($request->matches('POST','/auction/??/bid')){
 
-                return "You are at /auction/id/bid"; //just a dumb placeholder for sanity check
+                $controller = new AuctionController();
+
+                return $controller->getBidConfirmationPage($request, $session);
 
             }else if($request->matches('POST','/auction/??/watch')){
 
+                $controller = new AuctionController();
 
+                return $controller->getWatchConfirmationPage($request, $session);
 
             }else if($request->matches('GET','/user/??/feedback')){
 

@@ -225,4 +225,36 @@
 
         }
 
+
+        public function startWatchingAuction($user){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "INSERT INTO Watch (userrole_id, auction_id) VALUES (?,?);";
+
+            Database::insert($query, [$userrole_id, $auction_id]);
+        }
+
+        public function stopWatchingAuction($user){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "DELETE From Watch WHERE userrole_id=? AND auction_id=?";
+
+            Database::delete($query, [$userrole_id, $auction_id]);
+        }
+
+        public function placeBid($user, $bid){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "INSERT INTO Bid (userrole_id, auction_id, value) VALUES (?,?,?);";
+
+            Database::insert($query, [$userrole_id, $auction_id, $bid]);
+        }
+
+        // function increment_view
+        // function increment_watch
+
+
     }

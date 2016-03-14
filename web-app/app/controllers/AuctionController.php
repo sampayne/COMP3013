@@ -4,6 +4,7 @@
 
     use App\Utility\{Request, Session, View, Database};
     use App\Model\User;
+    use App\Model\Auction;
     use App\Model\ItemCategory;
 
     use App\Utility\Creator\AuctionCreator;
@@ -14,11 +15,17 @@
         public function getAuction(Request $request, Session $session) : string {
 
         	$auction_id = end($request->url_array);
-        	$auction_data = $this->getAuctionData($auction_id);
+            $auction_data = $this->getAuctionData($auction_id);
+
 
         	if(!empty($auction_data)){
 
+                $this->setWatchPreferences($auction_data, $auction_id, $session);
+                $this->setMinimumPriceToBid($auction_data, $auction_id); 
         		$auction_data[0]["auction_exists"] = true;
+                $auction_data[0]["auction"] = Auction::getAuctionWithId(intval($auction_id));
+                $auction_data[0]["expired"] = (new \DateTime() > new \DateTime($auction_data[0]["auction"]->end_date)) ? false : true;
+                $auction_data[0]["items"] = $auction_data[0]["auction"]->getItems();
             	return (new View('auction', $auction_data[0]))->render();
 
             }else{
@@ -28,7 +35,34 @@
 
         }
 
-        private function getAuctionData($id) : string {
+        public function getWatchConfirmationPage(Request $request, Session $session) : string{
+            
+            $data = array();
+            $this->setWatchConfirmation($data, $session, $request);
+            return (new View('watch_auction_confirmation', $data))->render();
+        }
+
+        public function getBidConfirmationPage(Request $request, Session $session) : string{
+            
+            $data = array();
+            $bid = floatval($request->post["bid-bar"]) * 100;
+            $auction_id = intval(($request->url_array)[1]);
+            
+            if($bid > $this->getHighestBid($auction_id)){
+                $data["isHighest"] = "true";
+                $current_user = $session->activeUser();
+                $current_auction = Auction::getAuctionWithId($auction_id);
+                $current_auction->placeBid($current_user, $bid);
+            }
+
+            else{
+                $data["isHighest"] = "false";
+            }
+
+            return (new View('bid_auction_confirmation', $data))->render();
+        }
+
+        private function getAuctionData($id) {
 
             $result = Database::query('SELECT * FROM Auction WHERE id = ?', [$id]);
             return $result;
@@ -48,6 +82,19 @@
             }
 
             return  (new View('create_auction', ['user'=>$session->activeUser(), 'item_categories' => ItemCategory::all()]))->render();
+
+        }
+
+        public function getHighestBid($auction_id){
+
+            $current_auction = Auction::getAuctionWithId(intval($auction_id));
+            $bid = intval($current_auction->getHighestBid());
+            $starting_price = $current_auction->starting_price;
+
+            if($bid  < $starting_price)
+                $bid = $starting_price - 1;  
+
+            return $bid;
 
         }
 
@@ -131,6 +178,50 @@
             }
 
             return $merged_items;
+        }
+
+        private function setWatchPreferences(&$auction_data, $auction_id, $session) : bool{
+            $auction_data[0]["isUserBuyer"] = false;
+            $auction_data[0]["isWatched"] = false;
+
+            if($session->userIsLoggedIn()){
+                $current_user = $session->activeUser();
+                $auction_data[0]["isUserBuyer"] = $current_user->isBuyer();
+                $test = $current_user->getLiveWatchedAuctions();
+
+                foreach ($test as $watched_auction){
+
+                    if($watched_auction->id == $auction_id){
+                        $auction_data[0]["isWatched"] = true;
+                        break;
+                    }
+                }
+            }
+
+            return $auction_data[0]["isWatched"];
+        }
+
+        private function setMinimumPriceToBid(&$auction_data, $auction_id){   
+
+            $auction_data[0]["min_bid"] = ($this->getHighestBid($auction_id) + 1) / 100;
+            $auction_data[0]["starting_price"] = $auction_data[0]["starting_price"] / 100;
+
+        }
+
+        private function setWatchConfirmation(&$data, $session, $request){
+            $current_user = $session->activeUser();
+            $current_auction = Auction::getAuctionWithId(intval(($request->url_array)[1]));
+
+            $data["watch"] = $request->post["watch"];
+
+            if($data["watch"] == "1"){
+                $current_auction->startWatchingAuction($current_user);
+            }
+
+            elseif($data["watch"] == "0"){
+                $current_auction->stopWatchingAuction($current_user);
+            }
+
         }
 
     }
