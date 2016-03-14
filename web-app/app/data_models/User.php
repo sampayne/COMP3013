@@ -108,6 +108,10 @@
             return Auction::getCompletedBidAuctionsForUser($this->buyerID());
         }
 
+        public function getWonAuctions() : array {
+            return Auction::getPercentageAuctionsWonForUser($this->buyerID());
+        }
+
         public function getSellerFeedback() : array {
             return $this->isSeller() ? SellerFeedback::getFeedbackForUser($this->sellerID()) : [];
         }
@@ -142,6 +146,7 @@
         public function getPercentageAuctionsWon() : int {
 
             return Auction::getPercentageAuctionsWonForUser($this->buyerID());
+
         }
 
         public function getRecommendations() : array {

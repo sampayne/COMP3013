@@ -90,19 +90,20 @@
             return self::processAuctionsResultSetSql($results);
         }
 
+        public static function getWonAuctionsForUser(int $userrole_id) : array {
+            $results = Database::query('SELECT * FROM AuctionsWinners WHERE userrole_id_winner = ?', 
+                [$userrole_id]);
+            return self::processAuctionsResultSetSql($results);
+
+        }
+      
         public static function getPercentageAuctionsWonForUser(int $userrole_id) : int {
 
-            $completedAuctions = self::getCompletedAuctionsForUser($userrole_id);
+            $completedAuctions = self::getCompletedBidAuctionsForUser($userrole_id);
             $countAuctions = count($completedAuctions);
             if($countAuctions == 0)
                 return 0;
-            $countWon = 0;
-            foreach($completedAuctions as $auction) {
-                if($auction->getHighestBid() == $auction->getHighestBidForUser($userrole_id)) {
-                    $countWon++;
-                }
-            }
-
+            $countWon = count(self::getWonAuctionsForUser($userrole_id));
             return (int) ($countWon / $countAuctions * 100);
         }
 
@@ -189,34 +190,24 @@
 
         public static function getRecommendationsForUser(int $userrole_id) : array {
 
-            //version 1
-           /* $items = Item::getWonItemsForUser($userrole_id);
-            $auctions = [];
-            foreach($items as $item) {
+            /*
+                recommend auctions that users who bid on the same auctions as me bid on 
+            */
+            $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN 
+                (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN 
+                (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?)) 
+                AND Auction.end_date > now() AND NOT EXISTS 
+                (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
 
-                $categories = $item->getCategories();
-                foreach($categories as $category) {
+           
+            if(count($results) == 0) {
+            /* 
+                if on the auctions the user bid he was the only bidder 
+                give suggestions from top categories
 
-                    $itemsForCategory = $category->getItems();
-                    foreach($itemsForCategory as $itemForCategory) {
-
-                        $auctions[$itemForCategory->auction_id] = Auction::getAuctionWithId($itemForCategory->auction_id);
-                    }
-                }
-
-            }
-
-            return array_values($auctions);
-            
-            //version 2
-            $result = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory WHERE ItemCategory.category_id IN (SELECT DISTINCT(ItemCategory.category_id) FROM ItemCategory WHERE ItemCategory.item_id IN 
-            (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
-            WHERE AuctionsWinners.userrole_id_winner = 72)))
-            AND Auction.end_date > now()  
-            ORDER BY Auction.id ASC'); */
-
-            $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id 
-                WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN 
+            */
+                $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id 
+                    WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN 
                     (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN 
                     (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
                     WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems 
@@ -227,6 +218,8 @@
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()  
                     ORDER BY Auction.id ASC', [$userrole_id]);
+
+            }
 
             return self::processAuctionsResultSetSql($results);
 
