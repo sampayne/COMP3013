@@ -16,6 +16,13 @@
 
         	$auction_id = end($request->url_array);
             $auction_data = $this->getAuctionData($auction_id);
+            $current_auction = Auction :: getAuctionWithId(intval($auction_id));
+
+            if($session->userIsLoggedIn())
+                $current_auction->incrementViewsNumber($session->activeUser());
+
+            else
+                $current_auction->incrementViewsNumber(NULL);
 
 
         	if(!empty($auction_data)){

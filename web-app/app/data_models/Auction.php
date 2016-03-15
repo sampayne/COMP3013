@@ -253,8 +253,28 @@
             Database::insert($query, [$userrole_id, $auction_id, $bid]);
         }
 
-        // function increment_view
-        // function increment_watch
+        public function incrementViewsNumber($user){
+            $auction_id = $this->id;
+
+            if(!is_null($user)){
+
+                if(!is_null($user->buyerID())){
+                    $userrole_id = $user->buyerID();
+                }
+
+                else{
+                    $userrole_id = $user->sellerID();
+                }
+
+
+            }
+            else{
+                $userrole_id = -1;
+            }
+
+            $query = "INSERT INTO View (userrole_id, auction_id) VALUES (?,?);";
+            Database::insert($query, [$userrole_id, $auction_id]);
+        }
 
 
     }
