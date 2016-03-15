@@ -13,6 +13,15 @@
 				    		<div class= "col-md-5 col-md-offset-1 shadedPanel">
 				    			<p>Description: <span class="descriptionText">"<?php echo $description?> "</span></p><br>
 				    			<p>End Date: <?php echo $auction->end_date ?></p><br>
+
+				    			<?php if(!$expired){ ?>
+				    				<p>Status: <span style="color:red;">Closed</span></p><br>
+
+				    			<?php }else{?>
+				    				<p>Status: <span style="color:green;">Open</span></p><br>
+
+				    			<?php }?>
+
 				    			<p>Starting Price: <span style="color:green;"><?php echo $starting_price?>£</span></p><br>
 								<p>Minimum Price To Bid: <span style="color:green;"><?php echo $min_bid?>£</span></p>
 
