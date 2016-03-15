@@ -1,3 +1,21 @@
+<?php if(!is_null($message)): ?>
+
+    <div class="alert alert-success" role="alert">
+        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        <?= $message ?>
+    </div>
+
+<?php endif ?>
+
+<?php if(!is_null($error)): ?>
+
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <?= $error ?>
+    </div>
+
+<?php endif ?>
+
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">

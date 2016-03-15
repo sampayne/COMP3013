@@ -33,6 +33,8 @@
                 $auction_data[0]["auction"] = Auction::getAuctionWithId(intval($auction_id));
                 $auction_data[0]["expired"] = (new \DateTime() > new \DateTime($auction_data[0]["auction"]->end_date)) ? false : true;
                 $auction_data[0]["items"] = $auction_data[0]["auction"]->getItems();
+                $auction_data[0]['message'] = (isset($request->get['message'])) ? $request->get['message'] : NULL;
+                $auction_data[0]['error'] = (isset($request->get['error'])) ? $request->get['error'] : NULL;
             	return (new View('auction', $auction_data[0]))->render();
 
             }else{
@@ -45,8 +47,15 @@
         public function getWatchConfirmationPage(Request $request, Session $session) : string{
             
             $data = array();
+            $auction_id = intval(($request->url_array)[1]);
             $this->setWatchConfirmation($data, $session, $request);
-            return (new View('watch_auction_confirmation', $data))->render();
+
+            if($data["watch"] == 1)
+                return $this->redirectTo('/auction/'.$auction_id.'?message='.urlencode('You are now watching this auction!'));
+
+            else{
+                return $this->redirectTo('/auction/'.$auction_id.'?message='.urlencode('You have succesfully stopped watching this auction!'));
+            }
         }
 
         public function getBidConfirmationPage(Request $request, Session $session) : string{
@@ -66,7 +75,13 @@
                 $data["isHighest"] = "false";
             }
 
-            return (new View('bid_auction_confirmation', $data))->render();
+            if($data["isHighest"] == "true"){
+                return $this->redirectTo('/auction/'.$auction_id.'?message='.urlencode('Congratulations, you have now placed the highest bid from this auction!'));
+            }
+
+            else{
+                return $this->redirectTo('/auction/'.$auction_id.'?error='.urlencode('Sorry, your bid was not placed as it was lower than the minimum required bid'));
+            }
         }
 
         private function getAuctionData($id) {
