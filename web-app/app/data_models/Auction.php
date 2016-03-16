@@ -123,7 +123,7 @@
             if($this->highest_bid == -1) {
 
                 $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$this->id]);
-                $this->highest_bid = (int) $result[0]['max_bid'];
+                $this->highest_bid = $result[0]['max_bid'];
             }
 
             return (int) $this->highest_bid;
@@ -164,20 +164,10 @@
             if($this->watch_count == -1) {
 
                 $result = Database::query('SELECT count(*) as watch_count FROM Watch WHERE auction_id = ?', [$this->id]);
-                $this->watch_count = (int) $result[0]['watch_count'];
+                $this->watch_count = $result[0]['watch_count'];
             }
 
             return (int) $this->watch_count;
-        }
-
-        public function hasBuyerFeedback(): bool {
-
-            return BuyerFeedback::existsForAuctionID($this->id);
-        }
-
-        public function hasSellerFeedback() : bool {
-
-            return SellerFeedback::existsForAuctionID($this->id);
         }
 
         public function getItems() : array {

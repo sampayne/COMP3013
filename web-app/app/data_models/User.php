@@ -117,14 +117,7 @@
         }
 
         public function getSellerMeanRating() : array {
-
-            $results =  SellerFeedback::getMeanRatingForUser($this->sellerID());
-
-            $results['overall'] = array_sum($results)/count($results);
-
-            $results = array_map(function($i){ return round($i,1);  }, $results);
-
-            return $results;
+            return SellerFeedback::getMeanRatingForUser($this->sellerID());
         }
 
         public function getBuyerFeedback() : array {

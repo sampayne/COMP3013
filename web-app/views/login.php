@@ -1,92 +1,38 @@
-<div class="row">
+<p>Login Form:</p>
 
-    <div class="col-md-6">
+<?php if(isset($errors)) :?>
 
-        <div class="panel panel-default">
+    <p>!!! <?= $errors ?> !!!</p>
 
-            <div class="panel-heading">
-                <h2 class="panel-title">Login</h2>
-            </div>
-            <div class="panel-body">
+<?php endif ?>
 
-                <?php if(isset($login_error)) :?>
-                    <div class="alert alert-danger" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
- <?= $login_error ?></div>
-                <?php endif ?>
+<form method="post" action="/login">
+    <input type="email" name="email" />
+    <input type="password" name="password" />
 
-                <form class="form-horizontal" method="post" action="/login">
-                    <div class="form-group">
-                        <label class="col-md-3 control-label">Email Address</label>
-                        <div class="col-md-9">
-                            <input class="form-control" type="email" name="email" placeholder="Email Address..."/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-3 control-label" >Password</label>
-                        <div class="col-md-9">
-                            <input class="form-control" type="password" name="password" placeholder="Passsword..."/>
-                        </div>
-                    </div>
-                      <div class="form-group">
+    <button type="submit">Login</button>
+</form>
 
-                    <div class="col-md-offset-3 col-md-7">
-                        <button type="submit" class="btn btn-primary">Login</button>
-                    </div>                    </div>
-                </form>
+<p>Signup Form:</p>
 
-            </div>
-        </div>
-    </div>
+    <?php if(isset($signup_errors)) :?>
 
+        <p>!!! <?= $signup_errors ?> !!!</p>
 
-    <div class="col-md-6">
+    <?php endif ?>
 
-        <div class="panel panel-default">
+<form method="post" action="/signup">
+    <input type="email" name="email" />
+    <input type="password" name="password" />
+    <input type="password" name="confirm_password" />
 
-            <div class="panel-heading">
-                <h2 class="panel-title">Sign Up</h2>
-            </div>
-            <div class="panel-body">
+    <label>Register as Buyer:</label>
+    <input type="hidden" name="buyer_account" value="0">
+    <input type="checkbox" name="buyer_account" value="1">
 
-                <?php if(isset($signup_error)) :?>
-                    <div class="alert alert-danger" role="alert">                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-<?= $signup_error ?></div>
-                <?php endif ?>
+    <label>Register as Seller:</label>
+    <input type="hidden" name="seller_account" value="0">
+    <input type="checkbox" name="seller_account" value="1">
 
-                <form method="post" action="/signup">
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Email Address</label>
-                            <input class="form-control"  type="email" name="email" placeholder="Email Address..." />
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Password</label>
-                            <input class="form-control"  type="password" name="password" placeholder="Password..." />
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Confirm Password</label>
-                            <input class="form-control"  type="password" name="confirm_password" placeholder="Confirm Password..."/>
-                        </div>
-
-                        <div class="checkbox">
-                            <label>
-                                <input type="hidden" name="buyer_account" value="0">
-                                <input value="1" name="buyer_account" type="checkbox"> Register as Buyer
-                            </label>
-                        </div>
-
-                        <div class="checkbox">
-                            <label>
-                                <input type="hidden" name="seller_account" value="0">
-                                <input value="1" name="seller_account" type="checkbox"> Register as Seller
-                            </label>
-                        </div>
-
-
-
-                        <button type="submit" class="btn btn-primary">Sign Up</button>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
+    <button type="submit">Signup</button>
+</form>
