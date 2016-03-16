@@ -29,10 +29,10 @@
 
                 return (new View('login', ['errors'=> 'Form incomplete']))->render();
             }
+            
+            $results = Database::query('SELECT id, password FROM User WHERE email = ?', [$request->post['email']]);
 
-            $results = Database::query('SELECT id FROM User WHERE email = ? AND password = ?', [$request->post['email'],$request->post['password']]);
-
-            if(isset($results[0]['id']) && $results[0]['id'] > 0){
+            if(password_verify($request->post['password'], $results[0]['password'])){
 
                 $id = (int) $results[0]['id'];
 
