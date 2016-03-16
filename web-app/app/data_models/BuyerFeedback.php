@@ -26,23 +26,35 @@
 
             $this->id = $sqlResultRow['id'];
             $this->content = $sqlResultRow['content'];
-            $this->rating = $sqlResultRow['rating'];
+            $this->rating = (float) $sqlResultRow['rating'];
             $this->auction_id = $sqlResultRow['auction_id'];
             $this->created_at = $sqlResultRow['created_at'];
             $this->update_at = $sqlResultRow['updated_at'];
 
         }
 
-        public static function getFeedbackWithId(int $id) {
+        public function mean() : float {
 
-            $results = Database::query('SELECT * FROM BuyerFeedback WHERE id = ?', [$id]);
-            return new SellerFeedback($results);
+            return $this->rating;
+
         }
 
-        public static function getFeedbackWithAuctionId(int $auction_id) {
+        public static function existsForAuctionID(int $auction_id) : bool {
+
+            return Database::checkExists($auction_id, 'auction_id', 'BuyerFeedback');
+
+        }
+
+        public static function getFeedbackWithId(int $id) : BuyerFeedback {
+
+            $results = Database::query('SELECT * FROM BuyerFeedback WHERE id = ?', [$id]);
+            return new BuyerFeedback($results);
+        }
+
+        public static function getFeedbackWithAuctionId(int $auction_id) : BuyerFeedback {
 
             $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id = ?', [$auction_id]);
-            return new SellerFeedback($results);
+            return new BuyerFeedback($results);
         }
 
         private static function processFeedbackResultSetSql(array $sql_results) : array {
@@ -56,10 +68,10 @@
         }
 
         public static function getFeedbackForUser(int $userrole_id) : array {
-            
-            $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id 
+
+            $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id
                 IN (SELECT id FROM AuctionsWinners WHERE userrole_id_winner = ?)', [$userrole_id]);
-            
+
             return self::processFeedbackResultSetSql($results);
 
         }
@@ -69,7 +81,7 @@
             $results = Database::query('SELECT avg(rating) as mean_rating,
                                                count(*) as no_feedback
                                                FROM BuyerFeedback WHERE auction_id IN
-                (SELECT b.auction_id FROM (SELECT DISTINCT(auction_id) FROM Bid WHERE userrole_id = ?) as b 
+                (SELECT b.auction_id FROM (SELECT DISTINCT(auction_id) FROM Bid WHERE userrole_id = ?) as b
                 JOIN (SELECT id FROM Auction) as a ON b.auction_id = a.id)', [$userrole_id]);
             return $results[0];
 

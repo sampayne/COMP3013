@@ -16,12 +16,12 @@
             $this->name = $sqlResultRow['name'];
             $this->description = $sqlResultRow['description'];
             $this->image_url = $sqlResultRow['image_url'];
-            $this->auction_id = (int) $sqlResultRow['auction_id'];
+            $this->auction_id = $sqlResultRow['auction_id'];
             $this->created_at = $sqlResultRow['created_at'];
             $this->update_at = $sqlResultRow['updated_at'];
         }
 
-        public static function fromSQLRows(array $rows){
+        public static function fromSQLRows(array $rows) : array{
 
             $items = [];
 
@@ -35,14 +35,14 @@
 
         }
 
-        public static function getItemWithId($id) : Item {
+        public static function getItemWithId(int $id) : Item {
 
             $results = Database::query('SELECT * FROM Item WHERE id = ?', [$id]);
 
             return new Item($results[0]);
         }
 
-        public static function getItemsForAuction($auction_id) : array {
+        public static function getItemsForAuction(int $auction_id) : array {
 
             $results = Database::query('SELECT * FROM Item WHERE auction_id = ?', [$auction_id]);
 
@@ -61,7 +61,7 @@
         }
 
         public static function getItemsForCategory(int $category_id) : array {
-            $results = Database::query('SELECT Item.* FROM ItemCategory 
+            $results = Database::query('SELECT Item.* FROM ItemCategory
                 JOIN Item ON Item.id = ItemCategory.item_id WHERE ItemCategory.category_id = ?', [$category_id]);
             return self::fromSQLRows($results);
 
@@ -70,10 +70,10 @@
         public static function getWonItemsForUser(int $userrole_id) : array {
 
             $results = Database::query('SELECT Item.*
-                FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
+                FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id
                 WHERE userrole_id_winner = ?', [$userrole_id]);
             return self::fromSQLRows($results);
-            
+
         }
 
     }

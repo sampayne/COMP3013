@@ -67,7 +67,7 @@
             return null;
         }
 
-        public function activeUser() : User {
+        public function activeUser()  {
 
             return $this->user;
         }

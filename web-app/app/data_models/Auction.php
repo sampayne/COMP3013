@@ -91,12 +91,12 @@
         }
 
         public static function getWonAuctionsForUser(int $userrole_id) : array {
-            $results = Database::query('SELECT * FROM AuctionsWinners WHERE userrole_id_winner = ?', 
+            $results = Database::query('SELECT * FROM AuctionsWinners WHERE userrole_id_winner = ?',
                 [$userrole_id]);
             return self::processAuctionsResultSetSql($results);
 
         }
-      
+
         public static function getPercentageAuctionsWonForUser(int $userrole_id) : int {
 
             $completedAuctions = self::getCompletedBidAuctionsForUser($userrole_id);
@@ -118,12 +118,61 @@
             return $auctions;
         }
 
+        public function isFinished() : bool {
+
+            $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date > NOW()', [$this->id]);
+
+            return isset($results[0]) && $results[0] == 1;
+
+        }
+
+        public function buyer() : User {
+
+            $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
+                                        FROM Auction as au
+                                        JOIN Bid as b
+                                        ON b.auction_id = au.id
+                                        JOIN UserRole AS ur
+                                        ON b.userrole_id = ur.id
+                                        WHERE au.id = ? AND b.created_at < au.end_date AND au.end_date < NOW()', [$this->id]);
+            if(!isset($results[0])){
+                return NULL;
+            }
+
+            return new User($results[0]);
+
+        }
+
+        public function seller() : User {
+
+            return User::fromUserRoleID($this->userrole_id);
+
+        }
+
+        public function highestBidder() : User {
+
+            $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
+                                        FROM Auction as au
+                                        JOIN Bid as b
+                                        ON b.auction_id = au.id
+                                        JOIN UserRole AS ur
+                                        ON b.userrole_id = ur.id
+                                        WHERE au.id = ? AND b.created_at < au.end_date AND au.end_date > NOW()', [$this->id]);
+            if(!isset($results[0])){
+                return NULL;
+            }
+
+            return new User($results[0]);
+
+
+        }
+
         public function getHighestBid() : int {
 
             if($this->highest_bid == -1) {
 
                 $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$this->id]);
-                $this->highest_bid = $result[0]['max_bid'];
+                $this->highest_bid = (int) $result[0]['max_bid'];
             }
 
             return (int) $this->highest_bid;
@@ -164,10 +213,20 @@
             if($this->watch_count == -1) {
 
                 $result = Database::query('SELECT count(*) as watch_count FROM Watch WHERE auction_id = ?', [$this->id]);
-                $this->watch_count = $result[0]['watch_count'];
+                $this->watch_count = (int) $result[0]['watch_count'];
             }
 
             return (int) $this->watch_count;
+        }
+
+        public function hasBuyerFeedback(): bool {
+
+            return BuyerFeedback::existsForAuctionID($this->id);
+        }
+
+        public function hasSellerFeedback() : bool {
+
+            return SellerFeedback::existsForAuctionID($this->id);
         }
 
         public function getItems() : array {
@@ -188,35 +247,36 @@
 
         }
 
+
         public static function getRecommendationsForUser(int $userrole_id) : array {
 
             /*
-                recommend auctions that users who bid on the same auctions as me bid on 
+                recommend auctions that users who bid on the same auctions as me bid on
             */
-            $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN 
-                (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN 
-                (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?)) 
-                AND Auction.end_date > now() AND NOT EXISTS 
+            $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN
+                (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
+                (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?))
+                AND Auction.end_date > now() AND NOT EXISTS
                 (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
 
-           
+
             if(count($results) == 0) {
-            /* 
-                if on the auctions the user bid he was the only bidder 
+            /*
+                if on the auctions the user bid he was the only bidder
                 give suggestions from top categories
 
             */
-                $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id 
-                    WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN 
-                    (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN 
-                    (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
-                    WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems 
-                    ON ItemCategory.item_id = WonItems.id 
+                $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id
+                    WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN
+                    (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN
+                    (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id
+                    WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems
+                    ON ItemCategory.item_id = WonItems.id
                     GROUP BY ItemCategory.category_id
                     ORDER BY no_items
                     LIMIT 2) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
-                    AND Auction.end_date > now()  
+                    AND Auction.end_date > now()
                     ORDER BY Auction.id ASC', [$userrole_id]);
 
             }
@@ -229,7 +289,7 @@
         public function startWatchingAuction($user){
 
             $userrole_id = ($user->buyerID());
-            $auction_id = $this->id; 
+            $auction_id = $this->id;
             $query = "INSERT INTO Watch (userrole_id, auction_id) VALUES (?,?);";
 
             Database::insert($query, [$userrole_id, $auction_id]);
@@ -238,7 +298,7 @@
         public function stopWatchingAuction($user){
 
             $userrole_id = ($user->buyerID());
-            $auction_id = $this->id; 
+            $auction_id = $this->id;
             $query = "DELETE From Watch WHERE userrole_id=? AND auction_id=?";
 
             Database::delete($query, [$userrole_id, $auction_id]);
@@ -247,7 +307,7 @@
         public function placeBid($user, $bid){
 
             $userrole_id = ($user->buyerID());
-            $auction_id = $this->id; 
+            $auction_id = $this->id;
             $query = "INSERT INTO Bid (userrole_id, auction_id, value) VALUES (?,?,?);";
 
             Database::insert($query, [$userrole_id, $auction_id, $bid]);
