@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
     ini_set('display_errors', 'On');
     ini_set('display_startup_errors', 'On');
@@ -10,7 +10,7 @@
 
     session_start();
 
-    $request = new App\Utility\Request('/', $_SERVER, $_GET, $_POST, $_FILES, $_SESSION ?? [], $_ENV, $_COOKIE, $_REQUEST);
+    $request = new App\Utility\Request('/', $_SERVER, $_GET, $_POST, $_FILES, isset($_SESSION) ? $_SESSION : [], $_ENV, $_COOKIE, $_REQUEST);
 
     $handler = new App\Utility\RequestHandler();
 

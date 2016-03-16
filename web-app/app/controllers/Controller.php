@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
     namespace App\Controller;
 
@@ -6,7 +6,7 @@
 
         public function __construct(){}
 
-        public function redirectTo(string $url) : string {
+        public function redirectTo($url) {
 
             header('Location: '.$url);
             return '';

@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility;
+<?php namespace App\Utility;
 
     use \PDO as PDO;
     use \PDOStatement as PDOStatement;
@@ -14,25 +12,25 @@
         const PASSWORD      = '9Z3-7h3-2LJ-z8Q';
         const Database      = 'comp3013';
 
-        public static function testConnection() : bool{
+        public static function testConnection() {
 
             $connection = self::connect();
             return !is_null($connection);
         }
 
-        public static function insert(string $SQLString, array $parameters = []) {
+        public static function insert($SQLString, array $parameters = []) {
 
             self::runQuery($SQLString, $parameters);
 
         }
 
-        public static function delete(string $SQLString, array $parameters = []) {
+        public static function delete($SQLString, array $parameters = []) {
 
             self::runQuery($SQLString, $parameters);
 
         }
 
-        public static function selectOne(string $SQLString, array $parameters = []) : array {
+        public static function selectOne($SQLString, array $parameters = []) {
 
 
             $results = self::query($SQLString, $parameters);
@@ -48,13 +46,13 @@
 
         }
 
-        public static function select(string $SQLString, array $parameters = []) : array {
+        public static function select($SQLString, array $parameters = []) {
 
             return self::query($SQLString, $parameters);
 
         }
 
-        public static function query(string $SQLString, array $parameters = []) : array {
+        public static function query($SQLString, array $parameters = []) {
 
             if ($statement = self::runQuery($SQLString, $parameters)){
 
@@ -64,7 +62,7 @@
             return [];
         }
 
-        private static function connect() : PDO {
+        private static function connect() {
 
             if(is_null(self::$connection)){
 
@@ -82,14 +80,14 @@
             return self::$connection;
         }
 
-        public static function lastID() : int {
+        public static function lastID() {
 
             $connection = self::connect();
 
             return (int) $connection->lastInsertId();
         }
 
-        private static function runQuery(string $SQLString, array $parameters = []) : PDOStatement {
+        private static function runQuery($SQLString, array $parameters = []) {
 
             $connection = self::connect();
 
@@ -114,21 +112,21 @@
             }
         }
 
-    	public static function countQuery(string $SQLString, $parameters = []) : int {
+    	public static function countQuery($SQLString, array $parameters = []) {
 
     		$results = self::query($SQLString, $parameters);
 
-            return $results[0][0] ?? 0;
+            return isset($results[0][0]) ? $results[0][0] : 0;
     	}
 
-    	public static function existsQuery(string $SQLString, array $parameters = []) : bool {
+    	public static function existsQuery($SQLString, array $parameters = []) {
 
     		$results = self::query($SQLString,$parameters);
 
-    		return (bool) $results[0][0] ?? false;
+    		return (bool) (isset($results[0][0]) ? $results[0][0] : false);
     	}
 
-        public static function checkExists(string $value, string $field, string $table) : bool {
+        public static function checkExists( $value, $field, $table)  {
 
             $SQLString = "SELECT EXISTS (SELECT 1 FROM ".$table." WHERE ".$field." = ? LIMIT 1)";
 

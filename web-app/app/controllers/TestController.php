@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
     namespace App\Controller;
 
-    use App\Utility\{Request, Session, Database};
+    use App\Utility\Request;
+    use App\Utility\Session;
+    use App\Utility\Database;
 
     class TestController extends Controller{
 
-        public function runTest(Request $request, Session $session) : string {
+        public function runTest(Request $request, Session $session) {
 
             $connect_test = Database::testConnection();
 

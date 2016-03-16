@@ -10,7 +10,7 @@
 	<?php $counter = 0;?>
 	<?php foreach($categories as $category){ ?>
 
-			<?php if($counter % 2 == 0) {?>	
+			<?php if($counter % 2 == 0) {?>
 				<div class="row">
 					<form method="get" action="/search">
 						<input type="hidden" name=<?php echo "\"".($category->name)."\"" ?> value=<?php echo "\"".($category->name)."\"" ?>>
@@ -28,8 +28,8 @@
 				</div>
 				<br><br>
 			<?php }?>
-		
+
 		<?php $counter = $counter + 1; ?>
 	<?php }?>
-	
+
 </div>

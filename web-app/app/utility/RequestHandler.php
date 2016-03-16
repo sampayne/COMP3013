@@ -1,11 +1,17 @@
-<?php declare(strict_types=1);
+<?php namespace App\Utility;
 
-    namespace App\Utility;
-
-    use App\Utility\{Request, View};
+    use App\Utility\Request;
+    use App\Utility\View;
     use App\Utility\Session as Session;
 
-    use App\Controller\{ AuctionController, TestController, LoginController, DashboardController, HomeController, SignupController, SearchController, FeedbackController };
+    use App\Controller\AuctionController;
+    use App\Controller\TestController;
+    use App\Controller\LoginController;
+    use App\Controller\DashboardController;
+    use App\Controller\HomeController;
+    use App\Controller\SignupController;
+    use App\Controller\SearchController;
+    use App\Controller\FeedbackController;
 
     class RequestHandler {
 
@@ -15,7 +21,7 @@
 
         }
 
-        public function handleRequest(Request $request) : string {
+        public function handleRequest(Request $request)  {
 
             $session = new Session($request);
 

@@ -1,19 +1,8 @@
-<?php declare(strict_types=1);
+<?php namespace App\Model;
 
-    namespace App\Model;
     use App\Utility\Database;
 
     class BuyerFeedback {
-
-
-        /*
-
-            REMINDER TO SAM:
-
-            Buyer Feedback is Feedback FOR BUYERS
-
-
-        */
 
         public $id;
         public $content;
@@ -33,31 +22,31 @@
 
         }
 
-        public function mean() : float {
+        public function mean() {
 
             return $this->rating;
 
         }
 
-        public static function existsForAuctionID(int $auction_id) : bool {
+        public static function existsForAuctionID($auction_id) {
 
             return Database::checkExists($auction_id, 'auction_id', 'BuyerFeedback');
 
         }
 
-        public static function getFeedbackWithId(int $id) : BuyerFeedback {
+        public static function getFeedbackWithId($id) {
 
             $results = Database::query('SELECT * FROM BuyerFeedback WHERE id = ?', [$id]);
             return new BuyerFeedback($results);
         }
 
-        public static function getFeedbackWithAuctionId(int $auction_id) : BuyerFeedback {
+        public static function getFeedbackWithAuctionId($auction_id) {
 
             $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id = ?', [$auction_id]);
             return new BuyerFeedback($results);
         }
 
-        private static function processFeedbackResultSetSql(array $sql_results) : array {
+        private static function processFeedbackResultSetSql(array $sql_results) {
 
             $feedback = Array();
             foreach($sql_results as $row) {
@@ -67,7 +56,7 @@
 
         }
 
-        public static function getFeedbackForUser(int $userrole_id) : array {
+        public static function getFeedbackForUser($userrole_id) {
 
             $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id
                 IN (SELECT id FROM AuctionsWinners WHERE userrole_id_winner = ?)', [$userrole_id]);
@@ -76,7 +65,7 @@
 
         }
 
-        public static function getMeanRatingForUser(int $userrole_id) : array {
+        public static function getMeanRatingForUser($userrole_id) {
             //slightly wrong as above
             $results = Database::query('SELECT avg(rating) as mean_rating,
                                                count(*) as no_feedback

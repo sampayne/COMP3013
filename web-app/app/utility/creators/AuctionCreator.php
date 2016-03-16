@@ -1,12 +1,10 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility\Creator;
+<?php namespace App\Utility\Creator;
 
     use App\Utility\Database;
 
     class AuctionCreator extends Creator {
 
-        public function saveInput(array $input) : int {
+        public function saveInput(array $input) {
 
             $errors = $this->validateInput($input);
 
@@ -30,7 +28,7 @@
 
         }
 
-        public function validateInput(array $input) : array {
+        public function validateInput(array $input) {
 
             $this->current_input = $input;
 

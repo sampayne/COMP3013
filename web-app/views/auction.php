@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
-            
+
 				<?php if($auction_exists){ ?>
 					<div class="panel-heading"><h1 class="panel-title"><?= $name ?></h1></div>
 				    <div class="panel-body">
@@ -64,9 +64,9 @@
 
 				    		<div class= "col-md-5 col-md-offset-1">
 				    			<ul class="list-group" id="accordion" role="tablist" aria-multiselectable="true">
-								  
+
 								  	<?php $itemCounter = 0;
-								  	      foreach($items as $item){ 
+								  	      foreach($items as $item){
 								  	      	$itemCounter = $itemCounter + 1;?>
 
 									  <li class="list-group-item">
@@ -95,11 +95,11 @@
 									  </div>
 
 									<?php }?>
-								  
+
 								</ul>
-								
+
 								<?php if($isUserBuyer && $expired){ ?>
-								
+
 									<form method="post" action=<?php echo("/auction/".$id."/watch");?>>
 
 										<?php if($isWatched){ ?>
@@ -121,7 +121,7 @@
 
 
 				<?php }else{ ?>
-					
+
 					<div class="panel-body">
 						<div class="jumbotron">
 							<h1 style="text-align: center">Sorry, auction not found...</h1>

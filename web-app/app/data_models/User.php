@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
     namespace App\Model;
 
@@ -13,13 +13,13 @@
         private $buyer_role_id = NULL;
         private $seller_role_id = NULL;
 
-        public function __construct(int $id){
+        public function __construct($id){
 
             $this->id = $id;
 
         }
 
-        public static function fromUserRoleID(int $userrole_id) : User {
+        public static function fromUserRoleID($userrole_id) {
 
             $results = Database::selectOne('SELECT id, email FROM User WHERE id IN (SELECT user_id FROM UserRole WHERE id = ?)', [$userrole_id]);
 
@@ -35,7 +35,7 @@
 
         }
 
-        public static function fromID(int $id) : User {
+        public static function fromID($id) {
 
             $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
 
@@ -68,7 +68,7 @@
             }
         }
 
-        public function sellerID() : int {
+        public function sellerID() {
 
             if(is_null($this->seller_role_id)){
                 $this->loadUserRoles();
@@ -77,7 +77,7 @@
             return (int) $this->seller_role_id;
         }
 
-        public function buyerID() : int {
+        public function buyerID() {
 
             if(is_null($this->buyer_role_id)){
                 $this->loadUserRoles();
@@ -87,52 +87,52 @@
 
         }
 
-        public function isSeller() : bool {
+        public function isSeller() {
             return $this->sellerID() != NULL;
         }
 
-        public function isBuyer() : bool {
+        public function isBuyer() {
             return $this->buyerID() != NULL;
         }
 
-        public function getAuctions() : array {
+        public function getAuctions() {
 
             return Auction::getAuctionsForUser($this->sellerID());
         }
 
-        public function getLiveAuctions() : array {
+        public function getLiveAuctions() {
 
             return Auction::getLiveAuctionsForUser($this->sellerID());
         }
 
-        public function getCompletedAuctions() : array {
+        public function getCompletedAuctions() {
 
             return Auction::getCompletedAuctionsForUser($this->sellerID());
         }
 
-        public function getLiveWatchedAuctions() : array {
+        public function getLiveWatchedAuctions() {
 
             return Auction::getLiveWatchedAuctionsForUser($this->buyerID());
         }
 
-        public function getLiveBidAuctions() : array {
+        public function getLiveBidAuctions() {
 
             return Auction::getLiveBidAuctionsForUser($this->buyerID());
         }
 
-        public function getCompletedBidAuctions() : array {
+        public function getCompletedBidAuctions() {
             return Auction::getCompletedBidAuctionsForUser($this->buyerID());
         }
 
-        public function getWonAuctions() : array {
+        public function getWonAuctions() {
             return Auction::getPercentageAuctionsWonForUser($this->buyerID());
         }
 
-        public function getSellerFeedback() : array {
+        public function getSellerFeedback() {
             return $this->isSeller() ? SellerFeedback::getFeedbackForUser($this->sellerID()) : [];
         }
 
-        public function getSellerMeanRating() : array {
+        public function getSellerMeanRating() {
 
             $results =  SellerFeedback::getMeanRatingForUser($this->sellerID());
 
@@ -143,36 +143,36 @@
             return $results;
         }
 
-        public function getBuyerFeedback() : array {
+        public function getBuyerFeedback() {
 
             return $this->isBuyer() ? BuyerFeedback::getFeedbackForUser($this->buyerID()) : [];
         }
 
-        public function getBuyerMeanRating() : array {
+        public function getBuyerMeanRating() {
             return BuyerFeedback::getMeanRatingForUser($this->buyerID());
         }
 
-        public function getBuyerBidCount() : int {
+        public function getBuyerBidCount() {
 
             $result = Database::query("SELECT COUNT(*) AS count FROM Bid WHERE userrole_id = ?", [$this->buyerID()]);
             return (int) $result[0]['count'];
 
         }
 
-        public function getBuyerWatchCount() : int {
+        public function getBuyerWatchCount() {
 
             $result = Database::query("SELECT COUNT(*) AS count FROM Watch WHERE userrole_id = ?", [$this->buyerID()]);
             return (int) $result[0]['count'];
 
         }
 
-       public function getPercentageAuctionsWon() : int {
+       public function getPercentageAuctionsWon() {
 
             return Auction::getPercentageAuctionsWonForUser($this->buyerID());
 
         }
 
-        public function getRecommendations() : array {
+        public function getRecommendations() {
 
             return Auction::getRecommendationsForUser($this->buyerID());
 
