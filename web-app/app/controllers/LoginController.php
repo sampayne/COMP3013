@@ -1,12 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
     namespace App\Controller;
 
-    use App\Utility\{Request, Session, View, Database};
+    use App\Utility\Request;
+    use App\Utility\Session;
+    use App\Utility\View;
+    use App\Utility\Database;
 
     class LoginController extends Controller {
 
-        public function getLoginPage(Request $request, Session $session) : string {
+        public function getLoginPage(Request $request, Session $session) {
 
             if($session->userIsLoggedIn()){
 
@@ -18,7 +21,7 @@
             return $view->render();
         }
 
-        public function processLoginAttempt(Request $request, Session $session) : string {
+        public function processLoginAttempt(Request $request, Session $session) {
 
             if($session->userIsLoggedIn()){
 
@@ -29,7 +32,7 @@
 
                 return (new View('login', ['errors'=> 'Form incomplete']))->render();
             }
-            
+
             $results = Database::query('SELECT id, password FROM User WHERE email = ?', [$request->post['email']]);
 
             if(password_verify($request->post['password'], $results[0]['password'])){

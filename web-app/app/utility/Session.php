@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility;
+<?php namespace App\Utility;
 
     use App\Utility\Request;
     use App\Utility\Database;
@@ -30,28 +28,28 @@
             }
         }
 
-        private function loadActiveUserFromPost() : User {
+        private function loadActiveUserFromPost()  {
 
             $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->post['auth_token']]);
 
             return $this->loadActiveUser($user_query);
         }
 
-        private function loadActiveUserFromGet() : User {
+        private function loadActiveUserFromGet()  {
 
             $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->get['auth_token']]);
 
             return $this->loadActiveUser($user_query);
         }
 
-        private function loadActiveUserFromSession() : User {
+        private function loadActiveUserFromSession()  {
 
             $user_query = Database::query("SELECT id, email FROM User WHERE id IN(SELECT user_id FROM Session WHERE token = ?)", [$this->session_array['auth_token']]);
 
             return $this->loadActiveUser($user_query);
         }
 
-        private function loadActiveUser(array $query_result) : User {
+        private function loadActiveUser(array $query_result)  {
 
             if (count($query_result) > 0) {
 
@@ -72,7 +70,7 @@
             return $this->user;
         }
 
-        public function userIsLoggedIn() : bool {
+        public function userIsLoggedIn()  {
 
             return !is_null($this->user);
         }
@@ -85,7 +83,7 @@
             session_destroy();
         }
 
-        public function generateSession(int $user_id) {
+        public function generateSession($user_id) {
 
             $auth_key = hash('sha512', (string) rand());
 

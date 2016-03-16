@@ -1,5 +1,5 @@
 body {
-    background-image: url("images/main_background.jpg");
+    background-image: url("/images/main_background.jpg");
 }
 
 .navbar-inverse .navbar-nav>li>a.navbar-brand{

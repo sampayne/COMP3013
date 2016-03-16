@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility;
+<?php namespace App\Utility;
 
     class Request {
 
@@ -17,7 +15,7 @@
         public $url = '';
         public $url_array = [];
 
-        public function __construct(    string $start_url,
+        public function __construct(    $start_url,
                                         array $server,
                                         array $get,
                                         array $post,
@@ -52,7 +50,7 @@
 
         }
 
-        public function matches(string $method, string $url) : bool {
+        public function matches( $method,  $url)  {
 
             $url = trim($url, '/');
             $url = explode('/', $url);
@@ -73,7 +71,7 @@
             return false;
         }
 
-        public function isMethod(string $method) : bool {
+        public function isMethod( $method)  {
 
             return $method === $this->method;
         }

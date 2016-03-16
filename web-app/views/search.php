@@ -1,10 +1,10 @@
 <?php if($auctionsFound){?>
-    
+
     <div class="container col-md-2 categoryFilter">
         <form role="search" method="get" action="/search">
             <ul class="list-group" >
 
-                <?php foreach($categories as $category){ 
+                <?php foreach($categories as $category){
                     if(in_array($category->name, $selectedCategories)) { ?>
 
                         <li class="list-group-item"><?php echo $category->name; ?><input class="pull-right" type="checkbox" name=<?php echo '"'.($category->name).'"'; ?> value=<?php echo '"'.($category->name).'"'; ?> checked></li>
@@ -24,7 +24,7 @@
 
 	<div class="row">
         <?php if($searchTerm != "") {?>
-		  
+
             <h4>Search results for "<?php echo $searchTerm?>":</h4>
 
         <?php }?>
@@ -38,7 +38,7 @@
                     <table>
                         <tr>
                             <!-- <td class="col-md-2"> <img class="col-md-12" src="<?= $value[4]?>"></td> -->
-                             <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td> 
+                             <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
 
                             <td  class="col-md-8">
 

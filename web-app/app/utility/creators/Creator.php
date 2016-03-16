@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility\Creator;
+<?php namespace App\Utility\Creator;
 
     use \Aws\S3\S3Client as S3Client;
 
@@ -16,9 +14,9 @@
 
         protected static $image_mime_types = ['image/jpeg', 'image/jpg', 'image/png'];
 
-        public abstract function saveInput(array $input) : int;
+        public abstract function saveInput(array $input) ;
 
-        public abstract function validateInput(array $input) : array;
+        public abstract function validateInput(array $input) ;
 
         public function __construct($request){
 
@@ -29,12 +27,12 @@
             }
         }
 
-        protected function isPresent(string $key) : bool {
+        protected function isPresent( $key)  {
 
             return isset($this->current_input[$key]);
         }
 
-        protected function saveImage(array $file, string $subdirectory = '') : string {
+        protected function saveImage(array $file,  $subdirectory = '')  {
 
             $s3 = new S3Client([
                 'version' => 'latest',
@@ -82,7 +80,7 @@
             return '//comp3013.s3-website-eu-west-1.amazonaws.com/'.$directory.$filename;
         }
 
-        protected function isValidDate(string $key) : bool {
+        protected function isValidDate( $key)  {
 
             if($this->isNonEmptyString($key)){
 
@@ -101,7 +99,7 @@
             return false;
         }
 
-        protected function isFile(string $key) : bool {
+        protected function isFile( $key)  {
 
             if ($this->isArray($key)){
 
@@ -113,17 +111,17 @@
             return false;
         }
 
-        protected function isArrayOfMinLength(string $key, int $length){
+        protected function isArrayOfMinLength( $key,  $length){
 
             return $this->isArray($key) && count($this->current_input[$key]) >= $length;
         }
 
-        protected function isArray(string $key) : bool {
+        protected function isArray( $key)   {
 
             return $this->isPresent($key) && is_array($this->current_input[$key]);
         }
 
-        protected function isImageFile(string $key) : bool {
+        protected function isImageFile( $key)   {
 
             if($this->isFile($key)){
 
@@ -138,23 +136,23 @@
             return false;
         }
 
-        protected function isGreaterThan(string $key, $value){
+        protected function isGreaterThan( $key, $value){
 
             return $this->isPresent($key) && $this->current_input[$key] > $value;
 
         }
 
-        protected function isString(string $key) : bool {
+        protected function isString( $key)  {
 
             return $this->isPresent($key) && is_string($this->current_input[$key]);
         }
 
-        protected function isNonEmptyString(string $key) : bool {
+        protected function isNonEmptyString( $key)  {
 
             return $this->isString($key) && $this->current_input[$key] !== '';
         }
 
-        protected function isNumeric(string $key) : bool {
+        protected function isNumeric( $key)  {
 
             return $this->isPresent($key) && is_numeric($this->current_input[$key]);
         }
