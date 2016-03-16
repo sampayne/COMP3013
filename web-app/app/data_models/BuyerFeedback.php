@@ -56,28 +56,10 @@
         }
 
         public static function getFeedbackForUser(int $userrole_id) : array {
-
-            /*
-                - still slightly wrong
-
-                - The data in the database does not account for restrictions
-                (e.g. only winner of auctions can have feedback from sellers)
-
-                - If we want to take feedback only for winners of auctions - the good way?
-
-                SELECT BuyerFeedback.content FROM BuyerFeedback where BuyerFeedback.auction_id IN 
-                (SELECT a.auction_id FROM (SELECT max(value) as max_bid, auction_id FROM Bid GROUP BY auction_id) as a 
-                JOIN (SELECT max(value) as max_bid, auction_id, userrole_id FROM Bid GROUP BY auction_id, userrole_id) as u 
-                ON a.auction_id = u.auction_id AND a.max_bid = u.max_bid 
-                JOIN Auction ON a.auction_id = Auction.id WHERE u.userrole_id = ? AND Auction.end_date <= now())
-
-            */
-
-            $results = Database::query('SELECT * FROM BuyerFeedback where auction_id IN 
-                (SELECT b.auction_id FROM (SELECT DISTINCT(auction_id) FROM Bid WHERE userrole_id = ?) as b 
-                JOIN (SELECT id FROM Auction) as a ON b.auction_id = a.id)', [$userrole_id]);
-                //AND Auction.end_date <= now()
-
+            
+            $results = Database::query('SELECT * FROM BuyerFeedback WHERE auction_id 
+                IN (SELECT id FROM AuctionsWinners WHERE userrole_id_winner = ?)', [$userrole_id]);
+            
             return self::processFeedbackResultSetSql($results);
 
         }
