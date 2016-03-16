@@ -42,7 +42,7 @@
             return new Item($results[0]);
         }
 
-        public static function getItemsForAuction(int $auction_id) : array {
+        public static function getItemsForAuction($auction_id) : array {
 
             $results = Database::query('SELECT * FROM Item WHERE auction_id = ?', [$auction_id]);
 
