@@ -9,9 +9,9 @@
 
         private static $connection = null;
 
-        const HOST          = '37.59.121.18';
+        const HOST          = 'comp3013.cy4slszn5xsl.eu-west-1.rds.amazonaws.com';
         const USER          = 'comp3013';
-        const PASSWORD      = 'XxxH6?32couoWufi';
+        const PASSWORD      = '9Z3-7h3-2LJ-z8Q';
         const Database      = 'comp3013';
 
         public static function testConnection() : bool{
