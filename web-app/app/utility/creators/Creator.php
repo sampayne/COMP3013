@@ -2,13 +2,15 @@
 
     namespace App\Utility\Creator;
 
+    use \Aws\S3\S3Client as S3Client;
+
     use DateTime as DateTime;
 
     abstract class Creator {
 
         protected static $image_directory = NULL;
 
-        protected static $public_image_directory = '/images';
+        protected static $public_image_directory = 'images';
 
         protected $current_input = [];
 
@@ -34,29 +36,50 @@
 
         protected function saveImage(array $file, string $subdirectory = '') : string {
 
+            $s3 = new S3Client([
+                'version' => 'latest',
+                'region'  => 'eu-west-1']);
+
             $subdirectory =  trim($subdirectory,'/');
 
             list($name, $extension) = explode('.', trim($file['name'],'/'));
 
             $filename = md5((string) rand()).'.'.$extension;
 
-            $directory = self::$image_directory.'/'.$subdirectory.'/';
+            $directory = self::$public_image_directory.'/'.$subdirectory.'/';
 
-            while(file_exists($directory.$filename)){
+            $bucket_name = 'comp3013';
 
+
+           if(!$s3->doesBucketExist($bucket_name)){
+               echo 'Error, bucket didnt exist';
+               exit(0);
+
+           };
+
+            while ($s3->doesObjectExist($bucket_name, $directory.$filename)) {
                 $filename = md5((string) rand()).'.'.$extension;
             }
 
-            if(move_uploaded_file($file['tmp_name'], $directory.$filename)){
+            $parameters = [
+                'ContentType'=>$file['type'],
+    			'Bucket'     => $bucket_name,
+    			'Key' => $directory.$filename,
+    			'SourceFile' => $file['tmp_name']
+    		];
 
-                return $public_image_directory.'/'.$subdirectory.'/'.$filename;
+    		print_r($parameters);
 
-            }else{
+    		$s3->putObject($parameters);
 
-                echo 'Fatal Error - File failed to save';
-                exit(0);
-            }
+    		$s3->waitUntil('ObjectExists', [
+    			'Bucket' => $bucket_name,
+    			'Key'    => $directory.$filename
+    		]);
 
+    		//exit(0);
+
+            return '//comp3013.s3-website-eu-west-1.amazonaws.com/'.$directory.$filename;
         }
 
         protected function isValidDate(string $key) : bool {
