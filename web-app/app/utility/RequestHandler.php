@@ -31,19 +31,30 @@
                 $controller = new AuctionController();
                 return $controller->getCreateAuctionPage($request, $session);
             }else if($request->matches('GET', '/auction/??/edit')){
+
                 return "You are at /auction/id/edit"; //just a dumb placeholder for sanity check
+
+
             }else if($request->matches('POST', '/auction')){
                 $controller = new AuctionController();
                 return $controller->createNewAuction($request, $session);
             }else if($request->matches('GET','/auction/??')){
+
                 $controller = new AuctionController();
                 return $controller->getAuction($request, $session);
+
             }else if($request->matches('POST','/auction/??/bid')){
+
                 $controller = new AuctionController();
+
                 return $controller->getBidConfirmationPage($request, $session);
+
             }else if($request->matches('POST','/auction/??/watch')){
+
                 $controller = new AuctionController();
+
                 return $controller->getWatchConfirmationPage($request, $session);
+
             }else if($request->matches('GET','/user/??/feedback')){
                     $controller = new FeedbackController();
                     return $controller->getFeedbackList($request, $session,$request->url_array[1]);
