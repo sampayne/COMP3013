@@ -107,7 +107,7 @@
                 return $this->redirectTo('/dashboard?error='.urlencode('You must register as a seller to create an auction'));
             }
 
-            return  (new View('create_auction', ['user'=>$session->activeUser(), 'item_categories' => ItemCategory::all()]))->render();
+            return  (new View('create_auction', ['item_categories' => ItemCategory::all()]))->render();
 
         }
 

@@ -38,7 +38,7 @@
 
           	}
 
-            $view = new View('dashboard', ['user' => $session->activeUser(),
+            $view = new View('dashboard', [
                                            'liveSellerAuctions' => isset($liveSellerAuctions) ? $liveSellerAuctions : NULL,
                                            'completedSellerAuctions' => isset($completedSellerAuctions) ? $completedSellerAuctions : NULL,
                                            'sellerFeedback' => isset($sellerFeedback) ? $sellerFeedback : NULL,

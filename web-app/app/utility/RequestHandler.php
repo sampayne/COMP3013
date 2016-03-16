@@ -25,6 +25,8 @@
 
             $session = new Session($request);
 
+            View::$current_user = $session->activeUser();
+
             if($request->matches('GET', '/test')){
 
                 $controller = new TestController();

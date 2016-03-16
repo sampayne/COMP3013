@@ -14,7 +14,7 @@
 
             $user = User::fromID($user_id);
 
-            return View::renderView('feedback_list', ['user'=> $session->activeUser(), 'related_user' => $user]);
+            return View::renderView('feedback_list', ['related_user' => $user]);
         }
 
         public function getFeedbackForm(Request $request, Session $session, $auction_id) {
@@ -26,7 +26,7 @@
             $auction = Auction::getAuctionWithId($auction_id);
 
 
-            return View::renderView('feedback_form', ['user'=>$session->activeUser(), 'auction'=>$auction]);
+            return View::renderView('feedback_form', ['auction'=>$auction]);
 
         }
 

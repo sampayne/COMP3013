@@ -5,6 +5,8 @@
         private $filename = '';
         private $data = [];
 
+        public static $current_user = NULL;
+
         public function __construct($filename, array $data = []){
 
             $this->filename = $filename;
@@ -18,6 +20,8 @@
             ob_start();
 
             $data = $this->data;
+
+            $data['user'] = self::$current_user;
 
             extract($data);
 
