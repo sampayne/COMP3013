@@ -1,22 +1,21 @@
-a, a:hover, a:focus {
-  text-decoration: none /!important;
-}
-
-.category{
-
-	padding: 20px;
-	font-size: 15pt;
-	text-align: center;
-	color:#666;
-	margin-top: 20px;
-	margin-bottom: 5px;
-	border: 1px solid #ccc;
+#dashboard {
 	background-color: white;
-	border-radius: 2px;
+	padding:2%;
 }
 
-.category:hover{
-
-	background-color: #337ab7;
-    color: white;
+.pane {
+	margin: auto;
+	width: 75%;
 }
+
+div.pane {
+	margin-top: 2%;
+	padding:20px;
+}
+
+.categoryFilter{
+	position: fixed;
+    left: 23px;
+    top: 150px;
+}
+

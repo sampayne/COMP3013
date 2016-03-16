@@ -1,0 +1,28 @@
+.categoryCard{
+	/*background-image: url("/images/default.gif");
+	background-size: 100% 100%; images*/
+
+    
+
+    background-color: white;
+
+
+	vertical-align: middle;
+	text-align: center;
+	padding:40px;
+	color: black;
+	font-size: 40px;
+	border: 2px solid black;
+	border-radius: 50px;
+	-webkit-transition: border 0.5s background-color 0.5s color 0.5s;
+	-moz-transition: border 0.5s background-color 0.5s color 0.5s;
+    transition: border 0.5s background-color 0.5s color 0.5s;
+}
+
+.categoryCard:hover{
+	border: 2px inset #428BCA;
+	background-color: #0DC9F7;
+	color: white;
+}
+
+

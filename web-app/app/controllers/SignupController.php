@@ -25,8 +25,9 @@
                     return View::renderView('login', ['signup_errors' => 'Email already exists']);
                 }
 
-                Database::insert('INSERT INTO User (email,password) VALUES (?,?)', [$request->post['email'], $request->post['password']]);
-
+                Database::insert('INSERT INTO User (email,password) VALUES (?,?)', [$request->post['email'], 
+                    password_hash($request->post['password'], PASSWORD_DEFAULT)]);
+                  
                 $user_id = Database::lastID();
 
                 if($request->post['buyer_account'] == 1){

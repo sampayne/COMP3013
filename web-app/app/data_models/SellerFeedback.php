@@ -99,12 +99,24 @@
 
             //unproccesed result
             $results = Database::query('SELECT avg(item_as_described) as mean_item_as_described,
-                                                avg(communication) as mean_communication,
-                                                avg(dispatch_time) as mean_dispatch_time,
-                                                avg(posting) as mean_posting,
-                                                count(*) as no_feedback
-                                                FROM SellerFeedback WHERE auction_id IN
-                        (SELECT id FROM Auction WHERE userrole_id = ?)', [$userrole_id]);
+                avg(communication) as mean_communication,
+                avg(dispatch_time) as mean_dispatch_time,
+                avg(posting) as mean_posting,
+                count(*) as no_feedback
+                FROM SellerFeedback JOIN Auction ON SellerFeedback.auction_id = Auction.id 
+                WHERE Auction.userrole_id = ?
+                GROUP BY Auction.userrole_id', [$userrole_id]);
+
+            if(count($results) == 0) {
+                $results['mean_item_as_described'] = 0;
+                $results['mean_communication'] = 0;
+                $results['mean_dispatch_time'] = 0;
+                $results['mean_posting'] = 0;
+                $results['no_feedback'] = 0;
+                return $results;
+
+            }
+
             return $results[0];
 
         }

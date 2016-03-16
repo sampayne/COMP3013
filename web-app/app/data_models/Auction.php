@@ -90,19 +90,20 @@
             return self::processAuctionsResultSetSql($results);
         }
 
+        public static function getWonAuctionsForUser(int $userrole_id) : array {
+            $results = Database::query('SELECT * FROM AuctionsWinners WHERE userrole_id_winner = ?', 
+                [$userrole_id]);
+            return self::processAuctionsResultSetSql($results);
+
+        }
+      
         public static function getPercentageAuctionsWonForUser(int $userrole_id) : int {
 
-            $completedAuctions = self::getCompletedAuctionsForUser($userrole_id);
+            $completedAuctions = self::getCompletedBidAuctionsForUser($userrole_id);
             $countAuctions = count($completedAuctions);
             if($countAuctions == 0)
                 return 0;
-            $countWon = 0;
-            foreach($completedAuctions as $auction) {
-                if($auction->getHighestBid() == $auction->getHighestBidForUser($userrole_id)) {
-                    $countWon++;
-                }
-            }
-
+            $countWon = count(self::getWonAuctionsForUser($userrole_id));
             return (int) ($countWon / $countAuctions * 100);
         }
 
@@ -196,5 +197,94 @@
             return $this->getItems()[0];
 
         }
+
+        public static function getRecommendationsForUser(int $userrole_id) : array {
+
+            /*
+                recommend auctions that users who bid on the same auctions as me bid on 
+            */
+            $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN 
+                (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN 
+                (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?)) 
+                AND Auction.end_date > now() AND NOT EXISTS 
+                (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
+
+           
+            if(count($results) == 0) {
+            /* 
+                if on the auctions the user bid he was the only bidder 
+                give suggestions from top categories
+
+            */
+                $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id 
+                    WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN 
+                    (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN 
+                    (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
+                    WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems 
+                    ON ItemCategory.item_id = WonItems.id 
+                    GROUP BY ItemCategory.category_id
+                    ORDER BY no_items
+                    LIMIT 2) as TopCategories
+                    ON ItemCategory.category_id = TopCategories.category_id)
+                    AND Auction.end_date > now()  
+                    ORDER BY Auction.id ASC', [$userrole_id]);
+
+            }
+
+            return self::processAuctionsResultSetSql($results);
+
+        }
+
+
+        public function startWatchingAuction($user){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "INSERT INTO Watch (userrole_id, auction_id) VALUES (?,?);";
+
+            Database::insert($query, [$userrole_id, $auction_id]);
+        }
+
+        public function stopWatchingAuction($user){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "DELETE From Watch WHERE userrole_id=? AND auction_id=?";
+
+            Database::delete($query, [$userrole_id, $auction_id]);
+        }
+
+        public function placeBid($user, $bid){
+
+            $userrole_id = ($user->buyerID());
+            $auction_id = $this->id; 
+            $query = "INSERT INTO Bid (userrole_id, auction_id, value) VALUES (?,?,?);";
+
+            Database::insert($query, [$userrole_id, $auction_id, $bid]);
+        }
+
+        public function incrementViewsNumber($user){
+            $auction_id = $this->id;
+
+            if(!is_null($user)){
+
+                if(!is_null($user->buyerID())){
+                    $userrole_id = $user->buyerID();
+                }
+
+                else{
+                    $userrole_id = $user->sellerID();
+                }
+
+
+            }
+            else{
+                $userrole_id = -1;
+            }
+
+            $query = "INSERT INTO View (userrole_id, auction_id) VALUES (?,?);";
+            Database::insert($query, [$userrole_id, $auction_id]);
+        }
+
 
     }

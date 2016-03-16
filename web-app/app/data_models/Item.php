@@ -16,7 +16,7 @@
             $this->name = $sqlResultRow['name'];
             $this->description = $sqlResultRow['description'];
             $this->image_url = $sqlResultRow['image_url'];
-            $this->auction_id = $sqlResultRow['auction_id'];
+            $this->auction_id = (int) $sqlResultRow['auction_id'];
             $this->created_at = $sqlResultRow['created_at'];
             $this->update_at = $sqlResultRow['updated_at'];
         }
@@ -58,8 +58,22 @@
             }
 
             return $this->categories;
+        }
 
+        public static function getItemsForCategory(int $category_id) : array {
+            $results = Database::query('SELECT Item.* FROM ItemCategory 
+                JOIN Item ON Item.id = ItemCategory.item_id WHERE ItemCategory.category_id = ?', [$category_id]);
+            return self::fromSQLRows($results);
 
+        }
+
+        public static function getWonItemsForUser(int $userrole_id) : array {
+
+            $results = Database::query('SELECT Item.*
+                FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
+                WHERE userrole_id_winner = ?', [$userrole_id]);
+            return self::fromSQLRows($results);
+            
         }
 
     }
