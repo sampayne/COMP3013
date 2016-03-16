@@ -21,7 +21,7 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
 			<ul class="nav navbar-nav">
-				<li class="pull-left"><a class="navbar-brand" href="#">BuyNow</a></li>
+				<li class="pull-left"><a class="navbar-brand" href="/">BuyNow</a></li>
 				<li>
 
 					<form class="navbar-form" role="search" method="get" action="/search">
@@ -36,7 +36,7 @@
 				<?php if(isset($user)):?>
 				    <li class="pull-right"> <a href="/dashboard" style="color:white">Welcome <?= $user->email ?> | Dashboard</a></li>
 				<?php else: ?>
-                    <li class="pull-right"><a href="/login" style="color:white">Log In</a></li>
+                    <li class="pull-right"><a href="/login" style="color:white">Log In | Sign Up</a></li>
 				<?php endif ?>
 			</ul>
 

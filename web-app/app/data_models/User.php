@@ -19,7 +19,23 @@
 
         }
 
-        public static function fromID($id) : User {
+        public static function fromUserRoleID(int $userrole_id) : User {
+
+            $results = Database::selectOne('SELECT id, email FROM User WHERE id IN (SELECT user_id FROM UserRole WHERE id = ?)', [$userrole_id]);
+
+            if(!count($results)){
+                fatalError('User Not Found');
+            }
+
+            $user = new User((int) $results['id']);
+            $user->email = $results['email'];
+
+            return $user;
+
+
+        }
+
+        public static function fromID(int $id) : User {
 
             $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
 
@@ -27,7 +43,7 @@
                 fatalError('User Not Found');
             }
 
-            $user = new User((int) $id);
+            $user = new User($id);
             $user->email = $results['email'];
 
             return $user;
@@ -52,22 +68,22 @@
             }
         }
 
-        public function sellerID(){
+        public function sellerID() : int {
 
             if(is_null($this->seller_role_id)){
                 $this->loadUserRoles();
             }
 
-            return $this->seller_role_id;
+            return (int) $this->seller_role_id;
         }
 
-        public function buyerID(){
+        public function buyerID() : int {
 
             if(is_null($this->buyer_role_id)){
                 $this->loadUserRoles();
             }
 
-            return $this->buyer_role_id;
+            return (int) $this->buyer_role_id;
 
         }
 
@@ -117,7 +133,14 @@
         }
 
         public function getSellerMeanRating() : array {
-            return SellerFeedback::getMeanRatingForUser($this->sellerID());
+
+            $results =  SellerFeedback::getMeanRatingForUser($this->sellerID());
+
+            $results['overall'] = array_sum($results)/count($results);
+
+            $results = array_map(function($i){ return round($i,1);  }, $results);
+
+            return $results;
         }
 
         public function getBuyerFeedback() : array {
@@ -143,7 +166,7 @@
 
         }
 
-        public function getPercentageAuctionsWon() : int {
+       public function getPercentageAuctionsWon() : int {
 
             return Auction::getPercentageAuctionsWonForUser($this->buyerID());
 
@@ -152,7 +175,7 @@
         public function getRecommendations() : array {
 
             return Auction::getRecommendationsForUser($this->buyerID());
-        
+
         }
 
     }
