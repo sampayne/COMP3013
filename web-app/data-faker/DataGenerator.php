@@ -46,6 +46,31 @@ function getUserIds() : array {
 
 }
 
+function getUsers(mysqli $conn) : array {
+
+	$result = $conn->query("SELECT * FROM User");
+	$users = Array();
+	while ($row = $result->fetch_array(MYSQLI_ASSOC)) {	
+    	$users[] =  $row;  
+	}
+
+	return $users;
+
+}
+
+function updateUsersPasswords(mysqli $conn) {
+	$users = getUsers($conn);
+	foreach($users as $user) {
+		$userId = $user['id'];
+		$password = password_hash($user['password'], PASSWORD_DEFAULT);
+		$sql = "UPDATE User SET password = '" . $password . "' WHERE id = $userId";
+		if ($conn->query($sql) !== TRUE)
+    		echo "Error: " . $sql . "<br>" . $conn->error;
+
+	}
+}
+
+
 function addUserRoles() {
 
 	$x = 0;
@@ -296,6 +321,7 @@ function updateAuctionsUserRoleIds(mysqli $conn) {
 	}
 }
 
+
 function getUserRoleIds(mysqli $conn) : array {
 	$result = $conn->query("SELECT id FROM UserRole");
 	$userRoleIds = Array();
@@ -467,9 +493,10 @@ function getWonAuctions(mysqli $conn) {
 //updateAuctionsUserRoleIds($conn);
 
 //addBuyerFeedback($conn, $auctionIds);
-$wonAuctions = getWonAuctions($conn);
-addSellerFeedback($conn, $wonAuctions);
-addBuyerFeedback($conn, $wonAuctions);
+//$wonAuctions = getWonAuctions($conn);
+//addSellerFeedback($conn, $wonAuctions);
+//addBuyerFeedback($conn, $wonAuctions);
+updateUsersPasswords($conn);
 
 echo "New records created successfully <br />";
 $conn->close();
