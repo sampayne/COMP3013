@@ -2,6 +2,7 @@
 
     use App\Utility\Database;
     use App\Model\Item;
+    use App\Model\User;
 
     class Auction {
 
@@ -32,6 +33,21 @@
             $this->userrole_id = $sqlResultRow['userrole_id'];
             $this->created_at = $sqlResultRow['created_at'];
             $this->update_at = $sqlResultRow['updated_at'];
+        }
+
+        public static function arrayFromSQLRows(array $SQLRows) {
+
+            $auctions = [];
+
+            foreach($SQLRows as $row){
+
+
+                $auctions[] = new Auction($row);
+
+
+            }
+
+            return $auctions;
         }
 
         public static function getAuctionWithId($id) {
@@ -79,7 +95,7 @@
             return self::processAuctionsResultSetSql($results);
         }
 
-        public static function getCompletedBidAuctionsForUser( $userrole_id)  {
+        public static function getCompletedBidAuctionsForUser($userrole_id)  {
 
             $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
                 FROM Bid b JOIN Auction a ON b.auction_id = a.id
@@ -126,7 +142,7 @@
 
         public function buyer()  {
 
-            $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
+            $results = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
                                         FROM Auction as au
                                         JOIN Bid as b
                                         ON b.auction_id = au.id
@@ -137,7 +153,7 @@
                 return NULL;
             }
 
-            return new User($results[0]);
+            return new User($results[0][0]);
 
         }
 
@@ -160,8 +176,7 @@
                 return NULL;
             }
 
-            return new User($results[0]);
-
+            return new User($results[0][0]);
 
         }
 
@@ -182,7 +197,6 @@
 
             return (int) $result[0]['max_bid_user'];
         }
-
 
         public function getBidCount()  {
 
@@ -286,7 +300,7 @@
 
         public function startWatchingAuction($user){
 
-            $userrole_id = ($user->buyerID());
+            $userrole_id = $user->buyerID();
             $auction_id = $this->id;
             $query = "INSERT INTO Watch (userrole_id, auction_id) VALUES (?,?);";
 
