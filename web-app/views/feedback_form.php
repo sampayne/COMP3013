@@ -20,7 +20,7 @@
 
                 <?php else: ?>
 
-                    <form>
+                    <form action="/auction/<?=$auction->id?>/feedback/seller" method="post" >
 
                         <div class="form-group">
                             <label>Item as Described</label>
@@ -43,7 +43,7 @@
                             <textarea  class="form-control" name="feedback_comment"/>
                         </div>
 
-                        <button type="submit" class="btn btn-success center-block btn-lg">Save Feedback Auction</button>
+                        <button type="submit" class="btn btn-success center-block btn-lg">Save Feedback</button>
 
                     </form>
 
@@ -57,21 +57,37 @@
 
                 <?php else: ?>
 
+                    <form action="/auction/<?=$auction->id?>/feedback/buyer" method="post">
+                        <div class="form-group">
+                            <label>Speed of Payment</label>
+                            <input class="form-control" name="speed_of_payment" type="number" max="5" min="1" />
+                        </div>
+                        <div class="form-group">
+                            <label>Communication</label>
+                            <input class="form-control" name="communication" type="number" max="5" min="1"/>
+                        </div>
 
+                        <div class="form-group">
+                            <label>Comments</label>
+                            <textarea  class="form-control" name="feedback_comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success center-block btn-lg">Save Feedback</button>
 
+                    </form>
 
                 <?php endif ?>
 
             <?php else: ?>
 
-                <div class="alert alert-danger" role="alert">                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
- You can't leave feedback for an auction you didn't win or create! Please go back!</div>
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    You can't leave feedback for an auction you didn't win or create! Please go back!</div>
 
             <?php endif ?>
 
         <?php endif ?>
 
-            </div></div>
+            </div>
+        </div>
     </div>
-
 </div>

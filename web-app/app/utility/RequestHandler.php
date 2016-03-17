@@ -135,11 +135,29 @@
 
                 return $controller->getWatchConfirmationPage($request, $session);
 
+
+
+
             }else if($request->matches('GET','/auction/??/feedback/create')){
 
                 $controller = new FeedbackController();
 
                 return $controller->getFeedbackForm($request, $session, (int) $request->url_array[1]);
+
+            }else if($request->matches('POST','/auction/??/feedback/buyer')){
+
+                $controller = new FeedbackController();
+
+                return $controller->postBuyerFeedback($request, $session, (int) $request->url_array[1]);
+
+            }else if($request->matches('POST','/auction/??/feedback/seller')){
+
+                $controller = new FeedbackController();
+
+                return $controller->postSellerFeedback($request, $session, (int) $request->url_array[1]);
+
+
+
 
             }else if($request->matches('GET','/user/??/feedback')){
 

@@ -134,9 +134,9 @@
 
         public function isFinished()  {
 
-            $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date > NOW()', [$this->id]);
+            $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date < NOW() LIMIT 1', [$this->id]);
 
-            return isset($results[0]) && $results[0] == 1;
+            return isset($results[0]) && count($results[0]) !== 0;
 
         }
 
@@ -184,7 +184,7 @@
 
             if($this->highest_bid == -1) {
 
-                $result = Database::query('SELECT max(value) as max_bid FROM Bid WHERE auction_id = ?', [$this->id]);
+                $result = Database::query('SELECT MAX(value) as max_bid FROM Bid WHERE auction_id = ?', [$this->id]);
                 $this->highest_bid = (int) $result[0]['max_bid'];
             }
 
