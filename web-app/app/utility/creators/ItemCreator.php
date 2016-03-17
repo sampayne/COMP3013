@@ -1,13 +1,11 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility\Creator;
+<?php namespace App\Utility\Creator;
 
     use App\Utility\Database as Database;
     use App\Model\ItemCategory;
 
     class ItemCreator extends Creator {
 
-        public function saveInput(array $input) : int {
+        public function saveInput(array $input)  {
 
             $errors = $this->validateInput($input);
 
@@ -37,7 +35,7 @@
             return $item_id;
         }
 
-        public function validateInput(array $input) : array {
+        public function validateInput(array $input)  {
 
             $this->current_input = $input;
 

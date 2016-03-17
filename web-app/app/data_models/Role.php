@@ -1,15 +1,13 @@
-<?php declare(strict_types=1);
-
-    namespace App\Model;
+<?php namespace App\Model;
 
     abstract class Role {
 
-        public static function buyer() : int {
+        public static function buyer() {
 
             return 2;
         }
 
-        public static function seller() : int {
+        public static function seller() {
 
             return 1;
         }

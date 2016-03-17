@@ -20,116 +20,122 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             
-				<?php if($auction_exists){ ?>
-					<div class="panel-heading"><h1 class="panel-title"><?= $name ?></h1></div>
-				    <div class="panel-body">
+                <?php if($auction_exists){ ?>
+                    <div class="panel-heading"><h1 class="panel-title"><?= $name ?></h1></div>
+                    <div class="panel-body">
 
-				    	<!--<div class="row"> <img class= "col-md-4 col-md-offset-4" src="<?= $auction->getFirstItem()->image_url ?>"></div> -->
-				    	<div class="row"> <img class= "col-md-4 col-md-offset-4" src="/images/default.gif"></div>
-				    	<div class="row">
+                        <?php if(strlen($auction->getFirstItem()->image_url) != 0 && file_exists($_SERVER['DOCUMENT_ROOT'].($auction->getFirstItem()->image_url))) {?>
+                            <div class="row"> <img class= "col-md-4 col-md-offset-4" src="<?= $auction->getFirstItem()->image_url ?>"></div>
 
-				    		<div class= "col-md-5 col-md-offset-1 shadedPanel">
-				    			<p>Description: <span class="descriptionText">"<?php echo $description?> "</span></p><br>
-				    			<p>End Date: <?php echo $auction->end_date ?></p><br>
+                        <?php }else{ ?>
+                            <div class="row"> <img class= "col-md-4 col-md-offset-4" src="/images/default.gif"></div> <!-- Change path with the path on AWS -->
 
-				    			<?php if(!$expired){ ?>
-				    				<p>Status: <span style="color:red;">Closed</span></p><br>
+                        <?php }?>
 
-				    			<?php }else{?>
-				    				<p>Status: <span style="color:green;">Open</span></p><br>
+                        <div class="row">
 
-				    			<?php }?>
+                            <div class= "col-md-5 col-md-offset-1 shadedPanel">
+                                <p>Description: <span class="descriptionText">"<?php echo $description?> "</span></p><br>
+                                <p>End Date: <?php echo $auction->end_date ?></p><br>
 
-				    			<p>Starting Price: <span style="color:green;"><?php echo $starting_price?>£</span></p><br>
-								<p>Minimum Price To Bid: <span style="color:green;"><?php echo $min_bid?>£</span></p>
+                                <?php if(!$expired){ ?>
+                                    <p>Status: <span style="color:red;">Closed</span></p><br>
 
-								<?php if($isUserBuyer && $expired){ ?>
+                                <?php }else{?>
+                                    <p>Status: <span style="color:green;">Open</span></p><br>
 
-									<form method="post" action=<?php echo("/auction/".$id."/bid");?>>
+                                <?php }?>
 
-									    <div class="input-group">
+                                <p>Starting Price: <span style="color:green;"><?php echo $starting_price?>£</span></p><br>
+                                <p>Minimum Price To Bid: <span style="color:green;"><?php echo $min_bid?>£</span></p>
 
-									      <span class="input-group-btn">
-									        <button class="btn btn-success" type="submit">Bid Now:</button>
-									      </span>
+                                <?php if($isUserBuyer && $expired){ ?>
 
-									      <input type="text" class="form-control" name="bid-bar" placeholder="All bids need to be placed in £">
+                                    <form method="post" action=<?php echo("/auction/".$id."/bid");?>>
 
-									    </div>
+                                        <div class="input-group">
 
-									</form>
-								<?php }?>
+                                          <span class="input-group-btn">
+                                            <button class="btn btn-success" type="submit">Bid Now:</button>
+                                          </span>
 
-				    		</div>
+                                          <input type="text" class="form-control" name="bid-bar" placeholder="All bids need to be placed in £">
 
-				    		<div class= "col-md-5 col-md-offset-1">
-				    			<ul class="list-group" id="accordion" role="tablist" aria-multiselectable="true">
-								  
-								  	<?php $itemCounter = 0;
-								  	      foreach($items as $item){ 
-								  	      	$itemCounter = $itemCounter + 1;?>
+                                        </div>
 
-									  <li class="list-group-item">
-									  	<table>
-										  	<div class="row">
-											  	<tr>
-											  		<td style="vertical-align: middle;" class="col-md-8 myListHeaders">
-											  		<div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> <?= $item->name ?></div></td>
+                                    </form>
+                                <?php }?>
 
-											  		<td class="col-md-4">
-												    <button type="button" class="btn btn-sm btn-primary collapsed" data-toggle="collapse" data-parent="#accordion" href=<?php echo("#collapse".$itemCounter);?> aria-controls=<?php echo("collapse".$itemCounter);?> aria-expanded="false">
-													  <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
-													</button></td>
+                            </div>
 
-												</tr>
-											</div>
-										</table>
-									  </li>
+                            <div class= "col-md-5 col-md-offset-1">
+                                <ul class="list-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                  
+                                    <?php $itemCounter = 0;
+                                          foreach($items as $item){ 
+                                            $itemCounter = $itemCounter + 1;?>
 
-									  <div id=<?php echo("collapse".$itemCounter);?> class="panel-collapse collapse" role="tabpanel" aria-labelledby=<?php echo("heading".$itemCounter);?>>
+                                      <li class="list-group-item">
+                                        <table>
+                                            <div class="row">
+                                                <tr>
+                                                    <td style="vertical-align: middle;" class="col-md-8 myListHeaders">
+                                                    <div > <span class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true"></span> <?= $item->name ?></div></td>
 
-									      <div class="panel-body shadedPanel descriptionText" style="border-style: none;">
-									        <?php echo($item->description); ?>
-									      </div>
+                                                    <td class="col-md-4">
+                                                    <button type="button" class="btn btn-sm btn-primary collapsed" data-toggle="collapse" data-parent="#accordion" href=<?php echo("#collapse".$itemCounter);?> aria-controls=<?php echo("collapse".$itemCounter);?> aria-expanded="false">
+                                                      <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View Description
+                                                    </button></td>
 
-									  </div>
+                                                </tr>
+                                            </div>
+                                        </table>
+                                      </li>
 
-									<?php }?>
-								  
-								</ul>
-								
-								<?php if($isUserBuyer && $expired){ ?>
-								
-									<form method="post" action=<?php echo("/auction/".$id."/watch");?>>
+                                      <div id=<?php echo("collapse".$itemCounter);?> class="panel-collapse collapse" role="tabpanel" aria-labelledby=<?php echo("heading".$itemCounter);?>>
 
-										<?php if($isWatched){ ?>
-											<input type="hidden" name="watch" value="0">
-											<button type="submit" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span> Stop Watching</button>
+                                          <div class="panel-body shadedPanel descriptionText" style="border-style: none;">
+                                            <?php echo($item->description); ?>
+                                          </div>
 
-										<?php }else{ ?>
-											<input type="hidden" name="watch" value="1">
-											<button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> Watch</button>
+                                      </div>
 
-										<?php }?>
+                                    <?php }?>
+                                  
+                                </ul>
+                                
+                                <?php if($isUserBuyer && $expired){ ?>
+                                
+                                    <form method="post" action=<?php echo("/auction/".$id."/watch");?>>
 
-									</form>
+                                        <?php if($isWatched){ ?>
+                                            <input type="hidden" name="watch" value="0">
+                                            <button type="submit" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span> Stop Watching</button>
 
-								<?php }?>
-							</div>
-						</div>
-					</div>
+                                        <?php }else{ ?>
+                                            <input type="hidden" name="watch" value="1">
+                                            <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> Watch</button>
+
+                                        <?php }?>
+
+                                    </form>
+
+                                <?php }?>
+                            </div>
+                        </div>
+                    </div>
 
 
-				<?php }else{ ?>
-					
-					<div class="panel-body">
-						<div class="jumbotron">
-							<h1 style="text-align: center">Sorry, auction not found...</h1>
-						</div>
-					</div>
+                <?php }else{ ?>
+                    
+                    <div class="panel-body">
+                        <div class="jumbotron">
+                            <h1 style="text-align: center">Sorry, auction not found...</h1>
+                        </div>
+                    </div>
 
-				<?php } ?>
+                <?php } ?>
 
-		</div>
-	</div>
+        </div>
+    </div>
 </div>

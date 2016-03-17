@@ -5,4 +5,5 @@
     require('Auction.php');
     require('BuyerFeedback.php');
     require('SellerFeedback.php');
-    require('ItemCategory.php');    require('Item.php');
+    require('ItemCategory.php');
+    require('Item.php');

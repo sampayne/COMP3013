@@ -1,25 +1,23 @@
-<?php declare(strict_types=1);
-
-    namespace App\Model;
+<?php namespace App\Model;
 
     use App\Utility\Database;
 
     class ItemCategory {
 
-        public function __construct(int $id, string $name){
+        public function __construct($id, $name){
 
             $this->id = $id;
             $this->name = $name;
 
         }
 
-        public static function fromSQLRow(array $SQLRow) : ItemCategory {
+        public static function fromSQLRow(array $SQLRow) {
 
             return new ItemCategory((int) $SQLRow['id'], $SQLRow['name']);
 
         }
 
-        public static function arrayFromSQLRows(array $rows) : array {
+        public static function arrayFromSQLRows(array $rows) {
 
             $categories = [];
 
@@ -32,7 +30,7 @@
         }
 
 
-        public static function all() : array {
+        public static function all() {
 
             $results = Database::select('SELECT * FROM Category ORDER BY name ASC');
 
@@ -40,7 +38,7 @@
 
         }
 
-        public static function categoriesForItem($item_id) : array {
+        public static function categoriesForItem($item_id) {
 
             $results = Database::select('SELECT * FROM Category WHERE id IN (SELECT category_id FROM ItemCategory WHERE item_id = ?)', [$item_id]);
 
@@ -48,7 +46,7 @@
 
         }
 
-        public function getItems() : array {
+        public function getItems() {
 
             return Item::getItemsForCategory($this->id);
 

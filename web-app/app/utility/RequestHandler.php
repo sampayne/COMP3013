@@ -1,11 +1,17 @@
-<?php declare(strict_types=1);
+<?php namespace App\Utility;
 
-    namespace App\Utility;
-
-    use App\Utility\{Request, View};
+    use App\Utility\Request;
+    use App\Utility\View;
     use App\Utility\Session as Session;
 
-    use App\Controller\{ AuctionController, TestController, LoginController, DashboardController, HomeController, SignupController, SearchController, FeedbackController };
+    use App\Controller\AuctionController;
+    use App\Controller\TestController;
+    use App\Controller\LoginController;
+    use App\Controller\DashboardController;
+    use App\Controller\HomeController;
+    use App\Controller\SignupController;
+    use App\Controller\SearchController;
+    use App\Controller\FeedbackController;
 
     class RequestHandler {
 
@@ -15,9 +21,11 @@
 
         }
 
-        public function handleRequest(Request $request) : string {
+        public function handleRequest(Request $request)  {
 
             $session = new Session($request);
+
+            View::$current_user = $session->activeUser();
 
             if($request->matches('GET', '/test')){
 
@@ -113,11 +121,17 @@
 
                 return $controller->getWatchConfirmationPage($request, $session);
 
+            }else if($request->matches('GET','/auction/??/feedback/create')){
+
+                $controller = new FeedbackController();
+
+                return $controller->getFeedbackForm($request, $session, (int) $request->url_array[1]);
+
             }else if($request->matches('GET','/user/??/feedback')){
 
                     $controller = new FeedbackController();
 
-                    return $controller->getFeedbackList($request, $session,$request->url_array[1]);
+                    return $controller->getFeedbackList($request, $session, (int) $request->url_array[1]);
 
 
 
@@ -134,5 +148,10 @@
                 return $controller->getHomepage($request, $session);
 
             }
+
+
+
+            return View::renderView('general_error',['user'=>$session->activeUser(),'message'=>'URL Not Found']);
+
         }
     }

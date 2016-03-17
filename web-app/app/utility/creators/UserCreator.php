@@ -1,14 +1,12 @@
-<?php declare(strict_types=1);
-
-    namespace App\Utility\Creator;
+<?php namespace App\Utility\Creator;
 
     class UserCreator extends Creator {
 
-        public function saveInput(array $input) : int {
+        public function saveInput(array $input) {
 
         }
 
-        public function validateInput(array $input) : array {
+        public function validateInput(array $input)  {
 
 
         }

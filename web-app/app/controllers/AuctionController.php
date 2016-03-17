@@ -14,7 +14,7 @@
 
         public function getAuction(Request $request, Session $session) : string {
 
-        	$auction_id = end($request->url_array);
+            $auction_id = end($request->url_array);
             $auction_data = $this->getAuctionData($auction_id);
             $current_auction = Auction :: getAuctionWithId(intval($auction_id));
 
@@ -25,21 +25,21 @@
                 $current_auction->incrementViewsNumber(NULL);
 
 
-        	if(!empty($auction_data)){
+            if(!empty($auction_data)){
 
                 $this->setWatchPreferences($auction_data, $auction_id, $session);
                 $this->setMinimumPriceToBid($auction_data, $auction_id); 
-        		$auction_data[0]["auction_exists"] = true;
+                $auction_data[0]["auction_exists"] = true;
                 $auction_data[0]["auction"] = Auction::getAuctionWithId(intval($auction_id));
                 $auction_data[0]["expired"] = (new \DateTime() > new \DateTime($auction_data[0]["auction"]->end_date)) ? false : true;
                 $auction_data[0]["items"] = $auction_data[0]["auction"]->getItems();
                 $auction_data[0]['message'] = (isset($request->get['message'])) ? $request->get['message'] : NULL;
                 $auction_data[0]['error'] = (isset($request->get['error'])) ? $request->get['error'] : NULL;
-            	return (new View('auction', $auction_data[0]))->render();
+                return (new View('auction', $auction_data[0]))->render();
 
             }else{
 
-            	return (new View('auction', ["auction_exists" => false]))->render();
+                return (new View('auction', ["auction_exists" => false]))->render();
             }
 
         }

@@ -1,13 +1,17 @@
-<?php declare(strict_types=1);
+<?php
 
     namespace App\Controller;
 
-    use App\Utility\{Request, Session, View, Database};
+    use App\Utility\Request;
+    use App\Utility\Session;
+    use App\Utility\View;
+    use App\Utility\Database;
+
     use App\Model\Role;
 
     class SignupController extends Controller {
 
-        public function processSignup(Request $request, Session $session) : string {
+        public function processSignup(Request $request, Session $session) {
 
             if($session->userIsLoggedIn()){
 
@@ -25,9 +29,9 @@
                     return View::renderView('login', ['signup_errors' => 'Email already exists']);
                 }
 
-                Database::insert('INSERT INTO User (email,password) VALUES (?,?)', [$request->post['email'], 
+                Database::insert('INSERT INTO User (email,password) VALUES (?,?)', [$request->post['email'],
                     password_hash($request->post['password'], PASSWORD_DEFAULT)]);
-                  
+
                 $user_id = Database::lastID();
 
                 if($request->post['buyer_account'] == 1){

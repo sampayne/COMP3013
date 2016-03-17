@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);
-
-    namespace App\Model;
+<?php namespace App\Model;
 
     use App\Utility\Database;
 
@@ -16,12 +14,12 @@
             $this->name = $sqlResultRow['name'];
             $this->description = $sqlResultRow['description'];
             $this->image_url = $sqlResultRow['image_url'];
-            $this->auction_id = (int) $sqlResultRow['auction_id'];
+            $this->auction_id = $sqlResultRow['auction_id'];
             $this->created_at = $sqlResultRow['created_at'];
             $this->update_at = $sqlResultRow['updated_at'];
         }
 
-        public static function fromSQLRows(array $rows){
+        public static function fromSQLRows(array $rows) {
 
             $items = [];
 
@@ -35,21 +33,21 @@
 
         }
 
-        public static function getItemWithId($id) : Item {
+        public static function getItemWithId($id) {
 
             $results = Database::query('SELECT * FROM Item WHERE id = ?', [$id]);
 
             return new Item($results[0]);
         }
 
-        public static function getItemsForAuction($auction_id) : array {
+        public static function getItemsForAuction($auction_id) {
 
             $results = Database::query('SELECT * FROM Item WHERE auction_id = ?', [$auction_id]);
 
             return self::fromSQLRows($results);
         }
 
-        public function getCategories() : array {
+        public function getCategories() {
 
             if(count($this->categories) == 0){
 
@@ -60,20 +58,20 @@
             return $this->categories;
         }
 
-        public static function getItemsForCategory(int $category_id) : array {
-            $results = Database::query('SELECT Item.* FROM ItemCategory 
+        public static function getItemsForCategory($category_id)  {
+            $results = Database::query('SELECT Item.* FROM ItemCategory
                 JOIN Item ON Item.id = ItemCategory.item_id WHERE ItemCategory.category_id = ?', [$category_id]);
             return self::fromSQLRows($results);
 
         }
 
-        public static function getWonItemsForUser(int $userrole_id) : array {
+        public static function getWonItemsForUser($userrole_id) {
 
             $results = Database::query('SELECT Item.*
-                FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id 
+                FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id
                 WHERE userrole_id_winner = ?', [$userrole_id]);
             return self::fromSQLRows($results);
-            
+
         }
 
     }
