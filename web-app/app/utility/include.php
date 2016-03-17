@@ -23,5 +23,6 @@ UxmX2c4yEd7zaUAo8y23mjLqaG51KzW+e6v5ABuK
     require ('Session.php');
     require ('RequestHandler.php');
     require ('View.php');
+    require ('NotificationSender.php');
 
     require ('creators/include.php');

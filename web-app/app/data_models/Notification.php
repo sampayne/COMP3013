@@ -1,37 +1,6 @@
 <?php namespace App\Model;
 
-    abstract class NotificationType {
 
-        public static function outbid(){
-
-        return 1;
-        }
-
-        public static function bidRecieved(){
-
-        return 2;
-        }
-
-        public static function watchRecieved(){
-
-            return 3;
-
-        }
-
-        public static function itemEnded(){
-
-            return 4;
-
-
-        }
-
-        public static function itemWon(){
-
-            return 5;
-
-        }
-
-    }
 
 
     class Notification {
