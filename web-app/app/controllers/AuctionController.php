@@ -1,12 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
     namespace App\Controller;
 
-    use App\Utility\Request;
-    use App\Utility\Session;
-    use App\Utility\View;
-    use App\Utility\Database;
-
+    use App\Utility\{Request, Session, View, Database};
     use App\Model\User;
     use App\Model\Auction;
     use App\Model\ItemCategory;
@@ -16,9 +12,9 @@
 
     class AuctionController extends Controller {
 
-        public function getAuction(Request $request, Session $session) {
+        public function getAuction(Request $request, Session $session) : string {
 
-        	$auction_id = end($request->url_array);
+            $auction_id = end($request->url_array);
             $auction_data = $this->getAuctionData($auction_id);
             $current_auction = Auction :: getAuctionWithId(intval($auction_id));
 
@@ -29,29 +25,29 @@
                 $current_auction->incrementViewsNumber(NULL);
 
 
-        	if(!empty($auction_data)){
+            if(!empty($auction_data)){
 
                 $this->setWatchPreferences($auction_data, $auction_id, $session);
-                $this->setMinimumPriceToBid($auction_data, $auction_id);
-        		$auction_data[0]["auction_exists"] = true;
+                $this->setMinimumPriceToBid($auction_data, $auction_id); 
+                $auction_data[0]["auction_exists"] = true;
                 $auction_data[0]["auction"] = Auction::getAuctionWithId(intval($auction_id));
                 $auction_data[0]["expired"] = (new \DateTime() > new \DateTime($auction_data[0]["auction"]->end_date)) ? false : true;
                 $auction_data[0]["items"] = $auction_data[0]["auction"]->getItems();
                 $auction_data[0]['message'] = (isset($request->get['message'])) ? $request->get['message'] : NULL;
                 $auction_data[0]['error'] = (isset($request->get['error'])) ? $request->get['error'] : NULL;
-            	return (new View('auction', $auction_data[0]))->render();
+                return (new View('auction', $auction_data[0]))->render();
 
             }else{
 
-            	return (new View('auction', ["auction_exists" => false]))->render();
+                return (new View('auction', ["auction_exists" => false]))->render();
             }
 
         }
 
-        public function getWatchConfirmationPage(Request $request, Session $session) {
-
+        public function getWatchConfirmationPage(Request $request, Session $session) : string{
+            
             $data = array();
-            $auction_id = intval($request->url_array[1]);
+            $auction_id = intval(($request->url_array)[1]);
             $this->setWatchConfirmation($data, $session, $request);
 
             if($data["watch"] == 1)
@@ -62,12 +58,12 @@
             }
         }
 
-        public function getBidConfirmationPage(Request $request, Session $session) {
-
+        public function getBidConfirmationPage(Request $request, Session $session) : string{
+            
             $data = array();
             $bid = floatval($request->post["bid-bar"]) * 100;
-            $auction_id = intval($request->url_array[1]);
-
+            $auction_id = intval(($request->url_array)[1]);
+            
             if($bid > $this->getHighestBid($auction_id)){
                 $data["isHighest"] = "true";
                 $current_user = $session->activeUser();
@@ -95,7 +91,7 @@
 
         }
 
-        public function getCreateAuctionPage(Request $request, Session $session) {
+        public function getCreateAuctionPage(Request $request, Session $session) : string {
 
             if(!$session->userIsLoggedIn()){
 
@@ -107,7 +103,7 @@
                 return $this->redirectTo('/dashboard?error='.urlencode('You must register as a seller to create an auction'));
             }
 
-            return  (new View('create_auction', ['item_categories' => ItemCategory::all()]))->render();
+            return  (new View('create_auction', ['user'=>$session->activeUser(), 'item_categories' => ItemCategory::all()]))->render();
 
         }
 
@@ -118,13 +114,13 @@
             $starting_price = $current_auction->starting_price;
 
             if($bid  < $starting_price)
-                $bid = $starting_price - 1;
+                $bid = $starting_price - 1;  
 
             return $bid;
 
         }
 
-        public function createNewAuction(Request $request, Session $session) {
+        public function createNewAuction(Request $request, Session $session) : string {
 
             if(!$session->userIsLoggedIn()){
 
@@ -184,7 +180,7 @@
             return $this->redirectTo('/dashboard?message='.urlencode('Auction Created'));
         }
 
-        private function processInput(array $items, array $images) {
+        private function processInput(array $items, array $images) : array {
 
             $merged_items = [];
 
@@ -206,7 +202,7 @@
             return $merged_items;
         }
 
-        private function setWatchPreferences(&$auction_data, $auction_id, $session) {
+        private function setWatchPreferences(&$auction_data, $auction_id, $session) : bool{
             $auction_data[0]["isUserBuyer"] = false;
             $auction_data[0]["isWatched"] = false;
 
@@ -227,7 +223,7 @@
             return $auction_data[0]["isWatched"];
         }
 
-        private function setMinimumPriceToBid(&$auction_data, $auction_id){
+        private function setMinimumPriceToBid(&$auction_data, $auction_id){   
 
             $auction_data[0]["min_bid"] = ($this->getHighestBid($auction_id) + 1) / 100;
             $auction_data[0]["starting_price"] = $auction_data[0]["starting_price"] / 100;
@@ -236,7 +232,7 @@
 
         private function setWatchConfirmation(&$data, $session, $request){
             $current_user = $session->activeUser();
-            $current_auction = Auction::getAuctionWithId(intval($request->url_array[1]));
+            $current_auction = Auction::getAuctionWithId(intval(($request->url_array)[1]));
 
             $data["watch"] = $request->post["watch"];
 
