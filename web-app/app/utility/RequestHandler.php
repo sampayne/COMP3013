@@ -13,6 +13,8 @@
     use App\Controller\SearchController;
     use App\Controller\FeedbackController;
 
+    use App\Utility\NotificationSender;
+
     class RequestHandler {
 
         public function __construct(){
@@ -26,6 +28,12 @@
             $session = new Session($request);
 
             View::$current_user = $session->activeUser();
+
+            NotificationSender::scanForItemWonNotifications();
+            NotificationSender::scanForItemEndedNotifications();
+
+
+
 
             if($request->matches('GET', '/test')){
 
@@ -41,6 +49,12 @@
 
 
             }else if($request->matches('GET','/dashboard')){
+
+
+
+
+
+
 
                 $controller = new DashboardController();
 

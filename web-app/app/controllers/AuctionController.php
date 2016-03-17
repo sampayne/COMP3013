@@ -13,6 +13,8 @@
     use App\Utility\Creator\AuctionCreator;
     use App\Utility\Creator\ItemCreator;
 
+    use App\Utility\NotificationSender;
+
     class AuctionController extends Controller {
 
         public function getAuction(Request $request, Session $session) {
@@ -71,7 +73,18 @@
                 $data["isHighest"] = "true";
                 $current_user = $session->activeUser();
                 $current_auction = Auction::getAuctionWithId($auction_id);
+
+                $previous_highest_bidder = $current_auction->highestBidder();
+
+                if(!is_null($previous_highest_bidder)){
+
+                    NotificationSender::sendOutbidNotification($previous_highest_bidder->id, $current_auction);
+
+                }
+
                 $current_auction->placeBid($current_user, $bid);
+
+                NotificationSender::sendBidRecievedNotification($current_auction);
             }
 
             else{
@@ -126,17 +139,12 @@
         public function createNewAuction(Request $request, Session $session) {
 
             if(!$session->userIsLoggedIn()){
-
                 return $this->redirectTo('/login');
             }
 
             if(!$session->activeUser()->isSeller()){
-
                 return $this->redirectTo('/dashboard?error='.urlencode('You must register as a seller to create an auction'));
             }
-
-            echo json_encode($request->post);
-
 
             $auction_input = $request->post;
 
@@ -240,7 +248,12 @@
             $data["watch"] = $request->post["watch"];
 
             if($data["watch"] == "1"){
+
                 $current_auction->startWatchingAuction($current_user);
+
+                NotificationSender::sendWatchRecievedNotification($current_auction);
+
+
             }
 
             elseif($data["watch"] == "0"){
