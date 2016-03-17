@@ -3,9 +3,15 @@
 
 /*
 
+User:
 s3user
+
+Bucket:
+comp3013
+
 Access Key ID:
 AKIAJGH5MMS7WXPHMBJQ
+
 Secret Access Key:
 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
 

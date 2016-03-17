@@ -9,7 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
     <link href="/css/bootstrap/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 	<link href="/css/style.css" type="text/css" rel="stylesheet">
-	<link href="/css/<?= $filename; ?>.css" type="text/css" rel="stylesheet">
+	<link href="/css/<?= $filename; ?>.css?v=<?=rand()?>" type="text/css" rel="stylesheet">
 
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -37,7 +37,11 @@
 
 				    <li class="pull-right"><a href="/logout" style="color:gray">Logout</a></li>
 
+                    <li class="pull-right"><a href="/dashboard" style="color:white">Notifications</a></li>
+
 				    <li class="pull-right"><a href="/dashboard" style="color:white">Welcome <?= $user->email ?> | Dashboard</a></li>
+
+
 
 				<?php else: ?>
 
