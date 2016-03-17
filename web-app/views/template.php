@@ -34,9 +34,15 @@
 				</li>
 
 				<?php if(isset($user)):?>
-				    <li class="pull-right"> <a href="/dashboard" style="color:white">Welcome <?= $user->email ?> | Dashboard</a></li>
+
+				    <li class="pull-right"><a href="/logout" style="color:gray">Logout</a></li>
+
+				    <li class="pull-right"><a href="/dashboard" style="color:white">Welcome <?= $user->email ?> | Dashboard</a></li>
+
 				<?php else: ?>
+
                     <li class="pull-right"><a href="/login" style="color:white">Log In | Sign Up</a></li>
+
 				<?php endif ?>
 			</ul>
 
