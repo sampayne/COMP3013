@@ -1,13 +1,17 @@
-<?php declare(strict_types=1);
+<?php namespace App\Controller;
 
-    namespace App\Controller;
+    use App\Utility\Request;
+    use App\Utility\Session;
+    use App\Utility\View;
+    use App\Utility\Database;
 
-    use App\Utility\{Request, Session, View, Database};
-    use App\Model\{User, Item, ItemCategory};
+    use App\Model\User;
+    use App\Model\Item;
+    use App\Model\ItemCategory;
 
     class SearchController extends Controller {
 
-        public function getSearch(Request $request, Session $session) : string {
+        public function getSearch(Request $request, Session $session) {
             $searchTerm = $request->get['search-bar'];
             $auction_data = $this->getRelativeAuctionDataSearch(explode(" ", $searchTerm), $request);
 
@@ -87,8 +91,8 @@
                 $auction_data= $this->getExactAuctionDataSearch($searchTerm[$i], $request);
                 $i++;
             }while($i < count($searchTerm) - 1 && empty($auction_data));
-            
-            
+
+
 
             return $auction_data;
         }
@@ -100,7 +104,7 @@
                 foreach ($results as $combination)
                     array_push($results, array_merge(array($element), $combination));
 
-            return $results;   
+            return $results;
         }
 
         static function sortString($a,$b){
