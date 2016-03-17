@@ -29,7 +29,7 @@
             $this->id = $sqlResultRow['id'];
             $this->name = $sqlResultRow['name'];
             $this->description = $sqlResultRow['description'];
-            $this->starting_price = $sqlResultRow['starting_price'];
+            $this->starting_price = (int) $sqlResultRow['starting_price'];
             $this->end_date = $sqlResultRow['end_date'];
             $this->userrole_id = $sqlResultRow['userrole_id'];
             $this->created_at = $sqlResultRow['created_at'];

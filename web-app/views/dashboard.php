@@ -47,29 +47,35 @@
 
                 <h3>Live Auctions</h3>
 
-                <table class="pane">
+                <table class="pane col-md-12">
 
                     <?php foreach($liveSellerAuctions as $auction){ ?>
         				<tr>
             				<td class="col-md-2"> <img class="col-md-12" src="<?= $auction->getFirstItem()->image_url ?>"></td>
+                            
                             <td  class="col-md-8">
-    <!--                             <?php echo $auction->id; ?> <br /> -->
-                                <h4><strong><?php echo $auction->name; ?></strong></h4>
+                            
+    <!--                        <?php echo $auction->id; ?> <br /> -->
+                                <h4><strong><a href=<?php echo "/auction/". $auction->id; ?> >
+                                <?php echo $auction->name; ?>
+                                </a></strong></h4>
                                 <p><em><?php echo $auction->description; ?> </em></p>
-                                <p>Starting Price: <?php echo $auction->starting_price; ?> <br />
+                                <p>Starting Price: <?php echo $auction->starting_price / 100 ; ?> <br />
                                 Until: <?php echo $auction->end_date; ?> <br />
                                 Number of Views: <?php echo $auction->getViewCount(); ?> <br />
                                 Number of Watches: <?php echo $auction->getWatchCount(); ?> <br /></p>
                                 <form role="form" method="get" action="/auction/<?php echo $auction->id; ?>/edit">
                                 <button type="submit" class="btn btn-default">Edit Auction</button>
                                 </form>
+                           
                             </td>
+                            
 
 
                         <td class="col-md-2">
                                 <?php if($auction->getBidCount() != 0): ?>
                                     <h3 class="text-success"><strong> <?php echo $auction->getBidCount(); ?> bids</strong></h3>
-                                    <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                    <p>Highest Bid: <?php echo $auction->getHighestBid() / 100; ?></p>
                                 <?php else: ?>
                                     <h3 class="text-danger"><strong>No bids</strong></h3>
                                 <?php endif; ?>
@@ -81,15 +87,17 @@
 
                 <h3>Completed Auctions </h3>
 
-                <table class="pane">
+                <table class="pane col-md-12">
                     <?php foreach($completedSellerAuctions as $auction){ ?>
                        <tr>
                             <td class="col-md-2"> <img class="col-md-12" src="<?= $auction->getFirstItem()->image_url ?>"></td>
                             <td  class="col-md-8">
                               <!--   <?php echo $auction->id; ?> <br /> -->
-                                <h4><strong><?php echo $auction->name; ?></strong></h4>
+                                <h4><strong><a href=<?php echo "/auction/". $auction->id; ?> >
+                                <?php echo $auction->name; ?>
+                                </a></strong></h4>
                                 <p><em><?php echo $auction->description; ?> </em></p>
-                                <p>Starting Price: <?php echo $auction->starting_price; ?> <br />
+                                <p>Starting Price: <?php echo $auction->starting_price / 100; ?> <br />
                                 Until: <?php echo $auction->end_date; ?> <br />
                                 Number of Views: <?php echo $auction->getViewCount(); ?> <br />
                                 Number of Watches: <?php echo $auction->getWatchCount(); ?> <br /></p>
@@ -98,7 +106,7 @@
                             <td class="col-md-3">
                                 <?php if($auction->getBidCount() != 0): ?>
                                     <h3 class="text-success"><strong>Sold</strong></h3>
-                                    <p>Sold for: <?php echo $auction->getHighestBid(); ?></p>
+                                    <p>Sold for: <?php echo $auction->getHighestBid() / 100; ?></p>
                                     Number of Bids: <?php echo $auction->getBidCount(); ?>
                                 <?php else: ?>
                                     <h3 class="text-danger"><strong>Not sold</strong></h3>
@@ -113,13 +121,13 @@
 
                 <h3>Feedback</h3>
 
-                <?php if(count($buyerFeedback) == 0): ?>
+                <?php if(count($sellerFeedback) == 0): ?>
 
                     <h4 class="pane">No Feedback.</h4>
 
                 <?php else: ?>
 
-                <table class="pane">
+                <table class="pane col-md-12">
                     <?php foreach($sellerFeedback as $singleFeedback){ ?>
                         <tr>
                             <td>
@@ -171,7 +179,7 @@
 
                 <?php else: ?>
 
-                <table class="pane">
+                <table class="pane col-md-12">
 
                     <?php foreach($liveBidBuyerAuctions as $auction) { ?>
                         <tr>
@@ -179,7 +187,9 @@
 
                             <td  class="col-md-8">
                              <!--   <?php echo $auction->id; ?> <br /> -->
-                                <h4><strong><?php echo $auction->name; ?></strong></h4>
+                                <h4><strong><a href=<?php echo "/auction/". $auction->id; ?> >
+                                <?php echo $auction->name; ?>
+                                </a></strong></h4>
                                 <p><em><?php echo $auction->description; ?> </em></p>
                                 <p>End date: <?php echo $auction->end_date; ?><br /></p>
 
@@ -188,23 +198,23 @@
                             <td class="col-md-2">
                                 <?php if($auction->getHighestBid() == $auction->getHighestBidForUser($user)): ?>
                                     <h3 class="text-success"><strong>OK</strong></h3>
-                                    <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                    <p>Highest Bid: <?php echo $auction->getHighestBid() / 100; ?></p>
                                         <form role="form" method="post" action="/auction/<?php echo $auction->id; ?>/bid">
                                             <div class="form-group">
                                             <label>Bid more</label>
-                                            <input class="form-control" type="text" name="bid_value" size="8" min="<?php echo $auction->getHighestBid() + 1; ?>"/>
+                                            <input class="form-control" type="text" name="bid-bar" size="8" min="<?php echo $auction->getHighestBid() + 1; ?>"/>
                                             </div>
                                             <button type="submit" class="btn btn-default">Bid</button>
                                         </form>
 
                                 <?php else: ?>
                                     <h3 class="text-danger"><strong>Outbid</strong></h3>
-                                    <p>Your Bid: <?php echo $auction->getHighestBidForUser($user); ?> <br />
-                                    Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                    <p>Your Bid: <?php echo $auction->getHighestBidForUser($user) / 100; ?> <br />
+                                    Highest Bid: <?php echo $auction->getHighestBid() / 100; ?></p>
 
                                         <form role="form" method="post" action="/auction/<?php echo $auction->id; ?>/bid">
                                             <div class="form-group"><label>Place another bid</label>
-                                            <input class="form-control" type="text" name="bid_value" size="8" min="<?php echo $auction->getHighestBid() + 1; ?>"/>
+                                            <input class="form-control" type="text" name="bid-bar" size="8" min="<?php echo $auction->getHighestBid() + 1; ?>"/>
                                             </div>
                                             <button type="submit" class="btn btn-default">Bid</button>
                                         </form>
@@ -227,14 +237,16 @@
 
                 <?php else: ?>
 
-                <table class="pane">
+                <table class="pane col-md-12">
 
                     <?php foreach($completedBidBuyerAuctions as $auction){ ?>
                         <tr>
                             <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
                             <td  class="col-md-8">
                              <!--   <?php echo $auction->id; ?> <br /> -->
-                                <h4><strong><?php echo $auction->name; ?></strong></h4>
+                                <h4><strong><a href=<?php echo "/auction/". $auction->id; ?> >
+                                <?php echo $auction->name; ?>
+                                </a></strong></h4>
                                 <p><em><?php echo $auction->description; ?> </em></p>
                                 Ended on: <?php echo $auction->end_date; ?><br /></p>
                             </td>
@@ -242,10 +254,10 @@
                             <td class="col-md-2">
                                 <?php if($auction->getHighestBid() == $auction->getHighestBidForUser($user)): ?>
                                     <h3 class="text-success"><strong>Won</strong></h3>
-                                    <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                    <p>Highest Bid: <?php echo $auction->getHighestBid() / 100; ?></p>
                                 <?php else: ?>
                                     <h3 class="text-danger"><strong>Lost</strong></h3>
-                                    <p>Highest Bid: <?php echo $auction->getHighestBid(); ?></p>
+                                    <p>Highest Bid: <?php echo $auction->getHighestBid() / 100; ?></p>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -262,26 +274,28 @@
 
                 <?php else: ?>
 
-                <table class="pane">
+                <table class="pane col-md-12">
                     <?php foreach($liveWatchedBuyerAuctions as $auction){ ?>
 
                         <tr>
                             <td class="col-md-2"> <img class="col-md-12" src="/images/default.gif"></td>
                             <td  class="col-md-8">
                             <!--    <?php echo $auction->id; ?> <br /> -->
-                                <h4><strong><?php echo $auction->name; ?></strong></h4>
+                                <h4><strong><a href=<?php echo "/auction/". $auction->id; ?> >
+                                <?php echo $auction->name; ?>
+                                </a></strong></h4>
                                 <p><em><?php echo $auction->description; ?> </em></p>
                                 <p>End date: <?php echo $auction->end_date; ?><br /></p>
 
                             </td>
 
                             <td class="col-md-2">
-                                <p>Started at: <?php echo $auction->starting_price; ?> <br />
-                                Highest Bid: <?php echo $auction->getHighestBid(); ?> <br />
-                                Bid Count: <?php echo $auction->getBidCount(); ?></p>
+                                <p>Started at: <?php echo $auction->starting_price / 100; ?> <br />
+                                Highest Bid: <?php echo $auction->getHighestBid() / 100; ?> <br />
+                                Bid Count: <?php echo $auction->getBidCount() / 100; ?></p>
                                 <form role="form" method="post" action="/auction/<?php echo $auction->id; ?>/bid">
                                 <div class="form-group">
-                                <input class="form-control" type="text" name="bid_value" size="8"min="<?php echo $auction->getHighestBid() + 1; ?>"/>
+                                <input class="form-control" type="text" name="bid-bar" size="8"min="<?php echo $auction->getHighestBid() + 1; ?>"/>
                                 </div>
                                 <button type="submit" class="btn btn-default">Bid</button>
                                 </form>
@@ -304,7 +318,7 @@
 
                 <?php else: ?>
 
-                <table class="pane">
+                <table class="pane col-md-12">
                     <?php foreach($buyerFeedback as $singleFeedback){ ?>
                         <tr>
                             <td><!--  <?php echo $singleFeedback->id; ?> -->
@@ -352,7 +366,7 @@
 
                 <?php else: ?>
 
-                <table class="pane">
+                <table class="pane col-md-12">
                     <?php foreach($recommendations as $auction){ ?>
 
                         <tr>
@@ -366,9 +380,9 @@
                             </td>
 
                             <td class="col-md-2">
-                                <p>Started at: <?php echo $auction->starting_price; ?> <br />
-                                Highest Bid: <?php echo $auction->getHighestBid(); ?> <br />
-                                Bid Count: <?php echo $auction->getBidCount(); ?></p>
+                                <p>Started at: <?php echo $auction->starting_price / 100; ?> <br />
+                                Highest Bid: <?php echo $auction->getHighestBid() / 100; ?> <br />
+                                Bid Count: <?php echo $auction->getBidCount() / 100; ?></p>
                                 <form role="form" method="post" action="/auction/<?php echo $auction->id; ?>/bid">
                                 <div class="form-group">
                                 <input class="form-control" type="text" name="bid_value" size="8"min="<?php echo $auction->getHighestBid() + 1; ?>"/>
