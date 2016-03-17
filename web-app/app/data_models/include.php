@@ -7,3 +7,4 @@
     require('SellerFeedback.php');
     require('ItemCategory.php');
     require('Item.php');
+    require('Notification.php');
