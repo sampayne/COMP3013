@@ -24,7 +24,7 @@
                     <div class="panel-heading"><h1 class="panel-title"><?= $name ?></h1></div>
                     <div class="panel-body">
 
-                        <?php if(strlen($auction->getFirstItem()->image_url) != 0) {?>
+                        <?php if(strlen($auction->getFirstItem()->image_url) != 0 && file_exists($_SERVER['DOCUMENT_ROOT'].($auction->getFirstItem()->image_url))) {?>
                             <div class="row"> <img class= "col-md-4 col-md-offset-4" src="<?= $auction->getFirstItem()->image_url ?>"></div>
 
                         <?php }else{ ?>

@@ -90,7 +90,7 @@
                     <table style="width: 100%;">
                         <tr>
 
-                            <?php if(strlen($value[5]) != 0) {?>
+                            <?php if(strlen($value[5]) != 0 && file_exists($_SERVER['DOCUMENT_ROOT'].$value[5])) {?>
                                 
                                 <td class="col-md-2"> <img class="col-md-12" src=<?php echo($value[5])?>></td>
 
