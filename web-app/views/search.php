@@ -1,4 +1,3 @@
-<!--$auction_array -->
 <div class="row">
     <div class="col-md-3">
         <form role="search" method="get" action="/search">
