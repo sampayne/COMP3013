@@ -17,15 +17,15 @@
                             Sold &pound;<?= $auction->getFormattedHighestBid() ?>
                         </li>
                          <li class="list-group-item">
-                            To: <a href="/user/<?=$auction->buyer()->id?>/feedback"><?= $auction->buyer()->email ?></a><?= $auction->buyer()->id == $user->id ? ' (You)' : '' ?>
+                            To: <a href="/user/<?=$auction->buyer()->id?>/feedback"><?= $auction->buyer()->email ?></a><?= isset($user) && $auction->buyer()->id == $user->id ? ' (You)' : '' ?>
                         </li>
 
-                        <?php if($auction->seller()->id == $user->id && !$auction->hasBuyerFeedback()):?>
+                        <?php if(isset($user) && $auction->seller()->id == $user->id && !$auction->hasBuyerFeedback()):?>
                          <li class="list-group-item">
 
                             <a href="/auction/<?=$auction->id?>/feedback/create" class="btn btn-primary center-block">Leave Feedback for Buyer</a>
                          </li>
-                        <?php elseif($auction->buyer()->id == $user->id && !$auction->hasSellerFeedback()):?>
+                        <?php elseif(isset($user) && $auction->buyer()->id == $user->id && !$auction->hasSellerFeedback()):?>
                          <li class="list-group-item">
 
                             <a href="/auction/<?=$auction->id?>/feedback/create" class="btn btn-primary center-block">Leave Feedback for Seller</a>
@@ -47,7 +47,7 @@
                     </li>
 
 
-                    <?php if($auction->seller()->id !== $user->id):?>
+                    <?php if(isset($user) && $auction->seller()->id !== $user->id):?>
                         <li class="list-group-item">
                                     <form action="/auction/<?= $auction->id ?>/bid" method="post">                                  <div class="input-group">
 

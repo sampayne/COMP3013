@@ -77,7 +77,7 @@
 
     		//exit(0);
 
-            return '//comp3013.s3-website-eu-west-1.amazonaws.com/'.$directory.$filename;
+            return 'http://comp3013.s3-website-eu-west-1.amazonaws.com/'.$directory.$filename;
         }
 
         protected function isValidDate( $key)  {

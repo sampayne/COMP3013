@@ -15,11 +15,11 @@
         public function getSearch(Request $request, Session $session) {
             $searchTerm = $request->get['search-bar'];
             $auction_data = $this->getExactAuctionDataSearch(explode(" ", $searchTerm), $request);
-            
+
             $auction_array = array();
             foreach ($auction_data as $value) {
                 $auction = new Auction($value);
-                
+
                 if(new \DateTime() <= new \DateTime($auction->end_date))
                     array_push($auction_array, $auction);
             }
@@ -107,7 +107,7 @@
         private function createLeftJoins(&$query, $searchTerms){
 
             for($i = 1; $i <= count($searchTerms); $i++){
- 
+
                 $query = $query." LEFT JOIN (SELECT a.id, 1 as e".$i." FROM `Auction` a WHERE ".$this->searchAllColumns($searchTerms[$i-1], ['a.name', 'a.description'])." OR a.id IN (SELECT a.id FROM `Auction` a LEFT JOIN `Item` i ON i.auction_id = a.id WHERE ".$this->searchAllColumns($searchTerms[$i-1], ['i.name', 'i.description']).")) as tb".$i." ON a.id=tb".$i.".id";
             }
 

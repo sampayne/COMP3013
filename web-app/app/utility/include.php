@@ -22,7 +22,7 @@ UxmX2c4yEd7zaUAo8y23mjLqaG51KzW+e6v5ABuK
     putenv('AWS_SECRET_ACCESS_KEY=UxmX2c4yEd7zaUAo8y23mjLqaG51KzW+e6v5ABuK');
 
 
-    require ('aws/aws-autoloader.php');
+    require ('aws.phar');
     require ('Utility.php');
     require ('Database.php');
     require ('Request.php');
