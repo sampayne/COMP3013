@@ -1,4 +1,3 @@
-<!--$auction_array -->
 <?php if($auctionsFound){?>
     
     <div class="container col-md-2 categoryFilter">

@@ -59,11 +59,6 @@
             $selected_categories = $request->get;
             $firstOr = true;
 
-            $fake_categories = 0;
-            if(array_key_exists("search-bar", $selected_categories)) $fake_categories++;
-            if(array_key_exists("date", $selected_categories)) $fake_categories++;
-            if(array_key_exists("price", $selected_categories)) $fake_categories++;
-
             foreach($selected_categories as $key => $category){
                 if($key=="search-bar" || $key=="date" || $key=="price")
                     continue;
@@ -83,9 +78,7 @@
 
         }
 
-        private function searchAllColumns($searchTerm){
-            //$columns_array = ['a.name', 'a.description', 'i.name', 'i.description'];
-            $columns_array = ['a.name', 'a.description'];
+        private function searchAllColumns($searchTerm, $columns_array){
             $query = "";
 
             $firstAnd = true;
@@ -114,9 +107,8 @@
         private function createLeftJoins(&$query, $searchTerms){
 
             for($i = 1; $i <= count($searchTerms); $i++){
-               /* $query = $query." LEFT JOIN (SELECT a.id, 1 as e".$i." FROM `Item` i LEFT JOIN `Auction` a ON i.auction_id = a.id WHERE ".$this->searchAllColumns($searchTerms[$i-1]).") as tb".$i." ON a.id=tb".$i.".id";
-               */
-                $query = $query." LEFT JOIN (SELECT a.id, 1 as e".$i." FROM `Auction` a WHERE ".$this->searchAllColumns($searchTerms[$i-1]).") as tb".$i." ON a.id=tb".$i.".id";
+ 
+                $query = $query." LEFT JOIN (SELECT a.id, 1 as e".$i." FROM `Auction` a WHERE ".$this->searchAllColumns($searchTerms[$i-1], ['a.name', 'a.description'])." OR a.id IN (SELECT a.id FROM `Auction` a LEFT JOIN `Item` i ON i.auction_id = a.id WHERE ".$this->searchAllColumns($searchTerms[$i-1], ['i.name', 'i.description']).")) as tb".$i." ON a.id=tb".$i.".id";
             }
 
         }
