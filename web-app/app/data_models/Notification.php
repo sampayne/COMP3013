@@ -1,6 +1,7 @@
 <?php namespace App\Model;
 
 
+    use App\Utility\Database;
 
 
     class Notification {
@@ -23,7 +24,7 @@
 
             $notification->content = isset($SQLRow['content']) ? $SQLRow['content'] : '';
             $notification->user_id = isset($SQLRow['user_id']) ? $SQLRow['user_id'] : -1;
-            $notification->reference_id = isset($SQLRow['reference_id']) ? $SQLRow['reference_id'] : -1;
+            $notification->auction_id = isset($SQLRow['auction_id']) ? $SQLRow['auction_id'] : -1;
             $notification->created_at = isset($SQLRow['created_at']) ?  $SQLRow['created_at']:'';
             $notification->updated_at = isset($SQLRow['updated_at'])? $SQLRow['updated_at'] :'';
 
@@ -46,6 +47,21 @@
        }
 
 
+       public static function forUser($user_id){
+
+           $results = Database::select('SELECT * FROM Notification WHERE user_id = ? AND cleared = 0',[$user_id]);
+
+           return self::arrayFromSQLRows($results);
+
+       }
+
+       public static function clearForUser($user_id){
+
+           Database::insert('UPDATE Notification SET cleared = 1 WHERE user_id = ?', [$user_id]);
+
+
+
+       }
 
 
     }

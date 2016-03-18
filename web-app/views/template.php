@@ -23,7 +23,7 @@
 
 
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Brand</a>
+          <a class="navbar-brand" href="/">Buy Now</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -41,19 +41,31 @@
 
 				    <li><p class="navbar-text">Welcome <?= $user->email ?></p></li>
                     <li><a href="/dashboard">Dashboard</a></li>
+                    <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Notifications
+                              <span class="badge"><?=count($user->notifications())?>
+                              </span>
+                              <span class="caret"></span>
+                            </a>
 
-                       <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Notifications <span class="caret"></span></a>
                           <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
+
+                              <?php foreach($user->notifications() as $notification): ?>
+
+                                <li><a href="/auction/<?=$notification->auction_id?>"><?=$notification->content?></a></li>
+                                <li role="separator" class="divider"></li>
+
+                              <?php endforeach ?>
+
+                              <?php if(count($user->notifications()) === 0):?>
+                                <li class="disabled"><a href="#">No notifications</a></li>
+                            <?php else: ?>
+
+                                <li class="text-center"><a href="/notifications/clear">Clear</a></li>
+
+                            <?php endif ?>
                           </ul>
-                        </li>
+                    </li>
                     <li><a href="/logout">Logout</a></li>
 
 
@@ -68,7 +80,7 @@
         </div>
 	</nav>
 
-    <?php include($filename.'.php');?>
+    <?php include($filename.'.php') ?>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="/css/bootstrap/js/bootstrap.min.js"></script>

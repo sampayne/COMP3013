@@ -6,14 +6,16 @@ body {
 
 }
 
-
-
-
-
-
 .alert:last-child {
 
 
     margin-bottom: 0px;
+
+}
+
+body > .container-fluid, body > .container {
+
+    margin-top:20px;
+
 
 }

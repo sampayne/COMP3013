@@ -1,4 +1,6 @@
-<div class="row">
+<div class="container">
+
+    <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading"><h1 class="panel-title">Create New Auction</h1></div>
@@ -50,6 +52,9 @@
         </div>
     </div>
 </div>
+
+</div>
+
 
 <link rel="stylesheet" type="text/css" href="/js/datetimepicker/jquery.datetimepicker.css" />
 

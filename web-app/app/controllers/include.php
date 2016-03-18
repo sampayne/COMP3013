@@ -9,3 +9,4 @@
     require ('SearchController.php');
     require ('AuctionController.php');
     require ('FeedbackController.php');
+    require ('NotificationController.php');
