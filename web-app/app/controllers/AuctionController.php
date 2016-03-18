@@ -76,7 +76,9 @@
 
                 $previous_highest_bidder = $current_auction->highestBidder();
 
-                if(!is_null($previous_highest_bidder)){
+
+
+                if(!is_null($previous_highest_bidder) && !($previous_highest_bidder->id == $current_user->id) ){
 
                     NotificationSender::sendOutbidNotification($previous_highest_bidder->id, $current_auction);
 

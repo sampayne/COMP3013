@@ -45,7 +45,7 @@
                 fatalError('Notification cannot be sent to null user');
             }
 
-            Database::insert('INSERT INTO Notification (user_id, auction_id, content, type) VALUES (?,?,?,?)',[$user_id, $reference_id, $content, $type]);
+            Database::insert('INSERT INTO Notification (user_id, auction_id, content, type) VALUES (?,?,?,?)',[$user_id, $auction_id, $content, $type]);
 
         }
 

@@ -196,7 +196,7 @@
 
             if(!isset($this->highest_bidder)){
 
-                 $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
+                 $results = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
                                         FROM Auction as au
                                         JOIN Bid as b
                                         ON b.auction_id = au.id
