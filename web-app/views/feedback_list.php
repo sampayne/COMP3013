@@ -58,7 +58,8 @@
                                                             <?= $feedback->content ?>
                                                         </div>
                                                         <ul class="list-group">
-                                                            <li class="list-group-item"><span class="badge"><?= $feedback->rating ?></span>Rating</li>
+                                                            <li class="list-group-item"><span class="badge"><?= $feedback->communication ?></span>Communication</li>
+                                                             <li class="list-group-item"><span class="badge"><?= $feedback->speed_of_payment ?></span>Speed of Payment</li>
                                                             <li class="list-group-item list-group-item-info"><span class="badge"><?= $feedback->mean() ?></span>Overall</li>
                                                         </ul>
                                                     </div>

@@ -6,7 +6,8 @@
 
         public $id;
         public $content;
-        public $rating;
+        public $speed_of_payment;
+        public $communication;
         public $auction_id;
         public $created_at;
         public $updated_at;
@@ -67,13 +68,20 @@
         }
 
         public static function getMeanRatingForUser($userrole_id) {
-            //slightly wrong as above
-            $results = Database::query('SELECT avg(speed_of_payment) as mean_rating,
+            //unprocessed results
+            $results = Database::query('SELECT avg(communication) as mean_communication,
+                                            avg(speed_of_payment) as mean_speed_of_payment,
                                                count(*) as no_feedback
                                                FROM BuyerFeedback WHERE auction_id IN
-                (SELECT b.auction_id FROM (SELECT DISTINCT(auction_id) FROM Bid WHERE userrole_id = ?) as b
-                JOIN (SELECT id FROM Auction) as a ON b.auction_id = a.id)', [$userrole_id]);
+                (SELECT id FROM AuctionsWinners WHERE userrole_id_winner = ?)', [$userrole_id]);
             return $results[0];
+
+             if(count($results) == 0) {
+                $results['mean_communication'] = 0;
+                $results['mean_speed_of_payment'] = 0;
+                return $results;
+
+            }
 
         }
     }
