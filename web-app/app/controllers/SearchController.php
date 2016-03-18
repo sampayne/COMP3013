@@ -27,13 +27,15 @@
             $date = (isset($request->get["date"])) ? $request->get["date"] : "0";
             $price = (isset($request->get["price"])) ? $request->get["price"] : "0";
 
+            $categories = ItemCategory::all();
+
+
             if(!empty($auction_data)){
-                $categories = ItemCategory::all();
                 return (new View('search', ["selectedCategories" => $request->get, "categories" => $categories, "auctionsFound" => true, "searchTerm" => $searchTerm, "auctionData" => $auction_data, "date" => $date, "price" => $price, "auction_array" => $auction_array]))->render();
             }
 
             else{
-                return (new View('search', ["auctionsFound" => false, "searchTerm" => $searchTerm]))->render();
+                return (new View('search', ["auctionsFound" => false, "searchTerm" => $searchTerm, "categories" => $categories, "selectedCategories" => $request->get]))->render();
             }
         }
 

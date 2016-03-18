@@ -23,11 +23,11 @@
                     <?php endif ?>
                 </li>
                 <li class="list-group-item">
-                    Seller: <a href="/user/<?=$auction->seller()->id?>/feedback"><?= $auction->seller()->email ?></a><?= $auction->seller()->id == $user->id ? ' (You)' : '' ?>
+                    Seller: <a href="/user/<?=$auction->seller()->id?>/feedback"><?= $auction->seller()->email ?></a><?= isset($user) && $auction->seller()->id == $user->id ? ' (You)' : '' ?>
                 </li>
             </ul>
         </div>
-        <a href="/auction<?= $auction->id ?>" class="btn btn-primary">View</a>
+        <a href="/auction/<?= $auction->id ?>" class="btn btn-primary">View</a>
 
     </div>
     <div class="col-md-3">

@@ -38,14 +38,14 @@
 
     class NotificationSender {
 
-        public static function sendNotification($content, $user_id, $reference_id, $type){
+        public static function sendNotification($content, $user_id, $auction_id, $type){
 
             if(is_null($user_id) || $user_id < 1){
 
                 fatalError('Notification cannot be sent to null user');
             }
 
-            Database::insert('INSERT INTO Notification (user_id, reference_id, content, type) VALUES (?,?,?,?)',[$user_id, $reference_id, $content, $type]);
+            Database::insert('INSERT INTO Notification (user_id, auction_id, content, type) VALUES (?,?,?,?)',[$user_id, $reference_id, $content, $type]);
 
         }
 
@@ -98,7 +98,7 @@
 
         public static function scanForItemEndedNotifications(){
 
-            $query = 'SELECT * FROM Auction WHERE end_date < NOW() AND id NOT IN (SELECT reference_id FROM Notification WHERE type = ?)';
+            $query = 'SELECT * FROM Auction WHERE end_date < NOW() AND id NOT IN (SELECT auction_id FROM Notification WHERE type = ?)';
 
             $results = Database::select($query, [NotificationType::itemEnded()]);
 
@@ -122,7 +122,7 @@
             $query = 'SELECT au.*, aumb.max_bid FROM Auction AS au
                       JOIN AuctionsMaxBid AS aumb ON aumb.auction_id = au.id
                       WHERE au.end_date < NOW() AND au.id NOT IN
-                     (SELECT reference_id FROM Notification WHERE type = ?)';
+                     (SELECT auction_id FROM Notification WHERE type = ?)';
 
             $results = Database::select($query, [NotificationType::itemWon()]);
 
