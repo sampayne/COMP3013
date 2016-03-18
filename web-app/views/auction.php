@@ -54,10 +54,10 @@
                                             <li class="list-group-item">
                                                 Seller: <a href="/user/<?=$auction->seller()->id?>/feedback">
                                                     <?= $auction->seller()->email ?></a>
-                                                    <?= $auction->seller()->id == $user->id ? ' (You)' : '' ?>
+                                                    <?= isset($user) && $auction->seller()->id == $user->id ? ' (You)' : '' ?>
                                             </li>
 
-                                            <?php if($user->isBuyer() && !$auction->isFinished()):?>
+                                            <?php if(isset($user) && $user->isBuyer() && !$auction->isFinished()):?>
                                                 <li class="list-group-item">
 
                                                     <form method="post" action='/auction/<?= $auction->id ?>/watch'>
