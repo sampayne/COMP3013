@@ -291,7 +291,7 @@
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
                     AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
-                    ORDER BY Auction.id ASC', [$userrole_id]);
+                    ORDER BY Auction.id ASC', [$userrole_id, $userrole_id]);
 
             }
 
