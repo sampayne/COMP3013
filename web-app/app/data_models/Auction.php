@@ -28,7 +28,7 @@
             $this->id = $sqlResultRow['id'];
             $this->name = $sqlResultRow['name'];
             $this->description = $sqlResultRow['description'];
-            $this->starting_price = $sqlResultRow['starting_price'];
+            $this->starting_price = (int) $sqlResultRow['starting_price'];
             $this->end_date = $sqlResultRow['end_date'];
             $this->userrole_id = $sqlResultRow['userrole_id'];
             $this->created_at = $sqlResultRow['created_at'];
@@ -308,6 +308,7 @@
             /*
                 recommend auctions that users who bid on the same auctions as me bid on
             */
+
             $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN
                 (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
                 (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?))
@@ -318,7 +319,7 @@
             if(count($results) == 0) {
             /*
                 if on the auctions the user bid he was the only bidder
-                give suggestions from top categories
+                give suggestions from top categories he bought from
 
             */
                 $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id
@@ -329,10 +330,32 @@
                     ON ItemCategory.item_id = WonItems.id
                     GROUP BY ItemCategory.category_id
                     ORDER BY no_items
-                    LIMIT 2) as TopCategories
+                    LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
+                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
+                    ORDER BY Auction.id ASC', [$userrole_id, $userrole_id]);
+
+            }
+
+            if(count($results) == 0) {
+
+            /*
+                    if the user did not bid on any auction, recommend from popular categories
+
+            */
+
+                    $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id
+                    WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN
+                    (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory
+                    GROUP BY ItemCategory.category_id
+                    ORDER BY no_items
+                    LIMIT 1) as TopCategories
+                    ON ItemCategory.category_id = TopCategories.category_id)
+                    AND Auction.end_date > now()
+                     AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
                     ORDER BY Auction.id ASC', [$userrole_id]);
+
 
             }
 

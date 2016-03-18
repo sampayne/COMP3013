@@ -34,7 +34,8 @@
                     <h2 class="panel-title">Buyer Ratings</h2>
                 </div>
                 <ul class="list-group">
-                    <li class="list-group-item"><span class="badge"><?= $buyerRating['mean_rating'] ?></span>Rating</li>
+                    <li class="list-group-item"><span class="badge"><?= $buyerRating['mean_communication'] ?></span>Communication</li>
+                    <li class="list-group-item"><span class="badge"><?= $buyerRating['mean_speed_of_payment'] ?></span>Speed of Payment</li>
                     <li class="list-group-item"><span class="badge"><?= $buyerRating['no_feedback'] ?></span>Total Ratings</li>
                 </ul>
         </div>

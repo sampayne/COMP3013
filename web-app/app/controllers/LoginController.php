@@ -35,7 +35,7 @@
 
             $results = Database::query('SELECT id, password FROM User WHERE email = ?', [$request->post['email']]);
 
-            if(password_verify($request->post['password'], $results[0]['password'])){
+            if(isset($results[0]['id']) && password_verify($request->post['password'], $results[0]['password'])){
 
                 $id = (int) $results[0]['id'];
 
