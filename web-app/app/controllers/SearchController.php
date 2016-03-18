@@ -1,6 +1,4 @@
-<?php
-
-    namespace App\Controller;
+<?php namespace App\Controller;
 
     use App\Utility\Request;
     use App\Utility\Session;
@@ -10,19 +8,28 @@
     use App\Model\User;
     use App\Model\Item;
     use App\Model\ItemCategory;
+    use App\Model\Auction;
 
     class SearchController extends Controller {
 
-        public function getSearch(Request $request, Session $session) : string {
+        public function getSearch(Request $request, Session $session) {
             $searchTerm = $request->get['search-bar'];
             $auction_data = $this->getExactAuctionDataSearch(explode(" ", $searchTerm), $request);
+            
+            $auction_array = array();
+            foreach ($auction_data as $value) {
+                $auction = new Auction($value);
+                
+                if(new \DateTime() <= new \DateTime($auction->end_date))
+                    array_push($auction_array, $auction);
+            }
 
             $date = (isset($request->get["date"])) ? $request->get["date"] : "0";
             $price = (isset($request->get["price"])) ? $request->get["price"] : "0";
 
             if(!empty($auction_data)){
                 $categories = ItemCategory::all();
-                return (new View('search', ["selectedCategories" => $request->get, "categories" => $categories, "auctionsFound" => true, "searchTerm" => $searchTerm, "auctionData" => $auction_data, "date" => $date, "price" => $price]))->render();
+                return (new View('search', ["selectedCategories" => $request->get, "categories" => $categories, "auctionsFound" => true, "searchTerm" => $searchTerm, "auctionData" => $auction_data, "date" => $date, "price" => $price, "auction_array" => $auction_array]))->render();
             }
 
             else{
@@ -32,7 +39,7 @@
 
         private function getExactAuctionDataSearch($searchTerms, $request) {
 
-            $query = "SELECT DISTINCT a.name, a.description, a.end_date, a.id, greatest(a.starting_price, IFNULL(m.max_bid + 1, 0)) as max_value, i.image_url FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id LEFT JOIN `AuctionsMaxBid` m ON a.id = m.auction_id WHERE a.id IN (";
+            $query = "SELECT DISTINCT a.name, a.description, a.end_date, a.id, greatest(a.starting_price, IFNULL(m.max_bid + 1, 0)) as max_value, i.image_url, a.starting_price, a.userrole_id, a.created_at, a.updated_at FROM `Auction` a LEFT JOIN `Item` i ON a.id = i.auction_id LEFT JOIN `AuctionsMaxBid` m ON a.id = m.auction_id WHERE a.id IN (";
 
             $relevanceAlias = $this->createRelevanceAlias($searchTerms);
 
@@ -61,8 +68,8 @@
                 if($key=="search-bar" || $key=="date" || $key=="price")
                     continue;
 
-                $query = $query." AND a.id IN(SELECT a.id FROM `Item` it LEFT JOIN `ItemCategory` i ON it.id = i.item_id LEFT JOIN `Category` c ON i.category_id = c.id LEFT JOIN `Auction` a ON a.id 
-= it.auction_id WHERE c.name=\"".$category."\" GROUP BY a.id HAVING COUNT(a.id) >= 1) ";                
+                $query = $query." AND a.id IN(SELECT a.id FROM `Item` it LEFT JOIN `ItemCategory` i ON it.id = i.item_id LEFT JOIN `Category` c ON i.category_id = c.id LEFT JOIN `Auction` a ON a.id
+= it.auction_id WHERE c.name=\"".$category."\" GROUP BY a.id HAVING COUNT(a.id) >= 1) ";
             }
 
             $query = $query." GROUP BY a.name, a.id";
