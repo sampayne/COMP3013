@@ -5,10 +5,16 @@
 
 </div>
 
-<div class="row">
 
-	<?php $counter = 0;?>
-	<?php foreach($categories as $category){ ?>
+	<?php foreach(array_chunk($categories,2) as $category_pair): ?>
+	    <div class="row">
+
+        <?php foreach($category_pair as $category):?>
+
+
+        <?php endforeach ?>
+
+	    </div>
 
 			<?php if($counter % 2 == 0) {?>
 				<div class="row">
@@ -30,6 +36,6 @@
 			<?php }?>
 
 		<?php $counter = $counter + 1; ?>
-	<?php }?>
+	<?php endforeach ?>
 
 </div>

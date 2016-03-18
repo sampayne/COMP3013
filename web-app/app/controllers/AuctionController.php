@@ -69,7 +69,7 @@
             $bid = floatval($request->post["bid-bar"]) * 100;
             $auction_id = intval($request->url_array[1]);
 
-            if($bid > $this->getHighestBid($auction_id)){
+            if($bid >= $this->getHighestBid($auction_id)){
                 $data["isHighest"] = "true";
                 $current_user = $session->activeUser();
                 $current_auction = Auction::getAuctionWithId($auction_id);
@@ -126,13 +126,7 @@
         public function getHighestBid($auction_id){
 
             $current_auction = Auction::getAuctionWithId(intval($auction_id));
-            $bid = intval($current_auction->getHighestBid());
-            $starting_price = $current_auction->starting_price;
-
-            if($bid  < $starting_price)
-                $bid = $starting_price - 1;
-
-            return $bid;
+            return $current_auction->getNextBidValue();
 
         }
 

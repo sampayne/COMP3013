@@ -1,9 +1,7 @@
 <div class="row">
 
-    <div class="col-md-4">
-        <img src="<?= $auction->getFirstItem()->image_url?>">
-    </div>
-    <div class="col-md-8">
+    <img class="col-md-2" src="<?= strlen($auction->getFirstItem()->image_url) > 0 ? $auction->getFirstItem()->image_url : '/images/default.gif' ?>">
+    <div class="col-md-7">
         <div class="panel panel-default">
             <ul class="list-group">
                 <li class="list-group-item">
@@ -24,46 +22,17 @@
 
                     <?php endif ?>
                 </li>
+                <li class="list-group-item">
+                    Seller: <a href="/user/<?=$auction->seller()->id?>/feedback"><?= $auction->seller()->email ?></a><?= $auction->seller()->id == $user->id ? ' (You)' : '' ?>
+                </li>
             </ul>
         </div>
+        <a href="/auction<?= $auction->id ?>" class="btn btn-primary">View</a>
+
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
 
-         <div class="panel panel-default">
-            <ul class="list-group">
-                <li class="list-group-item">
-                    Starting Price: &pound; <?= $auction->starting_price/100 ?>
-                </li>
-                <?php if($auction->isFinished() && $auction->getHighestBid() > 0): ?>
-
-                    <li class="list-group-item">
-                        Sold &pound;<?= $auction->getHighestBid()/100 ?>
-                    </li>
-
-                <?php elseif($auction->isFinished() && $auction->getHighestBid() < 1):?>
-
-                    <li class="list-group-item">
-                        Unsold
-                    </li>
-
-                <?php elseif(!$auction->isFinished()):?>
-                    <li class="list-group-item">
-                        Current Bid: &pound; <?= $auction->getHighestBid() ?>
-                    </li>
-                    <li class="list-group-item">
-                        Current Bid: &pound; <?= $auction->getHighestBid() ?>
-                    </li>
-
-
-                <?php endif ?>
-                <li class="list-group-item">
-
-                Bid Count: <?= $auction->getBidCount(); ?>
-                </li>
-
-            </ul>
-         </div>
-
+         <?php include('auction_info_panel.php') ?>
 
     </div>
 
