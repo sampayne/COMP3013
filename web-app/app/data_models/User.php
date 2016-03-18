@@ -35,6 +35,19 @@
 
         }
 
+        public function email(){
+
+            if(!isset($this->email)){
+
+                $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
+                $this->email = $results[0][0];
+
+            }
+
+            return $this->email;
+
+        }
+
         public static function fromID($id) {
 
             $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);

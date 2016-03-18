@@ -153,7 +153,7 @@
                 return NULL;
             }
 
-            return new User($results[0][0]);
+            return User::fromID($results[0][0]);
 
         }
 
@@ -176,7 +176,7 @@
                 return NULL;
             }
 
-            return new User($results[0][0]);
+            return User::fromID($results[0][0]);
 
         }
 
@@ -189,6 +189,49 @@
             }
 
             return (int) $this->highest_bid;
+        }
+
+
+        public function getFormattedHighestBid() {
+
+
+            return round($this->getHighestBid()/100, 2);
+
+
+        }
+
+
+        public function getNextBidValue(){
+
+            if($this->getHighestBid() > 0){
+
+                return $this->getHighestBid()+ 50;
+
+            }else{
+
+
+                return $this->starting_price;
+
+            }
+
+
+        }
+
+
+        public function getFormattedNextBidValue() {
+
+
+            return round($this->getNextBidValue()/100, 2);
+
+
+        }
+
+        public function getFormattedStartingPrice() {
+
+
+            return round($this->starting_price/100, 2);
+
+
         }
 
         public function getHighestBidForUser(User $user)  {
