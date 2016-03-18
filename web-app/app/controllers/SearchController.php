@@ -1,6 +1,4 @@
-<?php
-
-    namespace App\Controller;
+<?php namespace App\Controller;
 
     use App\Utility\Request;
     use App\Utility\Session;
@@ -13,7 +11,7 @@
 
     class SearchController extends Controller {
 
-        public function getSearch(Request $request, Session $session) : string {
+        public function getSearch(Request $request, Session $session) {
             $searchTerm = $request->get['search-bar'];
             $auction_data = $this->getExactAuctionDataSearch(explode(" ", $searchTerm), $request);
 
@@ -61,8 +59,8 @@
                 if($key=="search-bar" || $key=="date" || $key=="price")
                     continue;
 
-                $query = $query." AND a.id IN(SELECT a.id FROM `Item` it LEFT JOIN `ItemCategory` i ON it.id = i.item_id LEFT JOIN `Category` c ON i.category_id = c.id LEFT JOIN `Auction` a ON a.id 
-= it.auction_id WHERE c.name=\"".$category."\" GROUP BY a.id HAVING COUNT(a.id) >= 1) ";                
+                $query = $query." AND a.id IN(SELECT a.id FROM `Item` it LEFT JOIN `ItemCategory` i ON it.id = i.item_id LEFT JOIN `Category` c ON i.category_id = c.id LEFT JOIN `Auction` a ON a.id
+= it.auction_id WHERE c.name=\"".$category."\" GROUP BY a.id HAVING COUNT(a.id) >= 1) ";
             }
 
             $query = $query." GROUP BY a.name, a.id";
