@@ -132,17 +132,34 @@
             return $auctions;
         }
 
+
+
+
+
+
+
+
+
         public function isFinished()  {
 
-            $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date < NOW() LIMIT 1', [$this->id]);
+            if(!isset($this->is_finished)){
 
-            return isset($results[0]) && count($results[0]) !== 0;
+                $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date < NOW() LIMIT 1', [$this->id]);
+                $this->is_finished = isset($results[0]) && count($results[0]) !== 0;
+
+            }
+
+            return $this->is_finished;
 
         }
 
         public function buyer()  {
 
-            $results = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
+
+
+            if(!isset($this->buyer)){
+
+                  $results = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
                                         FROM Auction as au
                                         JOIN Bid as b
                                         ON b.auction_id = au.id
@@ -150,33 +167,52 @@
                                         ON b.userrole_id = ur.id
                                         WHERE au.id = ? AND b.created_at < au.end_date AND au.end_date < NOW()', [$this->id]);
             if(!isset($results[0])){
-                return NULL;
+                $this->buyer =  NULL;
             }
 
-            return User::fromID($results[0][0]);
+                            $this->buyer =  User::fromID($results[0][0]);
+
+            }
+
+            return $this->buyer;
+
+
 
         }
 
         public function seller()  {
 
-            return User::fromUserRoleID($this->userrole_id);
+            if(!isset($this->seller)){
 
+                $this->seller = User::fromUserRoleID($this->userrole_id);
+
+
+            }
+
+            return $this->seller;
         }
 
         public function highestBidder()  {
 
-            $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
+            if(!isset($this->highest_bidder)){
+
+                 $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
                                         FROM Auction as au
                                         JOIN Bid as b
                                         ON b.auction_id = au.id
                                         JOIN UserRole AS ur
                                         ON b.userrole_id = ur.id
                                         WHERE au.id = ? AND b.created_at < au.end_date AND au.end_date > NOW()', [$this->id]);
-            if(!isset($results[0])){
-                return NULL;
+
+                if(!isset($results[0])){
+                    $this->highest_bidder = NULL;
+                }
+
+                $this->highest_bidder = User::fromID($results[0][0]);
+
             }
 
-            return User::fromID($results[0][0]);
+            return $this->highest_bidder;
 
         }
 
@@ -276,20 +312,26 @@
 
         public function hasBuyerFeedback() {
 
-            return BuyerFeedback::existsForAuctionID($this->id);
+            if(!isset($this->has_buyer_feedback)){
+                $this->has_buyer_feedback = BuyerFeedback::existsForAuctionID($this->id);
+            }
+
+            return $this->has_buyer_feedback;
         }
 
         public function hasSellerFeedback() {
 
-            return SellerFeedback::existsForAuctionID($this->id);
+            if(!isset($this->has_seller_feedback)){
+                $this->has_seller_feedback = SellerFeedback::existsForAuctionID($this->id);
+            }
+
+            return $this->has_seller_feedback;
         }
 
         public function getItems()  {
 
             if(count($this->items) === 0 ){
-
                 $this->items = Item::getItemsForAuction($this->id);
-
             }
 
             return $this->items;

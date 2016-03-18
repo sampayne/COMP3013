@@ -21,7 +21,7 @@
             $description = $input['item_description'];
             $image = $this->saveImage($input['image'], '/items');
             $auction_id = $input['auction_id'];
-            $categories = $input['categories'];
+            $categories = $input['item_category'];
 
             Database::insert('INSERT INTO Item (name, description,image_url,auction_id) VALUES (?,?,?,?)', [$name, $description, $image, $auction_id]);
 

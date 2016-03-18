@@ -1,6 +1,7 @@
 
+<div class="container">
 
-<div class="row">
+    <div class="row">
     <div class="col-md-12">
 
 
@@ -30,7 +31,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-4">
-                                <img class="img-responsive" src="<?= strlen($auction->getFirstItem()->image_url) > 0 ? strlen($auction->getFirstItem()->image_url) > 0 : '/images/default.gif' ?>">
+                                <img class="img-responsive" src="<?= strlen($auction->getFirstItem()->image_url) > 0 ? $auction->getFirstItem()->image_url : '/images/default.gif' ?>">
                                 </div>
                                 <div class="col-md-4">
 
@@ -149,5 +150,5 @@
                 <?php endif ?>
 
         </div>
-    </div>
+
 </div>

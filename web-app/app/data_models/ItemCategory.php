@@ -13,7 +13,9 @@
 
         public static function fromSQLRow(array $SQLRow) {
 
-            return new ItemCategory((int) $SQLRow['id'], $SQLRow['name']);
+            $category = new ItemCategory((int) $SQLRow['id'], $SQLRow['name']);
+            $category->icon_name = isset($SQLRow['icon_name']) ? $SQLRow['icon_name'] : '';
+            return $category;
 
         }
 
