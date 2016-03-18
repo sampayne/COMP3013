@@ -1,3 +1,4 @@
+<div class="container-fluid">
 <div class="row">
 
     <img class="col-md-2" src="<?= strlen($auction->getFirstItem()->image_url) > 0 ? $auction->getFirstItem()->image_url : '/images/default.gif' ?>">
@@ -36,4 +37,5 @@
 
     </div>
 
+</div>
 </div>

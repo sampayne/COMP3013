@@ -35,6 +35,18 @@
 
         }
 
+        public function notifications(){
+
+            if(!isset($this->notifications)){
+
+                $this->notifications = Notification::forUser($this->id);
+
+            }
+
+            return $this->notifications;
+
+        }
+
         public function email(){
 
             if(!isset($this->email)){

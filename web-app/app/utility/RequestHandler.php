@@ -12,6 +12,7 @@
     use App\Controller\SignupController;
     use App\Controller\SearchController;
     use App\Controller\FeedbackController;
+    use App\Controller\NotificationController;
 
     use App\Utility\NotificationSender;
 
@@ -33,40 +34,17 @@
             NotificationSender::scanForItemEndedNotifications();
 
 
-
-
             if($request->matches('GET', '/test')){
 
                 $controller = new TestController();
 
                 return $controller->runTest($request, $session);
 
-
-
-
-
-
-
-
             }else if($request->matches('GET','/dashboard')){
-
-
-
-
-
-
 
                 $controller = new DashboardController();
 
                 return $controller->getDashboard($request, $session);
-
-
-
-
-
-
-
-
 
 
             }else if($request->matches('GET','/login')){
@@ -178,6 +156,12 @@
                 $controller = new HomeController();
 
                 return $controller->getHomepage($request, $session);
+
+            }else if($request->matches('GET', '/notifications/clear')){
+
+                 $controller = new NotificationController();
+
+                return $controller->clearNotifications($request, $session);
 
             }
 
