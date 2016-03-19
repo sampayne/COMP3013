@@ -119,8 +119,7 @@
 
         public static function scanForItemWonNotifications(){
 
-            $query = 'SELECT au.*, aumb.max_bid FROM Auction AS au
-                      JOIN AuctionsMaxBid AS aumb ON aumb.auction_id = au.id
+            $query = 'SELECT au.*, aumb.max_bid FROM Auction AS au JOIN AuctionsMaxBid AS aumb ON aumb.auction_id = au.id
                       WHERE au.end_date < NOW() AND au.id NOT IN
                      (SELECT auction_id FROM Notification WHERE type = ?)';
 

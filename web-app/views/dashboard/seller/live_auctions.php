@@ -5,11 +5,24 @@
                 <h2 class="panel-title">Live Auctions</h2>
             </div>
             <ul class="list-group">
-                <?php foreach($liveSellerAuctions as $auction): ?>
-    				<li class="list-group-item">
-                            <?php include(__DIR__.'/../../single_auction.php') ?>
+
+
+                <?php if(count($liveSellerAuctions) == 0): ?>
+
+                    <li class="list-group-item">
+                        <div class="alert alert-info" role="alert">No Auctions</div>
                     </li>
-    			<?php endforeach ?>
+
+                <?php else: ?>
+
+
+                    <?php foreach($liveSellerAuctions as $auction): ?>
+        				<li class="list-group-item">
+                                <?php include(__DIR__.'/../../single_auction.php') ?>
+                        </li>
+        			<?php endforeach ?>
+
+    			<?php endif ?>
             </ul>
         </div>
     </div>

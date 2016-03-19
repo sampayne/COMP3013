@@ -36,7 +36,7 @@
                 <ul class="list-group">
                     <li class="list-group-item"><span class="badge"><?= $buyerRating['mean_communication'] ?></span>Communication</li>
                     <li class="list-group-item"><span class="badge"><?= $buyerRating['mean_speed_of_payment'] ?></span>Speed of Payment</li>
-                    <li class="list-group-item"><span class="badge"><?= $buyerRating['no_feedback'] ?></span>Total Ratings</li>
+                    <li class="list-group-item list-group-item-info"><span class="badge"><?= $buyerRating['overall'] ?></span>Overall</li>
                 </ul>
         </div>
     </div>

@@ -3,6 +3,7 @@
     use App\Utility\Database;
     use App\Model\Item;
     use App\Model\User;
+    use App\Model\Bid;
 
     class Auction {
 
@@ -21,7 +22,7 @@
         public $bid_count = -1;
         public $view_count = -1;
         public $watch_count = -1;
-
+        private $reserve_price = -1;
 
         public function __construct(array $sqlResultRow) {
 
@@ -88,7 +89,7 @@
 
         public static function getLiveBidAuctionsForUser( $userrole_id)  {
 
-            $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
+            $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.reserve_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
                 FROM Bid b JOIN Auction a ON b.auction_id = a.id
                 WHERE b.userrole_id = ? AND a.end_date > now()', [$userrole_id]);
 
@@ -97,7 +98,7 @@
 
         public static function getCompletedBidAuctionsForUser($userrole_id)  {
 
-            $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
+            $results = Database::query('SELECT DISTINCT(a.id), a.name, a.description, a.starting_price, a.reserve_price, a.end_date, a.userrole_id, a.created_at, a.updated_at
                 FROM Bid b JOIN Auction a ON b.auction_id = a.id
                 WHERE b.userrole_id = ? AND a.end_date <= now()', [$userrole_id]);
 
@@ -132,51 +133,75 @@
             return $auctions;
         }
 
+
+
+
+
+
+
+
+
         public function isFinished()  {
 
-            $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date < NOW() LIMIT 1', [$this->id]);
+            if(!isset($this->is_finished)){
 
-            return isset($results[0]) && count($results[0]) !== 0;
+                $results = Database::query('SELECT 1 FROM Auction WHERE id = ? AND end_date < NOW() LIMIT 1', [$this->id]);
+                $this->is_finished = isset($results[0]) && count($results[0]) !== 0;
+
+            }
+
+            return $this->is_finished;
 
         }
 
         public function buyer()  {
 
-            $results = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
-                                        FROM Auction as au
-                                        JOIN Bid as b
-                                        ON b.auction_id = au.id
-                                        JOIN UserRole AS ur
-                                        ON b.userrole_id = ur.id
-                                        WHERE au.id = ? AND b.created_at < au.end_date AND au.end_date < NOW()', [$this->id]);
-            if(!isset($results[0])){
-                return NULL;
+            if(!isset($this->buyer)){
+
+                  $results = Database::query('SELECT ur.user_id, aumb.userrole_id_winner FROM AuctionsWinners AS aumb JOIN UserRole AS ur ON aumb.userrole_id_winner = ur.id
+                                        WHERE aumb.id = ?', [$this->id]);
+                    if(!isset($results[0])){
+                        $this->buyer =  NULL;
+                    }
+
+                    $this->buyer =  User::fromID($results[0][0]);
+
             }
 
-            return new User($results[0][0]);
+            return $this->buyer;
+
+
 
         }
 
         public function seller()  {
 
-            return User::fromUserRoleID($this->userrole_id);
+            if(!isset($this->seller)){
 
+                $this->seller = User::fromUserRoleID($this->userrole_id);
+
+
+            }
+
+            return $this->seller;
         }
 
         public function highestBidder()  {
 
-            $result = Database::query('SELECT ur.user_id, b.userrole_id, MAX(b.value)
-                                        FROM Auction as au
-                                        JOIN Bid as b
-                                        ON b.auction_id = au.id
-                                        JOIN UserRole AS ur
-                                        ON b.userrole_id = ur.id
-                                        WHERE au.id = ? AND b.created_at < au.end_date AND au.end_date > NOW()', [$this->id]);
-            if(!isset($results[0])){
-                return NULL;
+            if(!isset($this->highest_bidder)){
+
+                 $results = Database::query('SELECT ur.user_id, aumb.userrole_id_winner FROM AuctionsMaxBidders AS aumb JOIN UserRole AS ur ON aumb.userrole_id_winner = ur.id
+                                        WHERE aumb.id = ?', [$this->id]);
+
+                if(!isset($results[0])){
+                    $this->highest_bidder = NULL;
+                }
+
+                $this->highest_bidder = User::fromID($results[0][0]);
+
             }
 
-            return new User($results[0][0]);
+            return $this->highest_bidder;
 
         }
 
@@ -190,6 +215,59 @@
 
             return (int) $this->highest_bid;
         }
+
+
+        public function getFormattedHighestBid() {
+
+
+            return round($this->getHighestBid()/100, 2);
+
+
+        }
+
+
+        public function getNextBidValue(){
+
+            if($this->getHighestBid() > 0){
+
+                return $this->getHighestBid()+ 50;
+
+            }else{
+
+
+                return $this->starting_price;
+
+            }
+
+
+        }
+
+
+        public function getFormattedNextBidValue() {
+
+
+            return round($this->getNextBidValue()/100, 2);
+
+
+        }
+
+        public function getFormattedStartingPrice() {
+
+
+            return round($this->starting_price/100, 2);
+
+
+
+        }
+
+        public function getFormattedReservePrice() {
+
+
+            return round($this->getReserve()/100, 2);
+
+
+        }
+
 
         public function getHighestBidForUser(User $user)  {
 
@@ -233,20 +311,48 @@
 
         public function hasBuyerFeedback() {
 
-            return BuyerFeedback::existsForAuctionID($this->id);
+            if(!isset($this->has_buyer_feedback)){
+                $this->has_buyer_feedback = BuyerFeedback::existsForAuctionID($this->id);
+            }
+
+            return $this->has_buyer_feedback;
+        }
+
+        public function getReserve(){
+
+
+            if($this->reserve_price < 0){
+
+                $result = Database::select('SELECT reserve_price FROM Auction WHERE id = ?', [$this->id]);
+
+                $this->reserve_price = $result[0][0];
+
+            }
+
+            return $this->reserve_price;
+
+
+        }
+
+        public function wasSold(){
+
+            return $this->getHighestBid() > 0 && $this->getHighestBid() >= $this->getReserve();
+
         }
 
         public function hasSellerFeedback() {
 
-            return SellerFeedback::existsForAuctionID($this->id);
+            if(!isset($this->has_seller_feedback)){
+                $this->has_seller_feedback = SellerFeedback::existsForAuctionID($this->id);
+            }
+
+            return $this->has_seller_feedback;
         }
 
         public function getItems()  {
 
             if(count($this->items) === 0 ){
-
                 $this->items = Item::getItemsForAuction($this->id);
-
             }
 
             return $this->items;
@@ -267,9 +373,8 @@
             */
 
             $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN
-                (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id IN
                 (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
-                (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id = ?)))
+                (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?))
                 AND Auction.end_date > now() AND NOT EXISTS
                 (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
 
@@ -283,15 +388,16 @@
                 $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id
                     WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN
                     (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN
-                    (SELECT Item.id FROM Bid JOIN Item ON Bid.auction_id = Item.auction_id
-                    WHERE Bid.userrole_id = ?) AS BidItems
-                    ON ItemCategory.item_id = BidItems.id
+                    (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id
+                    WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems
+                    ON ItemCategory.item_id = WonItems.id
                     GROUP BY ItemCategory.category_id
                     ORDER BY no_items
                     LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
-                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
+                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
+                    ORDER BY Auction.id ASC', [$userrole_id, $userrole_id]);
 
             }
 
@@ -310,7 +416,8 @@
                     LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
-                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id]);
+                     AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
+                    ORDER BY Auction.id ASC', [$userrole_id]);
 
 
             }
@@ -368,6 +475,20 @@
 
             $query = "INSERT INTO View (userrole_id, auction_id) VALUES (?,?);";
             Database::insert($query, [$userrole_id, $auction_id]);
+        }
+
+        public function bids(){
+
+            if(!isset($this->bids)){
+
+                $this->bids = Bid::forAuction($this->id);
+
+
+            }
+
+            return $this->bids;
+
+
         }
 
 

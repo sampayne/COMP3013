@@ -26,6 +26,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="auction_description">Reserve Price (Optional):</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">&pound;</span>
+                            <input type="number" class="form-control" name="reserve_price" placeholder="Reserve Price...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="auction_description">End Date &amp; Time:</label><br>
                         <input type="text" class="form-control" id="end_date_time" name="end_date_time" placeholder="End Date & Time...">
                     </div>
