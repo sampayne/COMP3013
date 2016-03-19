@@ -366,7 +366,7 @@
         }
 
 
-        public static function getRecommendationsForUser( $userrole_id)  {
+        public static function getRecommendationsForUser($buyer_id, $seller_id = 0)  {
 
             /*
                 recommend auctions that users who bid on the same auctions as me bid on
@@ -374,10 +374,9 @@
 
             $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN
                 (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id IN
-                (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
-                (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id = ?)))
-                AND Auction.end_date > now() AND NOT EXISTS
-                (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
+                    (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
+                        (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id = ?)))
+                AND Auction.end_date > now() AND NOT Auction.userrole_id = ? AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$buyer_id, $seller_id,  $buyer_id]);
 
 
             if(count($results) == 0) {
@@ -397,7 +396,8 @@
                     LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
-                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
+                    AND NOT Auction.userrole_id = ?
+                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$buyer_id, $seller_id,  $buyer_id]);
 
             }
 
@@ -415,8 +415,9 @@
                     ORDER BY no_items
                     LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
-                    AND Auction.end_date > now()
-                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id]);
+                    AND Auction.end_date > NOW()
+                    AND NOT Auction.userrole_id = ?
+                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$seller_id, $buyer_id]);
 
 
             }
