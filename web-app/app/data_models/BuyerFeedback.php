@@ -28,7 +28,7 @@
 
         public function mean() {
 
-            return ($this->speed_of_payment + $this->communication)/self::$number_of_ratings;
+            return round(($this->speed_of_payment + $this->communication)/self::$number_of_ratings, 1);
 
         }
 

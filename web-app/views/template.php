@@ -28,12 +28,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
-            <form class="navbar-form navbar-left" role="search" method="get" action="/search">
-                <div class="form-group">
-                    <input type="text" name="search-bar" size="100" class="form-control" placeholder="Search...">
-                </div>
-                <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" style="color:black" aria-hidden="true"></span></button>
-            </form>
+
 
               <ul class="nav navbar-nav navbar-right">
 
@@ -75,6 +70,13 @@
                     <li><a href="/login">Sign Up</a></li>
 				<?php endif ?>
 			</ul>
+
+			  <form class="navbar-form navbar-right" role="search" method="get" action="/search">
+                <div class="form-group">
+                    <input type="text" name="search-bar" size="100" class="form-control" placeholder="Search...">
+                </div>
+                <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" style="color:black" aria-hidden="true"></span></button>
+            </form>
 
         </div>
         </div>

@@ -47,7 +47,7 @@
 
         public function mean() {
 
-            return ($this->item_as_described + $this->communication + $this->dispatch_time + $this->posting)/self::$number_of_ratings;
+            return round(($this->item_as_described + $this->communication + $this->dispatch_time + $this->posting)/self::$number_of_ratings,1);
 
         }
 
