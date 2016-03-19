@@ -90,26 +90,24 @@
         public static function getMeanRatingForUser($userrole_id) {
 
             //unproccesed result
-            $results = Database::query('SELECT avg(item_as_described) as mean_item_as_described,
+            $results = Database::query('SELECT
+
+                avg(item_as_described) as mean_item_as_described,
                 avg(communication) as mean_communication,
                 avg(dispatch_time) as mean_dispatch_time,
                 avg(posting) as mean_posting,
+
                 count(*) as no_feedback
                 FROM SellerFeedback JOIN Auction ON SellerFeedback.auction_id = Auction.id
                 WHERE Auction.userrole_id = ?
                 GROUP BY Auction.userrole_id', [$userrole_id]);
 
-            if(count($results) == 0) {
-                $results['mean_item_as_described'] = 0;
-                $results['mean_communication'] = 0;
-                $results['mean_dispatch_time'] = 0;
-                $results['mean_posting'] = 0;
-                $results['no_feedback'] = 0;
-                return $results;
+                $mean_rating['mean_item_as_described'] = isset($results[0]['mean_item_as_described']) ? $results[0]['mean_item_as_described'] : 0;
+                $mean_rating['mean_communication'] = isset($results[0]['mean_communication']) ? $results[0]['mean_communication'] : 0;;
+                $mean_rating['mean_dispatch_time'] = isset($results[0]['mean_dispatch_time']) ? $results[0]['mean_dispatch_time'] : 0;;
+                $mean_rating['mean_posting'] = isset($results[0]['mean_posting']) ? $results[0]['mean_posting'] : 0;;
+                return $mean_rating;
 
-            }
-
-            return $results[0];
 
         }
     }

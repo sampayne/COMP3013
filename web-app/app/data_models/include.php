@@ -8,3 +8,4 @@
     require('ItemCategory.php');
     require('Item.php');
     require('Notification.php');
+    require('Bid.php');

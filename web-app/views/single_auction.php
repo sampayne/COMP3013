@@ -2,7 +2,7 @@
 <div class="row">
 
     <img class="col-md-2" src="<?= strlen($auction->getFirstItem()->image_url) > 0 ? $auction->getFirstItem()->image_url : '/images/default.gif' ?>">
-    <div class="col-md-7">
+    <div class="col-md-6">
         <div class="panel panel-default">
             <ul class="list-group">
                 <li class="list-group-item">
@@ -15,11 +15,11 @@
                 <li class="list-group-item">
                     <?php if($auction->isFinished()):?>
 
-                        Ended on <?=$auction->end_date ?>
+                        Ended on: <?=$auction->end_date ?>
 
                     <?php else: ?>
 
-                        Ends on <?=$auction->end_date ?>
+                        Ends on: <?=$auction->end_date ?>
 
                     <?php endif ?>
                 </li>
@@ -31,7 +31,7 @@
         <a href="/auction/<?= $auction->id ?>" class="btn btn-primary">View</a>
 
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
 
          <?php include('auction_info_panel.php') ?>
 

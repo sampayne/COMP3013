@@ -19,6 +19,21 @@
 
         }
 
+        public static function fromID($id) {
+
+            $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
+
+            if(!count($results)){
+                fatalError('User Not Found');
+            }
+
+            $user = new User($id);
+            $user->email = $results['email'];
+
+            return $user;
+
+        }
+
         public static function fromUserRoleID($userrole_id) {
 
             $results = Database::selectOne('SELECT id, email FROM User WHERE id IN (SELECT user_id FROM UserRole WHERE id = ?)', [$userrole_id]);
@@ -40,11 +55,9 @@
             if(!isset($this->notifications)){
 
                 $this->notifications = Notification::forUser($this->id);
-
             }
 
             return $this->notifications;
-
         }
 
         public function email(){
@@ -53,26 +66,9 @@
 
                 $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
                 $this->email = $results[0][0];
-
             }
 
             return $this->email;
-
-        }
-
-        public static function fromID($id) {
-
-            $results = Database::selectOne('SELECT email FROM User WHERE id = ?', [$id]);
-
-            if(!count($results)){
-                fatalError('User Not Found');
-            }
-
-            $user = new User($id);
-            $user->email = $results['email'];
-
-            return $user;
-
         }
 
         private function loadUserRoles(){
@@ -157,24 +153,33 @@
             return $this->isSeller() ? SellerFeedback::getFeedbackForUser($this->sellerID()) : [];
         }
 
-        public function getSellerMeanRating() {
-
-            $results =  SellerFeedback::getMeanRatingForUser($this->sellerID());
-
-            $results['overall'] = array_sum($results)/count($results);
-
-            $results = array_map(function($i){ return round($i,1);  }, $results);
-
-            return $results;
-        }
-
         public function getBuyerFeedback() {
-
             return $this->isBuyer() ? BuyerFeedback::getFeedbackForUser($this->buyerID()) : [];
         }
 
+
+        public function getSellerMeanRating() {
+
+            $mean_rating =  SellerFeedback::getMeanRatingForUser($this->sellerID());
+
+            $mean_rating['overall'] = array_sum($mean_rating)/count($mean_rating);
+
+            $mean_rating = array_map(function($i){ return round($i,1); }, $mean_rating);
+
+            return $mean_rating;
+        }
+
+
+
         public function getBuyerMeanRating() {
-            return BuyerFeedback::getMeanRatingForUser($this->buyerID());
+
+            $mean_rating =  BuyerFeedback::getMeanRatingForUser($this->buyerID());
+
+            $mean_rating['overall'] = array_sum($mean_rating)/count($mean_rating);
+
+            $mean_rating = array_map(function($i){ return round($i,1); }, $mean_rating);
+
+            return $mean_rating;
         }
 
         public function getBuyerBidCount() {
