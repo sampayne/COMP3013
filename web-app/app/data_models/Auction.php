@@ -373,8 +373,9 @@
             */
 
             $results = Database::query('SELECT Auction.* FROM Auction WHERE Auction.id IN
+                (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id IN
                 (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
-                (SELECT AuctionsWinners.id FROM AuctionsWinners WHERE AuctionsWinners.userrole_id_winner = ?))
+                (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id = ?)))
                 AND Auction.end_date > now() AND NOT EXISTS
                 (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
 
@@ -388,16 +389,15 @@
                 $results = Database::query('SELECT DISTINCT Auction.* FROM Auction JOIN Item ON Auction.id = Item.auction_id
                     WHERE Item.id IN (SELECT DISTINCT(ItemCategory.item_id) FROM ItemCategory JOIN
                     (SELECT ItemCategory.category_id, COUNT(ItemCategory.item_id) as no_items FROM ItemCategory JOIN
-                    (SELECT Item.id FROM AuctionsWinners JOIN Item ON AuctionsWinners.id = Item.auction_id
-                    WHERE AuctionsWinners.userrole_id_winner = ?) AS WonItems
-                    ON ItemCategory.item_id = WonItems.id
+                    (SELECT Item.id FROM Bid JOIN Item ON Bid.auction_id = Item.auction_id
+                    WHERE Bid.userrole_id = ?) AS BidItems
+                    ON ItemCategory.item_id = BidItems.id
                     GROUP BY ItemCategory.category_id
                     ORDER BY no_items
                     LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
-                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
-                    ORDER BY Auction.id ASC', [$userrole_id, $userrole_id]);
+                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id, $userrole_id]);
 
             }
 
@@ -416,8 +416,7 @@
                     LIMIT 1) as TopCategories
                     ON ItemCategory.category_id = TopCategories.category_id)
                     AND Auction.end_date > now()
-                     AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)
-                    ORDER BY Auction.id ASC', [$userrole_id]);
+                    AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$userrole_id]);
 
 
             }
