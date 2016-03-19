@@ -149,16 +149,25 @@
             $auction_creator = new AuctionCreator($request);
             $auction_errors = $auction_creator->validateInput($auction_input);
 
+            $errors = [];
+
             if(count($auction_errors) > 0){
-                fatalError($auction_errors);
+
+                $errors[] = 'There was one or more problems with your submission, please go back';
+
+                foreach($auction_errors as $error){
+
+                    $errors[] = $error;
+
+                }
             }
 
             if(isset($auction_input['items']) === false){
-                fatalError('Items Missing');
+                $auction_errors[] = 'Items Missing';
             }
 
             if(isset($request->files['item_image']['name']) === false || count($request->files['item_image']['name']) !== count($auction_input['items'])){
-                fatalError('Items Images Missing');
+                $auction_errors[] = 'Items Images Missing';
             }
 
 
@@ -171,8 +180,18 @@
                 $item_errors = $item_creator->validateInput($item);
 
                 if(count($item_errors) > 0){
-                    fatalError($item_errors);
+
+                    foreach($item_errors as $error){
+
+                        $errors[] = $error;
+
+                    }
+
                 }
+            }
+
+            if(count($errors)){
+                return View::renderView('general_error', ['errors'=>$errors]);
             }
 
             $auction_id = $auction_creator->saveInput($auction_input);
