@@ -14,13 +14,14 @@
 
             $parameters = [     $input['auction_name'],
                                 $input['auction_description'],
-                                $input['starting_price'],
+                                $input['starting_price'] * 100,
                                 $input['end_date_time'],
-                                $input['userrole_id']
+                                $input['userrole_id'],
+                                $input['reserve_price'] * 100
 
                             ];
 
-            Database::insert('INSERT INTO Auction (name,description,starting_price,end_date,userrole_id) VALUES (?,?,?,?,?)', $parameters);
+            Database::insert('INSERT INTO Auction (name,description,starting_price,end_date,userrole_id, reserve_price) VALUES (?,?,?,?,?,?)', $parameters);
 
             $auction_id = Database::lastID();
 
@@ -47,6 +48,11 @@
             if($this->isNumeric('starting_price') === false || $this->isGreaterThan('starting_price', 0) === false){
 
                 $errors[] = 'Auction must set a starting price greater than 0';
+            }
+
+            if($this->isNumeric('reserve_price') === true && $this->isGreaterThan('reserve_price', $input['starting_price']) === false){
+
+                $errors[] = 'Reserve must be 0, or greater than the starting price';
             }
 
             if($this->isValidDate('end_date_time') === false){

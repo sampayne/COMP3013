@@ -23,7 +23,7 @@
 
 
         <div class="navbar-header">
-          <a class="navbar-brand" href="/">Buy Now</a>
+          <a class="navbar-brand" href="/">BuyNow</a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -71,8 +71,8 @@
 
 				<?php else: ?>
 
-                    <li><a href="/login">Log In | Sign Up</a></li>
-
+                    <li><a href="/login">Log In</a></li>
+                    <li><a href="/login">Sign Up</a></li>
 				<?php endif ?>
 			</ul>
 

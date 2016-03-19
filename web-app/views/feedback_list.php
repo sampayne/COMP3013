@@ -49,32 +49,53 @@
 
                             <div role="tabpanel" class="tab-pane active" id="buyer">
 
-                                <?php foreach(array_chunk($related_user->getBuyerFeedback(),3) as $feedback_chunk):?>
+                                <?php if(empty($related_user->getBuyerFeedback())): ?>
+
+                                    <div class="alert alert-info" role="alert"><?= $related_user->email ?> hasn't received any feedback as a buyer.</div>
+
+                                <?php else: ?>
+
+                                    <?php $mean_ratings = $related_user->getBuyerMeanRating() ?>
 
                                     <div class="row">
-
-                                        <?php foreach($feedback_chunk as $feedback): ?>
-                                                <div class="col-md-4">
-                                                    <div class="panel panel-default">
-                                                        <div class="panel-heading">
-                                                            <?= $feedback->content ?>
-                                                        </div>
-                                                        <ul class="list-group">
-                                                            <li class="list-group-item"><span class="badge"><?= $feedback->communication ?></span>Communication</li>
-                                                             <li class="list-group-item"><span class="badge"><?= $feedback->speed_of_payment ?></span>Speed of Payment</li>
-                                                            <li class="list-group-item list-group-item-info"><span class="badge"><?= $feedback->mean() ?></span>Overall</li>
-                                                        </ul>
-                                                    </div>
+                                        <div class="col-md-12">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    Summary
                                                 </div>
-                                        <?php endforeach ?>
-
+                                                <ul class="list-group">
+                                                    <li class="list-group-item"><span class="badge"><?= $mean_ratings['mean_communication'] ?></span>Communication</li>
+                                                    <li class="list-group-item"><span class="badge"><?= $mean_ratings['mean_speed_of_payment'] ?></span>Speed of Payment</li>
+                                                    <li class="list-group-item list-group-item-info"><span class="badge"><?= $mean_ratings['overall'] ?></span>Overall</li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                <?php endforeach ?>
+                                    <?php foreach(array_chunk($related_user->getBuyerFeedback(),3) as $feedback_chunk):?>
 
-                                <?php if(empty($related_user->getBuyerFeedback())): ?>
-                                    <div class="alert alert-info" role="alert"><?= $related_user->email ?> hasn't received any feedback as a buyer.</div>
-                                <?php endif ?>
+                                        <div class="row">
+
+                                            <?php foreach($feedback_chunk as $feedback): ?>
+                                                    <div class="col-md-4">
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-heading">
+                                                                <?= $feedback->content ?>
+                                                            </div>
+                                                            <ul class="list-group">
+                                                                <li class="list-group-item"><span class="badge"><?= $feedback->communication ?></span>Communication</li>
+                                                                 <li class="list-group-item"><span class="badge"><?= $feedback->speed_of_payment ?></span>Speed of Payment</li>
+                                                                <li class="list-group-item list-group-item-info"><span class="badge"><?= $feedback->mean() ?></span>Overall</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                            <?php endforeach ?>
+
+                                        </div>
+
+                                    <?php endforeach ?>
+
+                                <?php endif?>
 
                             </div>
 

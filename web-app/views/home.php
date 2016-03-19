@@ -1,8 +1,9 @@
 
 <div class="jumbotron">
     <div class="container">
-	<h1 style="text-align: center">Welcome to BuyNow!</h1>
-	<p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet.</p>
+	<h1>Welcome to BuyNow!</h1>
+	<p class="lead">Welcome to BuyNow, where you can buy and sell anything!</p>
+    <p class="lead"><a href="/login" class="btn btn-primary">Signup</a> <a href="/login" class="btn btn-primary">Login</a></p>
     </div>
 </div>
 

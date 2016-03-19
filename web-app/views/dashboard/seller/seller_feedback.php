@@ -7,7 +7,6 @@
             </div>
 
             <ul class="list-group">
-
                 <?php if(count($sellerFeedback) == 0): ?>
                     <li class="list-group-item">
                         <div class="alert alert-info" role="alert">You haven't received any feedback as a seller.</div>
@@ -20,10 +19,7 @@
                             <p class="text-right">Created at: <?php echo $singleFeedback->created_at; ?></p>
                         </li>
                     <?php endforeach ?>
-
                 <?php endif ?>
-
-
             </ul>
         </div>
     </div>
@@ -37,7 +33,8 @@
                     <li class="list-group-item"><span class="badge"><?= $sellerRating['mean_communication'] ?></span>Communication</li>
                     <li class="list-group-item"><span class="badge"><?= $sellerRating['mean_dispatch_time'] ?></span>Dispatch Time</li>
                     <li class="list-group-item"><span class="badge"><?= $sellerRating['mean_posting'] ?></span>Packaging</li>
-                    <li class="list-group-item"><span class="badge"><?= $sellerRating['no_feedback'] ?></span>Total Ratings</li>
+                    <li class="list-group-item list-group-item-info"><span class="badge"><?= $sellerRating['overall'] ?></span>Overall</li>
+
                 </ul>
         </div>
     </div>

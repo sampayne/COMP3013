@@ -34,7 +34,7 @@
                         <?php if( $user->isBuyer() ): ?>
 
                             <li role="presentation" class="active">
-                                <a href="#buyer-dashboard" aria-controls="buyer" role="tab" data-toggle="tab">As Buyer</a>
+                                <a href="#buyer-dashboard" aria-controls="buyer" role="tab" data-toggle="tab">Buying</a>
                             </li>
 
                         <?php endif ?>
@@ -42,7 +42,7 @@
                         <?php if( $user->isSeller() ): ?>
 
                             <li role="presentation" <?= !$user->isBuyer() ? 'class="active"' : '' ?>>
-                                <a href="#seller-dashboard" aria-controls="profile" role="tab" data-toggle="tab">As Seller</a>
+                                <a href="#seller-dashboard" aria-controls="profile" role="tab" data-toggle="tab">Selling</a>
                             </li>
 
                         <?php endif ?>

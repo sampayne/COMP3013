@@ -12,6 +12,8 @@
         public $created_at;
         public $updated_at;
 
+        public static $number_of_ratings = 2;
+
         public function __construct(array $sqlResultRow) {
 
             $this->id = $sqlResultRow['id'];
@@ -26,7 +28,7 @@
 
         public function mean() {
 
-            return ($this->speed_of_payment + $this->communication)/2;
+            return ($this->speed_of_payment + $this->communication)/self::$number_of_ratings;
 
         }
 
@@ -70,18 +72,15 @@
         public static function getMeanRatingForUser($userrole_id) {
             //unprocessed results
             $results = Database::query('SELECT avg(communication) as mean_communication,
-                                            avg(speed_of_payment) as mean_speed_of_payment,
+                                               avg(speed_of_payment) as mean_speed_of_payment,
                                                count(*) as no_feedback
                                                FROM BuyerFeedback WHERE auction_id IN
                 (SELECT id FROM AuctionsWinners WHERE userrole_id_winner = ?)', [$userrole_id]);
-            return $results[0];
 
-             if(count($results) == 0) {
-                $results['mean_communication'] = 0;
-                $results['mean_speed_of_payment'] = 0;
-                return $results;
+            $mean_rating['mean_communication'] = isset($results[0]['mean_communication']) ? $results[0]['mean_communication'] : 0;
+            $mean_rating['mean_speed_of_payment'] = isset($results[0]['mean_speed_of_payment']) ? $results[0]['mean_speed_of_payment'] : 0;
 
-            }
+            return $mean_rating;
 
         }
     }

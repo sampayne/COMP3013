@@ -3,6 +3,11 @@
                 <li class="list-group-item">
                     Starting Price: &pound; <?= $auction->getFormattedStartingPrice() ?>
                 </li>
+                <?php if($auction->getReserve() > 0): ?>
+                <li class="list-group-item">
+                    Reserve Price: &pound; <?= $auction->getFormattedReservePrice() ?>
+                </li>
+                <?php endif ?>
                 <li class="list-group-item">
                     Bid Count: <?= $auction->getBidCount(); ?>
                 </li>
@@ -11,14 +16,34 @@
 
                 <?php if($auction->isFinished()): ?>
 
-                    <?php if($auction->getHighestBid() > 0): ?>
+                    <?php if($auction->wasSold()): ?>
 
-                        <li class="list-group-item list-group-item-success text-center">
+                        <li class="list-group-item text-center">
                             Sold &pound;<?= $auction->getFormattedHighestBid() ?>
                         </li>
-                         <li class="list-group-item">
-                            To: <a href="/user/<?=$auction->buyer()->id?>/feedback"><?= $auction->buyer()->email ?></a><?= isset($user) && $auction->buyer()->id == $user->id ? ' (You)' : '' ?>
+
+                        <?php if(!isset($user) || $auction->buyer()->id != $user->id):?>
+                        <li class="list-group-item">
+                            To: <a href="/user/<?=$auction->buyer()->id?>/feedback"><?= $auction->buyer()->email ?></a>
                         </li>
+                        <?php endif ?>
+
+                        <?php if(isset($user) && $auction->buyer()->id == $user->id): ?>
+                            <li class="list-group-item list-group-item-success text-center">
+                                You won this item!!
+                            </li>
+                        <?php elseif(isset($user) && $auction->seller()->id == $user->id): ?>
+                            <li class="list-group-item list-group-item-success text-center">
+                                You sold this item!!
+                            </li>
+                        <?php elseif(isset($user) && $auction->getHighestBidForUser($user) > 0): ?>
+                            <li class="list-group-item list-group-item-danger text-center">
+                                You lost this item!!
+                            </li>
+                        <?php endif ?>
+
+
+
 
                         <?php if(isset($user) && $auction->seller()->id == $user->id && !$auction->hasBuyerFeedback()):?>
                          <li class="list-group-item">
@@ -42,9 +67,35 @@
 
                 <?php else:?>
 
-                    <li class="list-group-item <?= $auction->getHighestBid() > 0 ? 'list-group-item-success' : 'list-group-item-warning' ?>">
+                    <li class="list-group-item <?= isset($user) && $auction->seller()->id == $user->id && $auction->getHighestBid() > 0 ? 'list-group-item-success' : '' ?>
+                                               <?= isset($user) && $auction->seller()->id == $user->id && $auction->getHighestBid() == 0 ? 'list-group-item-warning' : '' ?>
+
+                                            ">
                         Current Bid: &pound;<?= $auction->getFormattedHighestBid() ?>
                     </li>
+
+
+
+
+
+                    <?php if($auction->getHighestBid() > 0): ?>
+
+                        <?php if(isset($user) && $auction->highestBidder()->id == $user->id):?>
+                            <li class="list-group-item list-group-item-success text-center">
+                                You are the highest bidder!!
+                            </li>
+                        <?php elseif(isset($user) && $auction->getHighestBidForUser($user) > 0):?>
+                            <li class="list-group-item list-group-item-danger text-center">
+                                You have been outbid!!
+                            </li>
+                        <?php else:?>
+                            <li class="list-group-item">
+                                By: <a href="/user/<?=$auction->highestBidder()->id?>/feedback"><?= $auction->highestBidder()->email ?></a>
+                            </li>
+                        <?php endif ?>
+
+                    <?php endif ?>
+
 
 
                     <?php if(isset($user) && $auction->seller()->id !== $user->id):?>
