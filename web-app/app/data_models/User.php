@@ -204,7 +204,7 @@
 
         public function getRecommendations() {
 
-            return Auction::getRecommendationsForUser($this->buyerID());
+            return Auction::getRecommendationsForUser($this->buyerID(), $this->isSeller() ? $this->sellerID() : 0);
 
         }
 

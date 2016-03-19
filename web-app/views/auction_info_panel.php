@@ -69,7 +69,6 @@
 
                     <li class="list-group-item <?= isset($user) && $auction->seller()->id == $user->id && $auction->getHighestBid() > 0 ? 'list-group-item-success' : '' ?>
                                                <?= isset($user) && $auction->seller()->id == $user->id && $auction->getHighestBid() == 0 ? 'list-group-item-warning' : '' ?>
-
                                             ">
                         Current Bid: &pound;<?= $auction->getFormattedHighestBid() ?>
                     </li>
