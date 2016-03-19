@@ -376,7 +376,9 @@
                 (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id IN
                     (SELECT Bid.userrole_id FROM Bid WHERE Bid.auction_id IN
                         (SELECT Bid.auction_id FROM Bid WHERE Bid.userrole_id = ?)))
-                AND Auction.end_date > now() AND NOT Auction.userrole_id = ? AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)', [$buyer_id, $seller_id,  $buyer_id]);
+                AND Auction.end_date > now() AND NOT Auction.userrole_id = ?
+                AND NOT EXISTS (SELECT * FROM Bid WHERE Bid.auction_id = Auction.id AND userrole_id = ?)',
+                [$buyer_id, $seller_id,  $buyer_id]);
 
 
             if(count($results) == 0) {

@@ -42,7 +42,7 @@
                         </div>
                         <div class="form-group">
                             <label>Comments</label>
-                            <textarea  class="form-control" name="feedback_comment"/>
+                            <textarea  class="form-control" name="feedback_comment"></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-success center-block btn-lg">Save Feedback</button>

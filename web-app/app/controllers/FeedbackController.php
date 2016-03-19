@@ -38,7 +38,8 @@
 
             $auction = Auction::getAuctionWithId($auction_id);
 
-            Database::insert('INSERT INTO SellerFeedback (content, item_as_described, dispatch_time, posting, auction_id) VALUES (?,?,?,?,?,?)', [$request->post['feedback_comment'],
+            Database::insert('INSERT INTO SellerFeedback (content, item_as_described, dispatch_time, communication, posting, auction_id) VALUES (?,?,?,?,?,?)',
+                                                                        [$request->post['feedback_comment'],
                                                                          $request->post['item_as_described'],
                                                                          $request->post['communication'],
                                                                          $request->post['dispatch_time'],
